@@ -55,3 +55,7 @@
   background-color: black;
   border-radius: 50%;
 }
+
+.leaflet-routing-alternatives-container {
+  display: none;
+}

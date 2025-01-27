@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic"
 import { useEffect, useMemo } from "react"
 import L, { LatLngExpression, DivIcon } from "leaflet"
+import { useTranslation } from "@/hooks/useTranslation"
 import "leaflet/dist/leaflet.css"
 import { useDashboard } from "../context/DashboardContext"
 import "./styles.css"
@@ -15,8 +16,8 @@ interface Point {
 }
 
 interface PolygonData {
-  coordinates: [number, number][] // Coordenadas del polígono
-  score: number // Puntaje asociado al polígono
+  coordinates: [number, number][] 
+  score: number 
 }
 
 interface MapProps {
@@ -44,6 +45,7 @@ const Popup = dynamic(() => import("react-leaflet").then(mod => mod.Popup), {
 })
 
 export default function Map({ puntos, poligonos }: MapProps) {
+  const { t } = useTranslation()
   const { mapCenter, setMapCenter, position, isTracking } = useDashboard()
 
   useEffect(() => {
@@ -109,7 +111,7 @@ export default function Map({ puntos, poligonos }: MapProps) {
       {position && (
         <Marker position={[position.lat, position.lng]} icon={markerIcon}>
           <Popup>
-            <h3>Tu posición actual</h3>
+            <h3>{t("Your current location")}</h3>
           </Popup>
         </Marker>
       )}
