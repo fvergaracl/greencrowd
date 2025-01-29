@@ -82,10 +82,9 @@ const colors = [
 ]
 
 const Routing = ({ map, start, end }) => {
-  const routingControlRef = useRef(null) // Para almacenar el control de rutas actual
+  const routingControlRef = useRef(null)
 
   useEffect(() => {
-    // Verificar si el mapa está inicializado
     if (!map) {
       console.error(
         "El mapa no está inicializado. No se puede agregar el control de rutas."
@@ -94,18 +93,19 @@ const Routing = ({ map, start, end }) => {
     }
 
     if (routingControlRef.current) {
+      console.log("Removiendo control de rutas existente...")
       try {
-        map.removeControl(routingControlRef.current)
+        if (map.hasLayer(routingControlRef.current)) {
+          map.removeControl(routingControlRef.current)
+        }
       } catch (error) {
-        console.error(
-          "Error al intentar eliminar el control de rutas previo:",
-          error
-        )
+        console.error("Error al intentar eliminar el control de rutas:", error)
       }
-      routingControlRef.current = null 
+      routingControlRef.current = null
     }
 
     try {
+      console.log("Agregando nuevo control de rutas...")
       const newRoutingControl = L.Routing.control({
         waypoints: [L.latLng(start.lat, start.lng), L.latLng(end.lat, end.lng)],
         routeWhileDragging: true,
@@ -132,18 +132,21 @@ const Routing = ({ map, start, end }) => {
 
     return () => {
       if (routingControlRef.current) {
+        console.log("Limpieza del control de rutas...")
         try {
-          map.removeControl(routingControlRef.current)
+          if (map.hasLayer(routingControlRef.current)) {
+            map.removeControl(routingControlRef.current)
+          }
         } catch (error) {
           console.error(
-            "Error al intentar eliminar el control de rutas en limpieza:",
+            "Error al intentar eliminar el control de rutas en cleanup:",
             error
           )
         }
         routingControlRef.current = null
       }
     }
-  }, [map, start, end]) 
+  }, [map, start, end])
 
   return null
 }
@@ -278,7 +281,6 @@ export default function Map({
 }
   */
     console.log("********** CHECK POI")
-
   }
   checkTaskAndPoi(selectedPoi)
   return (
