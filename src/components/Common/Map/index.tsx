@@ -80,26 +80,19 @@ const colors = [
   { border: "purple", fill: "plum" },
   { border: "orange", fill: "peachpuff" }
 ]
-
-const Routing = ({ map, start, end }) => {
-  const routingControlRef = useRef(null)
-
+const Routing = ({ map, start, end, routingControlRef }) => {
   useEffect(() => {
-    if (!map) {
-      console.error(
-        "El mapa no está inicializado. No se puede agregar el control de rutas."
-      )
-      return
-    }
+    if (!map || !start || !end) return
 
+    // 🔹 Verificamos si hay una ruta previa antes de eliminarla
     if (routingControlRef.current) {
-      console.log("Removiendo control de rutas existente...")
       try {
         if (map.hasLayer(routingControlRef.current)) {
+          console.log("Eliminando control de rutas anterior...")
           map.removeControl(routingControlRef.current)
         }
       } catch (error) {
-        console.error("Error al intentar eliminar el control de rutas:", error)
+        console.error("Error al eliminar la ruta anterior:", error)
       }
       routingControlRef.current = null
     }
@@ -116,32 +109,22 @@ const Routing = ({ map, start, end }) => {
         draggableWaypoints: false,
         fitSelectedRoutes: true,
         showAlternatives: false
-      })
-        .on("routesfound", e => {
-          console.log("Rutas encontradas:", e.routes)
-        })
-        .on("routingerror", e => {
-          console.error("Error al calcular la ruta:", e)
-        })
-        .addTo(map)
+      }).addTo(map)
 
       routingControlRef.current = newRoutingControl
     } catch (error) {
-      console.error("Error al inicializar el control de rutas:", error)
+      console.error("Error al inicializar la ruta:", error)
     }
 
     return () => {
       if (routingControlRef.current) {
-        console.log("Limpieza del control de rutas...")
         try {
           if (map.hasLayer(routingControlRef.current)) {
+            console.log("Limpieza del control de rutas...")
             map.removeControl(routingControlRef.current)
           }
         } catch (error) {
-          console.error(
-            "Error al intentar eliminar el control de rutas en cleanup:",
-            error
-          )
+          console.error("Error al eliminar la ruta en cleanup:", error)
         }
         routingControlRef.current = null
       }
@@ -169,8 +152,10 @@ export default function Map({
   const { mapCenter, position, isTracking } = useContextMapping(router)
   const mapRef = useRef<L.Map | null>(null)
   const [campaignData, setCampaignData] = useState<any>(null)
-  const [selectedPoi, setSelectedPoi] = useState<any>(null)
+  const [selectedPoi, setSelectedPoi] = useState<PointOfInterest | null>(null)
+  const [routingKey, setRoutingKey] = useState(0)
   const [errorPoi, setErrorPoi] = useState<any>(null)
+  const routingControlRef = useRef<L.Routing.Control | null>(null)
   const [selectedPolygon, setSelectedPolygon] = useState<PolygonData | null>(
     null
   )
@@ -186,6 +171,11 @@ export default function Map({
       iconSize: [size, size],
       iconAnchor: [size / 2, size]
     })
+  }
+
+  const handleSelectPoi = (poi: PointOfInterest | null) => {
+    setSelectedPoi(poi)
+    setRoutingKey(prev => prev + 1) // Incrementamos la clave para forzar el reinicio
   }
 
   useEffect(() => {
@@ -400,11 +390,11 @@ export default function Map({
                     pathOptions={{ color: "green", fillOpacity: 0.2 }}
                     eventHandlers={{
                       click: () => {
-                        if (selectedPoi) {
-                          setSelectedPoi(null)
-                          return
+                        if (selectedPoi?.id === poi?.id) {
+                          handleSelectPoi(null)
+                        } else {
+                          handleSelectPoi(poi)
                         }
-                        setSelectedPoi(poi)
                       }
                     }}
                   />
@@ -437,6 +427,7 @@ export default function Map({
                 map={mapRef.current}
                 start={{ lat: position.lat, lng: position.lng }}
                 end={{ lat: selectedPoi.latitude, lng: selectedPoi.longitude }}
+                routingControlRef={routingControlRef} // Pasamos la referencia del control
               />
             )}
           </LeafletMapContainer>
