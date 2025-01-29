@@ -82,12 +82,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       path: "/dashboard/campaigns",
       dataCy: "campaigns-button"
     },
-    {
-      label: t("Leaderboard"),
-      icon: <MdEmojiEvents className='h-6 w-6' />,
-      path: "/dashboard/leaderboard",
-      dataCy: "leaderboard-button"
-    },
+    // {
+    //   label: t("Leaderboard"),
+    //   icon: <MdEmojiEvents className='h-6 w-6' />,
+    //   path: "/dashboard/leaderboard",
+    //   dataCy: "leaderboard-button"
+    // },
     {
       label: isTracking ? t("Stop location") : t("Activate location"),
       icon: (

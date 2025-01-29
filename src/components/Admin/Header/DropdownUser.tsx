@@ -34,7 +34,7 @@ const DropdownUser = () => {
         })
 
         setPhotoUrl(userData.pictureKeycloak || userData.picture || null)
-        lastFetchTime.current = now 
+        lastFetchTime.current = now
       } catch (error) {
         console.error("Error fetching user data:", error)
         Swal.fire({
@@ -78,6 +78,15 @@ const DropdownUser = () => {
       {dropdownOpen && (
         <div className='absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50'>
           <ul className='text-sm text-gray-700'>
+            <li>
+              <button
+                onClick={() => router.push("/admin/settings")}
+                className='w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700'
+                data-cy='profile-button-dropdown'
+              >
+                {t("Settings")}
+              </button>
+            </li>
             <li>
               <button
                 onClick={() => router.push("/dashboard")}

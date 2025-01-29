@@ -8,8 +8,8 @@ import {
   faFlag
 } from "@fortawesome/free-solid-svg-icons"
 import { useTranslation } from "@/hooks/useTranslation"
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
-import DefaultLayout from "../../components/AdminLayout"
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
+import DefaultLayout from "@/components/AdminLayout"
 
 export default function Admin() {
   const { t } = useTranslation()
