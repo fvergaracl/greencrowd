@@ -273,7 +273,13 @@ export default function AdminCampaigns() {
         pageName={t("Campaigns")}
         breadcrumbPath={t("Campaigns")}
       />
-      <div className='flex justify-end gap-4 mb-4'>
+      <div className='flex justify-between gap-4 mb-4'>
+        <button
+          className='bg-green-700 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300'
+          onClick={() => router.push("/admin/campaigns/create")}
+        >
+          {t("Create Campaign")}
+        </button>
         <ColumnSelector
           visibleColumns={visibleColumns}
           onToggleColumn={handleColumnToggle}
@@ -372,10 +378,268 @@ export default function AdminCampaigns() {
 
           <tbody>
             {paginatedCampaigns?.map((campaign, index) => {
+              console.log({ campaign })
+
+              /*
+{
+    "id": "e2f3b95b-e538-4491-9b73-7dce2af06064",
+    "name": "TEST",
+    "description": "Thematic co-exploration",
+    "isOpen": false,
+    "location": "Bilbao",
+    "startDatetime": "2025-01-16T12:11:00.000Z",
+    "endDatetime": null,
+    "category": "category test",
+    "gameId": "5d2ad1a6-bd77-4701-9001-412ec8cc2a0b",
+    "isDisabled": false,
+    "createdAt": "2025-01-13T11:11:11.165Z",
+    "updatedAt": "2025-01-30T08:56:11.316Z",
+    "areas": [
+        {
+            "id": "8a47a2bc-579b-4b40-9a56-072ac7256dfb",
+            "name": "test2",
+            "description": "test",
+            "campaignId": "e2f3b95b-e538-4491-9b73-7dce2af06064",
+            "polygon": [
+                [
+                    43.34115600131089,
+                    -3.010413757783731
+                ],
+                [
+                    43.33790984952216,
+                    -3.008180325175674
+                ],
+                [
+                    43.34003235302411,
+                    -3.00457247250114
+                ],
+                [
+                    43.34315354691834,
+                    -3.007321312634115
+                ]
+            ],
+            "isDisabled": false,
+            "createdAt": "2025-01-13T16:16:57.158Z",
+            "updatedAt": "2025-01-13T16:16:57.158Z",
+            "pointOfInterests": [
+                {
+                    "id": "ecf65bab-2f6b-4b2d-8251-d1befcec1a6f",
+                    "name": "aaaaaaaaaa",
+                    "description": "",
+                    "radius": 20,
+                    "areaId": "8a47a2bc-579b-4b40-9a56-072ac7256dfb",
+                    "latitude": 43.34284544994483,
+                    "longitude": -3.007464408874512,
+                    "isDisabled": false,
+                    "createdAt": "2025-01-27T14:01:53.632Z",
+                    "updatedAt": "2025-01-27T14:01:53.632Z",
+                    "tasks": []
+                }
+            ]
+        },
+        {
+            "id": "566cb472-f810-4a93-9eda-f9d2676fef8b",
+            "name": "test4444",
+            "description": "asdasd",
+            "campaignId": "e2f3b95b-e538-4491-9b73-7dce2af06064",
+            "polygon": [
+                [
+                    43.341689666192,
+                    -3.007032796931067
+                ],
+                [
+                    43.34312539612007,
+                    -3.005658376864589
+                ],
+                [
+                    43.34237632387197,
+                    -3.002909536731613
+                ],
+                [
+                    43.34056602778192,
+                    -3.00174986980051
+                ]
+            ],
+            "isDisabled": false,
+            "createdAt": "2025-01-13T16:17:31.272Z",
+            "updatedAt": "2025-01-13T16:17:31.272Z",
+            "pointOfInterests": [
+                {
+                    "id": "2a9d7ea1-971f-4dcf-8ee4-783561ca1afd",
+                    "name": "test",
+                    "description": "sadas",
+                    "radius": 20,
+                    "areaId": "566cb472-f810-4a93-9eda-f9d2676fef8b",
+                    "latitude": 43.34103444533574,
+                    "longitude": -3.002423899505141,
+                    "isDisabled": true,
+                    "createdAt": "2025-01-15T15:05:52.291Z",
+                    "updatedAt": "2025-01-16T10:00:18.969Z",
+                    "tasks": []
+                },
+                {
+                    "id": "b66f29f8-b6fd-4a44-90a2-f356800ae0bd",
+                    "name": "qqqq",
+                    "description": "",
+                    "radius": 20,
+                    "areaId": "566cb472-f810-4a93-9eda-f9d2676fef8b",
+                    "latitude": 43.34282984464257,
+                    "longitude": -3.005586862564087,
+                    "isDisabled": false,
+                    "createdAt": "2025-01-27T14:01:42.243Z",
+                    "updatedAt": "2025-01-27T14:01:42.243Z",
+                    "tasks": []
+                },
+                {
+                    "id": "82c5dc94-9ef3-4a7d-9c90-b89291e18401",
+                    "name": "eeeeeeeeeeeeeeeeee",
+                    "description": "",
+                    "radius": 20,
+                    "areaId": "566cb472-f810-4a93-9eda-f9d2676fef8b",
+                    "latitude": 43.34161261870718,
+                    "longitude": -3.003451824188232,
+                    "isDisabled": false,
+                    "createdAt": "2025-01-27T14:02:03.922Z",
+                    "updatedAt": "2025-01-28T13:43:08.906Z",
+                    "tasks": []
+                }
+            ]
+        },
+        {
+            "id": "6e11ca28-7df2-4be0-93c0-cd3e9021709f",
+            "name": "test",
+            "description": "eeeeeeeeeeeeeeee",
+            "campaignId": "e2f3b95b-e538-4491-9b73-7dce2af06064",
+            "polygon": [
+                [
+                    38.31714341766585,
+                    -4.638280994663287
+                ],
+                [
+                    38.31215982925831,
+                    -4.626598424098145
+                ],
+                [
+                    38.31956774223246,
+                    -4.620069928782316
+                ],
+                [
+                    38.32158795077906,
+                    -4.634329536972134
+                ]
+            ],
+            "isDisabled": true,
+            "createdAt": "2025-01-13T16:07:23.681Z",
+            "updatedAt": "2025-01-14T10:29:04.480Z",
+            "pointOfInterests": []
+        },
+        {
+            "id": "d82d77a2-edaa-4319-8fda-2ccaf23883f2",
+            "name": "TESTING222",
+            "description": "22222222222222",
+            "campaignId": "e2f3b95b-e538-4491-9b73-7dce2af06064",
+            "polygon": [
+                [
+                    43.34041079611224,
+                    -3.001936468132936
+                ],
+                [
+                    43.34111307435104,
+                    -3.004638237026225
+                ],
+                [
+                    43.34079314860519,
+                    -3.005109974452027
+                ],
+                [
+                    43.33892037871527,
+                    -3.003491057377091
+                ]
+            ],
+            "isDisabled": false,
+            "createdAt": "2025-01-13T16:18:20.625Z",
+            "updatedAt": "2025-01-14T15:23:50.326Z",
+            "pointOfInterests": [
+                {
+                    "id": "84fb25fe-5f33-4e99-92e4-2b8644314791",
+                    "name": "asdasd",
+                    "description": "asd",
+                    "radius": 20,
+                    "areaId": "d82d77a2-edaa-4319-8fda-2ccaf23883f2",
+                    "latitude": 43.34078979963019,
+                    "longitude": -3.004793886785407,
+                    "isDisabled": false,
+                    "createdAt": "2025-01-15T16:08:32.207Z",
+                    "updatedAt": "2025-01-15T16:23:18.473Z",
+                    "tasks": []
+                },
+                {
+                    "id": "162b3f36-7187-4748-a326-0b0de6ae7fac",
+                    "name": "test",
+                    "description": "",
+                    "radius": 20,
+                    "areaId": "d82d77a2-edaa-4319-8fda-2ccaf23883f2",
+                    "latitude": 43.34074929895169,
+                    "longitude": -3.004855556435073,
+                    "isDisabled": false,
+                    "createdAt": "2025-01-15T10:37:25.272Z",
+                    "updatedAt": "2025-01-16T10:01:12.253Z",
+                    "tasks": [
+                        {
+                            "id": "f26d3065-4a62-41f3-abcd-80cbcb7959d4"
+                        }
+                    ]
+                },
+                {
+                    "id": "9c753265-db42-417a-ba01-e2c31a54f4d6",
+                    "name": "test",
+                    "description": "",
+                    "radius": 20,
+                    "areaId": "d82d77a2-edaa-4319-8fda-2ccaf23883f2",
+                    "latitude": 43.33934976205169,
+                    "longitude": -3.003387451171875,
+                    "isDisabled": false,
+                    "createdAt": "2025-01-27T14:01:30.094Z",
+                    "updatedAt": "2025-01-27T14:01:30.094Z",
+                    "tasks": []
+                }
+            ]
+        }
+    ],
+    "allowedUsers": [
+        {
+            "id": "1cc39ca3-d79a-4522-89fc-202dfbe8f85f",
+            "userId": "5d2ad1a6-bd77-4701-9001-412ec8cc2a0b",
+            "campaignId": "e2f3b95b-e538-4491-9b73-7dce2af06064",
+            "accessType": "contributor",
+            "createdAt": "2025-01-14T10:11:27.631Z",
+            "updatedAt": "2025-01-14T10:11:27.631Z",
+            "user": {
+                "id": "5d2ad1a6-bd77-4701-9001-412ec8cc2a0b",
+                "sub": "e21b65cd-d534-4dd8-84a4-4729f6bb6c57"
+            }
+        }
+    ]
+}
+              */
               const groupedUsers = groupParticipants(campaign?.allowedUsers)
               const areaCount = campaign?.areas?.length
               const pointOfInterestsCount =
-                campaign?.areas?.pointOfInterests?.length || 0
+                campaign?.areas?.reduce(
+                  (acc, area) => acc + area?.pointOfInterests?.length,
+                  0
+                ) || 0
+              const taskCount =
+                campaign?.areas?.reduce(
+                  (acc, area) =>
+                    acc +
+                    area?.pointOfInterests?.reduce(
+                      (acc, poi) => acc + poi?.tasks?.length,
+                      0
+                    ),
+                  0
+                ) || 0
+
               return (
                 <tr
                   key={campaign.id}
@@ -474,11 +738,7 @@ export default function AdminCampaigns() {
                           title={t("Click to view tasks in the campaign")}
                         >
                           <FaTasks className='inline-block' />
-                          {campaign?.areas.reduce(
-                            (acc, area) =>
-                              acc + area?.pointOfInterests?.tasks?.length,
-                            0
-                          ) || 0}
+                          {taskCount}
                         </button>
 
                         {/* Users */}
