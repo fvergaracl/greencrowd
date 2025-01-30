@@ -10,9 +10,10 @@ import * as Sentry from "@sentry/nextjs"
 
 // Ensure the Sentry DSN is provided before initializing
 const SENTRY_DSN = process?.env?.NEXT_PUBLIC_SENTRY_DSN
+const SENTRY_ENABLED = process?.env?.NEXT_PUBLIC_SENTRY_ENABLED || false
 const ENVIRONMENT = process?.env?.NEXT_PUBLIC_SENTRY_ENVIRONMENT
 
-if (SENTRY_DSN) {
+if (SENTRY_DSN && SENTRY_ENABLED) {
   Sentry.init({
     dsn: SENTRY_DSN,
     environment: ENVIRONMENT || "development",

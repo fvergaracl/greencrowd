@@ -183,7 +183,13 @@ export default function AdminAreas() {
   return (
     <DefaultLayout>
       <Breadcrumb pageName={t("Areas")} breadcrumbPath={t("Areas")} />
-      <div className='flex justify-end gap-4 mb-4'>
+      <div className='flex justify-between gap-4 mb-4'>
+        <button
+          className='bg-green-700 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300'
+          onClick={() => router.push("/admin/areas/create")}
+        >
+          {t("Create Area")}
+        </button>
         <ColumnSelector
           visibleColumns={visibleColumns}
           onToggleColumn={handleColumnToggle}
@@ -248,7 +254,11 @@ export default function AdminAreas() {
           <tbody>
             {paginatedAreas.map((area, index) => {
               const pointOfInterestsCount = area.pointOfInterests?.length || 0
-              const tasksCount = area.tasks?.length || 0
+              const tasksCount =
+                area?.pointOfInterests?.reduce(
+                  (acc, poi) => acc + poi.tasks.length,
+                  0
+                ) || 0
               const participantsCount = groupParticipants(
                 area?.campaign?.allowedUsers
               )
@@ -300,7 +310,7 @@ export default function AdminAreas() {
                         </button>
 
                         {/* Users */}
-                        <button 
+                        <button
                           className='rounded px-2 py-1 text-xs font-semibold bg-purple-200 text-purple-800 flex items-center gap-1 hover:bg-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400'
                           title={t("Click to view users in the area")}
                         >
