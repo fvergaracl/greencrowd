@@ -85,7 +85,6 @@ export default function Dashboard() {
   )
 }
 
-// Simple Modal component
 function Modal({
   isVisible,
   children

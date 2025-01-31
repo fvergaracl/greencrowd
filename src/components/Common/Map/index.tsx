@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import React, { useEffect, useMemo, useState, useRef } from "react"
+import React, { useEffect, useMemo, useState, useRef, use } from "react"
 import ReactDOMServer from "react-dom/server"
 import {
   MapContainer as LeafletMapContainer,
@@ -8,8 +8,7 @@ import {
   TileLayer,
   Marker,
   Polygon,
-  Popup,
-  useMap
+  Popup
 } from "react-leaflet"
 import L, { DivIcon } from "leaflet"
 import "leaflet-routing-machine"
@@ -41,6 +40,10 @@ interface MapProps {
   selectedCampaign: CampaignData | null
   modeView?: "contribuitor-view" | "admin-view"
   showMapControl?: boolean
+}
+interface IdistanceToPoi {
+  kilometters: number | null
+  metters: number | null
 }
 
 type ContextType = {
@@ -84,23 +87,24 @@ const Routing = ({ map, start, end, routingControlRef }) => {
   useEffect(() => {
     if (!map || !start || !end) return
 
-    // 🔹 Verificamos si hay una ruta previa antes de eliminarla
     if (routingControlRef.current) {
-      try {
-        if (map.hasLayer(routingControlRef.current)) {
-          console.log("Eliminando control de rutas anterior...")
-          map.removeControl(routingControlRef.current)
-        }
-      } catch (error) {
-        console.error("Error al eliminar la ruta anterior:", error)
-      }
-      routingControlRef.current = null
+      console.log("Actualizando waypoints de la ruta sin eliminarla...")
+      routingControlRef.current
+        .getPlan()
+        .setWaypoints([
+          L.latLng(start.lat, start.lng),
+          L.latLng(end.lat, end.lng)
+        ])
+      return
     }
 
     try {
-      console.log("Agregando nuevo control de rutas...")
-      const newRoutingControl = L.Routing.control({
+      routingControlRef.current = L.Routing.control({
         waypoints: [L.latLng(start.lat, start.lng), L.latLng(end.lat, end.lng)],
+        router: new L.Routing.OSRMv1({
+          serviceUrl: "https://router.project-osrm.org/route/v1",
+          profile: "foot"
+        }),
         routeWhileDragging: true,
         lineOptions: {
           styles: [{ color: "#FF0000", opacity: 1, weight: 5 }]
@@ -108,27 +112,14 @@ const Routing = ({ map, start, end, routingControlRef }) => {
         addWaypoints: false,
         draggableWaypoints: false,
         fitSelectedRoutes: true,
-        showAlternatives: false
+        showAlternatives: false,
+        createMarker: () => null
       }).addTo(map)
-
-      routingControlRef.current = newRoutingControl
     } catch (error) {
       console.error("Error al inicializar la ruta:", error)
     }
 
-    return () => {
-      if (routingControlRef.current) {
-        try {
-          if (map.hasLayer(routingControlRef.current)) {
-            console.log("Limpieza del control de rutas...")
-            map.removeControl(routingControlRef.current)
-          }
-        } catch (error) {
-          console.error("Error al eliminar la ruta en cleanup:", error)
-        }
-        routingControlRef.current = null
-      }
-    }
+    return () => {}
   }, [map, start, end])
 
   return null
@@ -149,16 +140,40 @@ export default function Map({
   const { t } = useTranslation()
   const router = useRouter()
 
-  const { mapCenter, position, isTracking } = useContextMapping(router)
+  const { mapCenter, position, isTracking } = useContextMapping()
   const mapRef = useRef<L.Map | null>(null)
   const [campaignData, setCampaignData] = useState<any>(null)
   const [selectedPoi, setSelectedPoi] = useState<PointOfInterest | null>(null)
-  const [routingKey, setRoutingKey] = useState(0)
   const [errorPoi, setErrorPoi] = useState<any>(null)
+  const [distanceToPoi, setDistanceToPoi] = useState<IdistanceToPoi>({
+    kilometters: null,
+    metters: null
+  })
   const routingControlRef = useRef<L.Routing.Control | null>(null)
   const [selectedPolygon, setSelectedPolygon] = useState<PolygonData | null>(
     null
   )
+
+  const removeRoute = () => {
+    setSelectedPoi(null)
+    setDistanceToPoi(null)
+    if (routingControlRef.current) {
+      try {
+        if (routingControlRef.current) {
+          routingControlRef.current.getPlan().setWaypoints([])
+        }
+      } catch (error) {
+        console.error("Error al limpiar la ruta:", error)
+      }
+    }
+  }
+
+  const calculateDistance = (
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number
+  ) => {}
 
   const createCustomIcon = (color: string, size: number) => {
     const markerHtml = ReactDOMServer.renderToString(
@@ -175,7 +190,6 @@ export default function Map({
 
   const handleSelectPoi = (poi: PointOfInterest | null) => {
     setSelectedPoi(poi)
-    setRoutingKey(prev => prev + 1) // Incrementamos la clave para forzar el reinicio
   }
 
   useEffect(() => {
@@ -202,6 +216,10 @@ export default function Map({
         iconAnchor: [10, 10]
       })
     } else {
+      removeRoute()
+      setErrorPoi(null)
+      setSelectedPoi(null)
+      setDistanceToPoi(null)
       return new DivIcon({
         className: "static-marker-icon",
         html: `
@@ -215,6 +233,12 @@ export default function Map({
     }
   }, [isTracking])
 
+  useEffect(() => {
+    if (selectedPoi) {
+      checkTaskAndPoi(selectedPoi)
+    }
+  }, [selectedPoi])
+
   const firstDivClassName =
     modeView === "contribuitor-view" ? "h-[calc(100vh-4rem)]" : "h-96"
 
@@ -224,55 +248,44 @@ export default function Map({
       : "h-full"
 
   const checkTaskAndPoi = (poi: PointOfInterest) => {
-    /*
- {
-    "poi": {
-        "id": "162b3f36-7187-4748-a326-0b0de6ae7fac",
-        "name": "test",
-        "description": "",
-        "radius": 20,
-        "areaId": "d82d77a2-edaa-4319-8fda-2ccaf23883f2",
-        "latitude": 43.34074929895169,
-        "longitude": -3.004855556435073,
-        "isDisabled": false,
-        "createdAt": "2025-01-15T10:37:25.272Z",
-        "updatedAt": "2025-01-16T10:01:12.253Z",
-        "tasks": [
-            {
-                "id": "f26d3065-4a62-41f3-abcd-80cbcb7959d4",
-                "title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                "description": "test",
-                "type": "form",
-                "taskData": {
-                    "pages": [
-                        {
-                            "name": "page1",
-                            "elements": [
-                                {
-                                    "name": "question1",
-                                    "type": "text",
-                                    "title": "this is a question 122222222222222"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "responseLimit": null,
-                "responseLimitInterval": null,
-                "availableFrom": null,
-                "availableTo": null,
-                "isDisabled": false,
-                "pointOfInterestId": "162b3f36-7187-4748-a326-0b0de6ae7fac",
-                "createdAt": "2025-01-16T11:18:56.223Z",
-                "updatedAt": "2025-01-16T13:07:55.982Z"
-            }
-        ]
-    }
-}
-  */
     console.log("********** CHECK POI")
+    console.log({ poi, position })
+    const destination = L.latLng(poi.latitude, poi.longitude)
+    // calculate distance between current position and destination
+
+    const distance = mapRef.current?.distance(
+      L.latLng(position.lat, position.lng),
+      destination
+    )
+    console.log({ distance })
+    if (distance && distance <= poi.radius) {
+      if (poi.tasks.length > 0) {
+        handleSelectPoi(poi)
+      } else {
+        setErrorPoi("This point of interest has no tasks")
+      }
+    } else {
+      setErrorPoi("You are not close enough to this point of interest")
+    }
   }
-  checkTaskAndPoi(selectedPoi)
+  let messageDistance = ""
+  if (selectedPoi && distanceToPoi.kilometters === null) {
+    messageDistance = "Calculating distance..."
+  }
+  if (selectedPoi && distanceToPoi.kilometters !== null) {
+    messageDistance = `You are ${distanceToPoi.kilometters} km and ${distanceToPoi.metters} m away from the point of interest`
+  }
+  if (selectedPoi && distanceToPoi.kilometters === 0 && distanceToPoi.metters === 0) { 
+    messageDistance = "You are in the point of interest"
+  }
+  if (selectedPoi && distanceToPoi.kilometters === 0 && distanceToPoi.metters !== 0) {
+    messageDistance = `You are ${distanceToPoi.metters} m away from the point of interest`
+  } 
+  if (selectedPoi && distanceToPoi.kilometters !== 0 && distanceToPoi.metters === 0) {
+    messageDistance = `You are ${distanceToPoi.kilometters} km away from the point of interest`
+  }
+  
+
   return (
     <>
       <div className={firstDivClassName} data-cy='map-container-for-dashboard'>
@@ -286,134 +299,149 @@ export default function Map({
               mapRef.current = event.target
             }}
           >
+            {distanceToPoi && (
+              <div className='absolute z-500 mx-auto top-0 left-0 right-0 bg-white dark:bg-green-500 shadow-lg rounded-b-lg p-3 text-center'>
+                {`You are ${distanceToPoi.kilometters} km and ${distanceToPoi.metters} m away from the point of interest`}
+              </div>
+            )}
+
             <TileLayer
               url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            {showMapControl && (
-              <MapControls position={position} campaignData={campaignData} />
+            {showMapControl && isTracking && (
+              <MapControls
+                position={position}
+                removeRoute={selectedPoi && removeRoute}
+                campaignData={campaignData}
+              />
             )}
-            {polygons?.map((polygon, index) => {
-              if (polygonsMultiColors) {
-                const color = colors[index % colors.length]
+            {isTracking &&
+              polygons?.map((polygon, index) => {
+                if (polygonsMultiColors) {
+                  const color = colors[index % colors.length]
+                  return (
+                    <Polygon
+                      key={polygon.id}
+                      positions={polygon.polygon}
+                      pathOptions={{
+                        color: color.border,
+                        fillColor: color.fill,
+                        fillOpacity: 0.5
+                      }}
+                      eventHandlers={{
+                        click: () => {
+                          setSelectedPolygon(polygon)
+                          if (clickOnPolygon) clickOnPolygon(polygon)
+                        }
+                      }}
+                    >
+                      {polygonsTitle && <Tooltip>{polygon.name}</Tooltip>}
+                      {selectedPolygon?.id === polygon.id && (
+                        <Popup>
+                          <div>
+                            <h3>
+                              <strong></strong>
+                              {polygon.name}
+                            </h3>
+                            <p>
+                              <strong>Description:</strong>
+                              {polygon.description}
+                            </p>
+                            <button
+                              onClick={() => {
+                                router.push(`/admin/areas/${polygon.id}`)
+                              }}
+                              className='text-blue-600 underline'
+                            >
+                              {t("See more")}
+                            </button>
+                          </div>
+                        </Popup>
+                      )}
+                    </Polygon>
+                  )
+                }
                 return (
                   <Polygon
-                    key={polygon.id}
-                    positions={polygon.polygon}
-                    pathOptions={{
-                      color: color.border,
-                      fillColor: color.fill,
-                      fillOpacity: 0.5
-                    }}
-                    eventHandlers={{
-                      click: () => {
-                        setSelectedPolygon(polygon)
-                        if (clickOnPolygon) clickOnPolygon(polygon)
-                      }
-                    }}
+                    key={index}
+                    positions={polygon.coordinates}
+                    pathOptions={{ color: "blue", weight: 2 }}
+                  />
+                )
+              })}
+            {isTracking &&
+              points?.map((point, index) => (
+                <Marker
+                  key={index}
+                  position={[point.lat, point.lng]}
+                  icon={L.icon({
+                    iconUrl: "/marker-icon.png",
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41]
+                  })}
+                />
+              ))}
+            {isTracking &&
+              campaignData?.areas?.map(
+                (area: {
+                  id: string
+                  name: string
+                  description: string
+                  polygon: [number, number][]
+                  pointOfInterests: any[]
+                }) => (
+                  <Polygon
+                    key={area.id}
+                    positions={area.polygon}
+                    pathOptions={{ color: "blue", weight: 2 }}
                   >
-                    {polygonsTitle && <Tooltip>{polygon.name}</Tooltip>}
-                    {selectedPolygon?.id === polygon.id && (
-                      <Popup>
-                        <div>
-                          <h3>
-                            <strong></strong>
-                            {polygon.name}
-                          </h3>
-                          <p>
-                            <strong>Description:</strong>
-                            {polygon.description}
-                          </p>
-                          <button
-                            onClick={() => {
-                              router.push(`/admin/areas/${polygon.id}`)
-                            }}
-                            className='text-blue-600 underline'
-                          >
-                            {t("See more")}
-                          </button>
-                        </div>
-                      </Popup>
-                    )}
+                    <Popup>
+                      <h3>{area.name}</h3>
+                      <p>{area.description}</p>
+                    </Popup>
                   </Polygon>
                 )
-              }
-              return (
-                <Polygon
-                  key={index}
-                  positions={polygon.coordinates}
-                  pathOptions={{ color: "blue", weight: 2 }}
-                />
-              )
-            })}
-            {points?.map((point, index) => (
-              <Marker
-                key={index}
-                position={[point.lat, point.lng]}
-                icon={L.icon({
-                  iconUrl: "/marker-icon.png",
-                  iconSize: [25, 41],
-                  iconAnchor: [12, 41]
-                })}
-              />
-            ))}
-            {campaignData?.areas?.map(
-              (area: {
-                id: string
-                name: string
-                description: string
-                polygon: [number, number][]
-                pointOfInterests: any[]
-              }) => (
-                <Polygon
-                  key={area.id}
-                  positions={area.polygon}
-                  pathOptions={{ color: "blue", weight: 2 }}
-                >
-                  <Popup>
-                    <h3>{area.name}</h3>
-                    <p>{area.description}</p>
-                  </Popup>
-                </Polygon>
-              )
-            )}
-            {campaignData?.areas
-              ?.flatMap(
-                (area: { pointOfInterests: any }) => area?.pointOfInterests
-              )
-              .map((poi: PointOfInterest) => (
-                <>
-                  <Circle
-                    key={`${poi.id}-circle`}
-                    center={[poi.latitude, poi.longitude]}
-                    radius={poi.radius}
-                    pathOptions={{ color: "green", fillOpacity: 0.2 }}
-                    eventHandlers={{
-                      click: () => {
-                        if (selectedPoi?.id === poi?.id) {
-                          handleSelectPoi(null)
-                        } else {
+              )}
+            {isTracking &&
+              campaignData?.areas
+                ?.flatMap(
+                  (area: { pointOfInterests: any }) => area?.pointOfInterests
+                )
+                .map((poi: PointOfInterest) => (
+                  <>
+                    <Circle
+                      key={`${poi.id}-circle`}
+                      center={[poi.latitude, poi.longitude]}
+                      radius={poi.radius}
+                      pathOptions={{ color: "green", fillOpacity: 0.2 }}
+                      eventHandlers={{
+                        click: () => {
+                          if (selectedPoi?.id === poi?.id) {
+                            handleSelectPoi(null)
+                          } else {
+                            handleSelectPoi(poi)
+                          }
+                        }
+                      }}
+                    />
+                    <Marker
+                      key={poi.id}
+                      position={[poi.latitude, poi.longitude]}
+                      icon={createCustomIcon("green", 36)}
+                      eventHandlers={{
+                        click: () => {
+                          if (selectedPoi) {
+                            setSelectedPoi(null)
+                            setDistanceToPoi(null)
+                            return
+                          }
                           handleSelectPoi(poi)
                         }
-                      }
-                    }}
-                  />
-                  <Marker
-                    key={poi.id}
-                    position={[poi.latitude, poi.longitude]}
-                    icon={createCustomIcon("green", 36)}
-                    eventHandlers={{
-                      click: () => {
-                        if (selectedPoi) {
-                          setSelectedPoi(null)
-                          return
-                        }
-                        setSelectedPoi(poi)
-                      }
-                    }}
-                  ></Marker>
-                </>
-              ))}
+                      }}
+                    ></Marker>
+                  </>
+                ))}
             {showMyLocation && position && (
               <Marker position={[position.lat, position.lng]} icon={markerIcon}>
                 <Popup>
@@ -421,18 +449,20 @@ export default function Map({
                 </Popup>
               </Marker>
             )}
-            {polygonsFitBounds && <FitBounds polygons={polygons} />}
-            {selectedPoi && position && mapRef.current && (
+            {isTracking && polygonsFitBounds && (
+              <FitBounds polygons={polygons} />
+            )}
+            {isTracking && selectedPoi && position && mapRef.current && (
               <Routing
                 map={mapRef.current}
                 start={{ lat: position.lat, lng: position.lng }}
                 end={{ lat: selectedPoi.latitude, lng: selectedPoi.longitude }}
-                routingControlRef={routingControlRef} // Pasamos la referencia del control
+                routingControlRef={routingControlRef}
               />
             )}
           </LeafletMapContainer>
         </div>
-        {selectedPoi && (
+        {isTracking && selectedPoi && (
           <div className='h-[30%] overflow-y-auto bg-white dark:bg-gray-900 shadow-lg rounded-t-lg p-3'>
             <span className='justify-between flex items-center'>
               {" "}
@@ -445,14 +475,6 @@ export default function Map({
                   <span className='text-red-500'>{t(errorPoi)}</span>
                 )}
               </h4>
-              {/* <h5 className='text-sm text-gray-500 dark:text-gray-400'>
-                <button
-                  onClick={generateRoute}
-                  className='mt-2 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-400 text-center'
-                >
-                  {t("Generate Route")}
-                </button>
-              </h5> */}
             </span>
 
             {selectedPoi.tasks.length > 0 && (

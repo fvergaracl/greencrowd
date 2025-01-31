@@ -15,6 +15,13 @@ export default class POIController {
       },
       include: {
         area: {
+          include: {
+            campaign: {
+              select: {
+                id: true
+              }
+            }
+          },
           select: {
             id: true,
             name: true,

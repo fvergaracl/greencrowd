@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic"
 import { useEffect, useMemo } from "react"
-import L, { LatLngExpression, DivIcon } from "leaflet"
+import L, { DivIcon } from "leaflet"
 import { useTranslation } from "@/hooks/useTranslation"
 import "leaflet/dist/leaflet.css"
 import { useDashboard } from "../context/DashboardContext"
@@ -16,8 +16,8 @@ interface Point {
 }
 
 interface PolygonData {
-  coordinates: [number, number][] 
-  score: number 
+  coordinates: [number, number][]
+  score: number
 }
 
 interface MapProps {

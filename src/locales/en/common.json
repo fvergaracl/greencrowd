@@ -263,5 +263,11 @@
   "Enter Task": "Enter Task",
   "Your current location": "Your current location",
   "Check the ranking and compete to reach the top!": "Check the ranking and compete to reach the top!",
-  "Create Campaign": "Create Campaign"
+  "Create Campaign": "Create Campaign",
+  "Focus on campaign area": "Focus on campaign area",
+  "Focus on current location": "Focus on current location",
+  "Current location is not available": "Current location is not available",
+  "Remove route": "Remove route",
+  "This point of interest has no tasks": "This point of interest has no tasks",
+  "You are not close enough to this point of interest": "You are not close enough to this point of interest"
 }

@@ -40,7 +40,6 @@ interface VisibleColumns {
   tasks: boolean
   latitude: boolean
   longitude: boolean
-  details: boolean
   actions: boolean
   createdAt: boolean
   updatedAt: boolean
@@ -64,13 +63,12 @@ export default function AdminPOIs() {
     id: true,
     name: true,
     description: true,
-    radius: true,
+    radius: false,
     campaign: true,
-    area: true,
+    area: false,
     tasks: true,
-    latitude: true,
-    longitude: true,
-    details: true,
+    latitude: false,
+    longitude: false,
     actions: true,
     createdAt: false,
     updatedAt: false
@@ -108,9 +106,8 @@ export default function AdminPOIs() {
         poi.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (poi.description &&
           poi.description.toLowerCase().includes(searchQuery.toLowerCase()))
-
       const matchesCampaign = selectedCampaign
-        ? poi.area.id === selectedCampaign
+        ? poi.area?.campaign?.id === selectedCampaign
         : true
 
       return matchesSearch && matchesCampaign
@@ -220,7 +217,7 @@ export default function AdminPOIs() {
             onChange={handleCampaignFilterChange}
             className='p-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-500 dark:bg-gray-700 dark:text-white'
           >
-            <option value=''>All Campaigns</option>
+            <option value=''>{t("All Campaigns")}</option>
             {campaigns.map(campaign => (
               <option key={campaign.id} value={campaign.id}>
                 {campaign.name}
@@ -254,9 +251,7 @@ export default function AdminPOIs() {
               {visibleColumns.updatedAt && (
                 <th className='border px-4 py-2'>{t("Updated At")}</th>
               )}
-              {visibleColumns.details && (
-                <th className='border px-4 py-2'>{t("Details")}</th>
-              )}
+
               {visibleColumns.actions && (
                 <th className='border px-4 py-2'>{t("Actions")}</th>
               )}
@@ -310,22 +305,7 @@ export default function AdminPOIs() {
                     )}
                   </td>
                 )}
-                {visibleColumns.details && (
-                  <td className='border px-4 py-2'>
-                    <div>
-                      <span className='font-semibold'>{t("Latitude")}:</span>{" "}
-                      {poi.latitude}
-                    </div>
-                    <div>
-                      <span className='font-semibold'>{t("Longitude")}:</span>{" "}
-                      {poi.longitude}
-                    </div>
-                    <div>
-                      <span className='font-semibold'>{t("Radius")}:</span>{" "}
-                      {poi.radius}
-                    </div>
-                  </td>
-                )}
+
                 {visibleColumns.createdAt && (
                   <td className='border px-4 py-2'>
                     {new Date(poi.createdAt).toLocaleString()}
@@ -336,7 +316,7 @@ export default function AdminPOIs() {
                     {new Date(poi.updatedAt).toLocaleString()}
                   </td>
                 )}
-                {visibleColumns.details && (
+                {visibleColumns.actions && (
                   <td className='border px-4 py-2'>
                     <div className='flex gap-2'>
                       <button

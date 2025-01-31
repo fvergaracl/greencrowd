@@ -7,7 +7,7 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
 import DefaultLayout from "@/components/AdminLayout"
 import ColumnSelector from "@/components/Admin/ColumnSelector"
 import Swal from "sweetalert2"
-import { FaTasks, FaUsers } from "react-icons/fa"
+import { FaDrawPolygon, FaTasks, FaUsers } from "react-icons/fa"
 import { MdOutlinePinDrop } from "react-icons/md"
 import { useTranslation } from "@/hooks/useTranslation"
 
@@ -182,7 +182,11 @@ export default function AdminAreas() {
 
   return (
     <DefaultLayout>
-      <Breadcrumb pageName={t("Areas")} breadcrumbPath={t("Areas")} />
+      <Breadcrumb
+        icon={<FaDrawPolygon className='h-6 w-6' />}
+        pageName={t("Areas")}
+        breadcrumbPath={t("Areas")}
+      />
       <div className='flex justify-between gap-4 mb-4'>
         <button
           className='bg-green-700 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300'

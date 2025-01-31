@@ -4,14 +4,15 @@ import { useRouter } from "next/router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons"
 import Swal from "sweetalert2"
-import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
-import DefaultLayout from "../../../components/AdminLayout"
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
+import DefaultLayout from "@/components/AdminLayout"
 import { MdCampaign } from "react-icons/md"
 import { useAdmin } from "@/context/AdminContext"
 import { FaDrawPolygon, FaTasks, FaUsers } from "react-icons/fa"
 import { MdOutlinePinDrop } from "react-icons/md"
 import ColumnSelector from "@/components/Admin/ColumnSelector"
 import { useTranslation } from "@/hooks/useTranslation"
+
 interface Campaign {
   id: string
   name: string
@@ -114,7 +115,7 @@ export default function AdminCampaigns() {
 
   useEffect(() => {
     if (!allCampaigns || !searchQuery) {
-      setFilteredCampaigns(allCampaigns) 
+      setFilteredCampaigns(allCampaigns)
       return
     }
 

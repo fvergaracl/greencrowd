@@ -40,3 +40,8 @@ export interface PolygonData {
   coordinates: [number, number][]
   polygon: [number, number][]
 }
+
+export interface Position {
+  lat: number
+  lng: number
+}
