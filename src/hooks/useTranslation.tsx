@@ -4,7 +4,7 @@ import it from "../locales/it/common.json"
 import da from "../locales/da/common.json"
 import nl from "../locales/nl/common.json"
 
-const translations: { [key: string]: { [key: string]: string } } = {
+const translations: Record<string, Record<string, string>> = {
   en,
   es,
   it,
@@ -12,17 +12,35 @@ const translations: { [key: string]: { [key: string]: string } } = {
   nl
 }
 
+const replacePlaceholders = (
+  text: string,
+  values?: Record<string, any>
+): string => {
+  if (!values) return text
+  return text.replace(
+    /\{\{(.*?)\}\}/g,
+    (_, key) => values[key.trim()] ?? `{{${key}}}`
+  )
+}
+
 export function useTranslation() {
   const isClient = typeof window !== "undefined"
-
   const locale = isClient ? localStorage.getItem("locale") : null
+  const currentLocale = locale && translations[locale] ? locale : "en"
 
-  const currentLocale =
-    locale && Object.keys(translations).includes(locale) ? locale : "en"
+  const t = (key: string, values?: Record<string, any>): string => {
+    const translation = translations[currentLocale][key] || key
+    return replacePlaceholders(translation, values)
+  }
 
-  const t = (key: string) => translations[currentLocale][key] || key
-  const tLocale = (key: string, locale: string) =>
-    translations[locale][key] || key
+  const tLocale = (
+    key: string,
+    locale: string,
+    values?: Record<string, any>
+  ): string => {
+    const translation = translations[locale]?.[key] || key
+    return replacePlaceholders(translation, values)
+  }
 
   const setLocale = (locale: string) => {
     localStorage.setItem("locale", locale)
@@ -38,15 +56,16 @@ export class TranslationBackend {
     this.locale = locale
   }
 
-  t(key: string): string {
-    return translations[this.locale][key] || key
+  t(key: string, values?: Record<string, any>): string {
+    const translation = translations[this.locale]?.[key] || key
+    return replacePlaceholders(translation, values)
   }
 
-  tLocale(key: string, locale: string): string {
-    return translations[locale][key] || key
+  tLocale(key: string, locale: string, values?: Record<string, any>): string {
+    const translation = translations[locale]?.[key] || key
+    return replacePlaceholders(translation, values)
   }
 }
-
 
 /*
 
