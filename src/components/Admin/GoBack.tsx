@@ -1,42 +1,45 @@
-import React from "react";
-import { useRouter } from "next/router";
-import { useTranslation } from "@/hooks/useTranslation";
+import React from "react"
+import { useRouter } from "next/router"
+import { useTranslation } from "@/hooks/useTranslation"
 
 interface GoBackProps {
-  customLink?: string;
-  label?: string; 
-  className?: string; 
-  "data-cy"?: string; 
+  customLink?: string
+  label?: string
+  className?: string
+  style?: React.CSSProperties
+  "data-cy"?: string
 }
 
 const GoBack: React.FC<GoBackProps> = ({
   customLink,
-  label = "← Back", 
+  label = "← Back",
   className = "text-blue-600 cursor-pointer mb-4 inline-block",
-  "data-cy": dataCy = "go-back-link", 
+  style = {},
+  "data-cy": dataCy = "go-back-link"
 }) => {
-  const router = useRouter();
-  const { t } = useTranslation();
+  const router = useRouter()
+  const { t } = useTranslation()
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+    e.preventDefault()
     if (customLink) {
-      router.push(customLink); 
+      router.push(customLink)
     } else {
-      router.back(); 
+      router.back()
     }
-  };
+  }
 
   return (
     <a
       onClick={handleClick}
       className={className}
+      style={style}
       data-cy={dataCy}
-      href={customLink || "#"} 
+      href={customLink || "#"}
     >
       {t(label)}
     </a>
-  );
-};
+  )
+}
 
-export default GoBack;
+export default GoBack

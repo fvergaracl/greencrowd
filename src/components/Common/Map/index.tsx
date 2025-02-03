@@ -14,6 +14,7 @@ import L, { DivIcon } from "leaflet"
 import "leaflet-routing-machine"
 import LeafletRoutingMachine from "leaflet-routing-machine"
 import CustomMarker from "../Mapmarker"
+import DistanceIndicator from "./DistanceIndicator"
 import "leaflet/dist/leaflet.css"
 import { useDashboard, DashboardContextType } from "@/context/DashboardContext"
 import { useAdmin, AdminContextType } from "@/context/AdminContext"
@@ -40,10 +41,6 @@ interface MapProps {
   selectedCampaign: CampaignData | null
   modeView?: "contribuitor-view" | "admin-view"
   showMapControl?: boolean
-}
-interface IdistanceToPoi {
-  kilometters: number | null
-  metters: number | null
 }
 
 type ContextType = {
@@ -102,8 +99,8 @@ const Routing = ({ map, start, end, routingControlRef }) => {
       routingControlRef.current = L.Routing.control({
         waypoints: [L.latLng(start.lat, start.lng), L.latLng(end.lat, end.lng)],
         router: new L.Routing.OSRMv1({
-          serviceUrl: "https://router.project-osrm.org/route/v1",
-          profile: "foot"
+          serviceUrl: "https://routing.openstreetmap.de/routed-foot/route/v1",
+          profile: "driving"
         }),
         routeWhileDragging: true,
         lineOptions: {
@@ -145,10 +142,7 @@ export default function Map({
   const [campaignData, setCampaignData] = useState<any>(null)
   const [selectedPoi, setSelectedPoi] = useState<PointOfInterest | null>(null)
   const [errorPoi, setErrorPoi] = useState<any>(null)
-  const [distanceToPoi, setDistanceToPoi] = useState<IdistanceToPoi>({
-    kilometters: null,
-    metters: null
-  })
+
   const routingControlRef = useRef<L.Routing.Control | null>(null)
   const [selectedPolygon, setSelectedPolygon] = useState<PolygonData | null>(
     null
@@ -156,7 +150,6 @@ export default function Map({
 
   const removeRoute = () => {
     setSelectedPoi(null)
-    setDistanceToPoi(null)
     if (routingControlRef.current) {
       try {
         if (routingControlRef.current) {
@@ -167,13 +160,6 @@ export default function Map({
       }
     }
   }
-
-  const calculateDistance = (
-    lat1: number,
-    lng1: number,
-    lat2: number,
-    lng2: number
-  ) => {}
 
   const createCustomIcon = (color: string, size: number) => {
     const markerHtml = ReactDOMServer.renderToString(
@@ -219,7 +205,6 @@ export default function Map({
       removeRoute()
       setErrorPoi(null)
       setSelectedPoi(null)
-      setDistanceToPoi(null)
       return new DivIcon({
         className: "static-marker-icon",
         html: `
@@ -268,23 +253,6 @@ export default function Map({
       setErrorPoi("You are not close enough to this point of interest")
     }
   }
-  let messageDistance = ""
-  if (selectedPoi && distanceToPoi.kilometters === null) {
-    messageDistance = "Calculating distance..."
-  }
-  if (selectedPoi && distanceToPoi.kilometters !== null) {
-    messageDistance = `You are ${distanceToPoi.kilometters} km and ${distanceToPoi.metters} m away from the point of interest`
-  }
-  if (selectedPoi && distanceToPoi.kilometters === 0 && distanceToPoi.metters === 0) { 
-    messageDistance = "You are in the point of interest"
-  }
-  if (selectedPoi && distanceToPoi.kilometters === 0 && distanceToPoi.metters !== 0) {
-    messageDistance = `You are ${distanceToPoi.metters} m away from the point of interest`
-  } 
-  if (selectedPoi && distanceToPoi.kilometters !== 0 && distanceToPoi.metters === 0) {
-    messageDistance = `You are ${distanceToPoi.kilometters} km away from the point of interest`
-  }
-  
 
   return (
     <>
@@ -299,16 +267,23 @@ export default function Map({
               mapRef.current = event.target
             }}
           >
-            {distanceToPoi && (
-              <div className='absolute z-500 mx-auto top-0 left-0 right-0 bg-white dark:bg-green-500 shadow-lg rounded-b-lg p-3 text-center'>
-                {`You are ${distanceToPoi.kilometters} km and ${distanceToPoi.metters} m away from the point of interest`}
-              </div>
+            {selectedPoi && position && (
+              <DistanceIndicator
+                poi={selectedPoi}
+                position={position}
+                onRadiusChange={isInside => {
+                  console.log("isInside", isInside)
+                  if (isInside) {
+                    setErrorPoi(null)
+                  }
+                }}
+              />
             )}
-
             <TileLayer
               url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
+
             {showMapControl && isTracking && (
               <MapControls
                 position={position}
@@ -433,7 +408,6 @@ export default function Map({
                         click: () => {
                           if (selectedPoi) {
                             setSelectedPoi(null)
-                            setDistanceToPoi(null)
                             return
                           }
                           handleSelectPoi(poi)
@@ -471,9 +445,6 @@ export default function Map({
                 data-cy='poi-name'
               >
                 {selectedPoi.name}{" "}
-                {errorPoi && (
-                  <span className='text-red-500'>{t(errorPoi)}</span>
-                )}
               </h4>
             </span>
 
@@ -505,7 +476,11 @@ export default function Map({
                     {selectedPoi.tasks.map((task: Task) => (
                       <div
                         key={task.id}
-                        className='min-w-[300px] snap-start flex-shrink-0 p-4 border rounded-lg shadow bg-white dark:bg-gray-800 dark:border-gray-700'
+                        className={`min-w-[300px] snap-start flex-shrink-0 p-4 border rounded-lg shadow ${
+                          errorPoi
+                            ? "bg-gray-200 dark:bg-gray-700 dark:border-gray-600 opacity-50 cursor-not-allowed"
+                            : "bg-white dark:bg-gray-800 dark:border-gray-700"
+                        }`}
                       >
                         <h5
                           className='text-md font-semibold text-gray-900 dark:text-slate-100 truncate'
@@ -513,18 +488,32 @@ export default function Map({
                         >
                           {task.title}
                         </h5>
+
                         <p
                           className='text-sm text-gray-600 dark:text-gray-400 mt-1 truncate'
                           data-cy={`task-description-${task.id}`}
                         >
                           {task.description || t("No description available")}
                         </p>
+
+                        {errorPoi && (
+                          <p className='text-red-500 text-xs mt-2'>
+                            {t("You cannot access this task:")} {t(errorPoi)}
+                          </p>
+                        )}
+
                         <button
                           onClick={() =>
+                            !errorPoi &&
                             (window.location.href = `/dashboard/task/${task.id}`)
                           }
-                          className='mt-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-400 text-center'
+                          className={`mt-1 px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none text-center transition ${
+                            errorPoi
+                              ? "bg-gray-500 cursor-not-allowed"
+                              : "bg-blue-600 hover:bg-blue-700 focus:ring focus:ring-blue-400"
+                          }`}
                           data-cy={`enter-task-${task.id}`}
+                          disabled={!!errorPoi}
                         >
                           {t("Enter Task")}
                         </button>

@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import TaskController from "@/controllers/TaskController"
 import UserTaskResponseController from "@/controllers/UserTaskResponseController"
 import { validateKeycloakToken } from "@/utils/validateToken"
+import { haversineDistance } from "@/utils/haversineDistance"
 import UserController from "@/controllers/UserController"
 
 export default async function handler(
@@ -45,10 +46,17 @@ export default async function handler(
         const area = taskData.pointOfInterest.area
         const areaPolygon = area.polygon
         const isInsidePolygon = require("point-in-polygon")
+        console.log({ position, areaPolygon, taskData })
         if (!isInsidePolygon(position, areaPolygon)) {
-          return res
-            .status(403)
-            .json({ error: "You are not within the task's area" })
+          const distanceWithPOI = haversineDistance(position, [
+            taskData.pointOfInterest.latitude,
+            taskData.pointOfInterest.longitude
+          ])
+          if (distanceWithPOI > taskData.pointOfInterest.radius) {
+            return res
+              .status(403)
+              .json({ error: "You are not within the task's area" })
+          }
         }
 
         const { userId } = await validateKeycloakToken(req, res)
@@ -103,12 +111,20 @@ export default async function handler(
               .json({ error: "Task is no longer available" })
           }
         }
-
-        const response = await UserTaskResponseController.createResponse(
+        console.log({
           taskData,
           user,
           body
-        )
+        })
+        const response = await UserTaskResponseController.createNewResponse({
+          userId: user.id,
+          taskId: body.taskId,
+          data: body?.taskResponse,
+          latitude: body?.position?.lat,
+          longitude: body?.position?.lng
+        })
+
+        console.log({ response })
 
         return res.status(200).json(body)
       } catch (err: any) {

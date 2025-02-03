@@ -16,7 +16,7 @@ interface POI {
   name: string
   latitude: number
   longitude: number
-  radius: number // Radio en metros
+  radius: number
 }
 
 interface DistanceIndicatorProps {
@@ -84,6 +84,12 @@ const DistanceIndicator: React.FC<DistanceIndicatorProps> = ({
         onRadiusChange(currentlyInside)
       }
     }
+
+    if (totalMeters <= poi.radius) {
+      setColorText("text-green-600")
+    } else {
+      setColorText("text-blue-600")
+    }
   }, [distanceToPoi, poi.radius, isInsideRadius, onRadiusChange])
 
   let messageDistance = t("Calculating distance...")
@@ -93,40 +99,33 @@ const DistanceIndicator: React.FC<DistanceIndicatorProps> = ({
 
     if (totalMeters <= poi.radius) {
       messageDistance = t("You are within the point of interest radius")
-      setColorText("text-green-600")
     } else if (distanceToPoi.kilometters === 0 && distanceToPoi.metters === 0) {
       messageDistance = t("You are in the point of interest")
-      setColorText("text-green-600")
     } else if (distanceToPoi.kilometters === 0) {
       messageDistance = t(
         "You are {{meters}} m away from the point of interest",
-        {
-          meters: distanceToPoi.metters
-        }
+        { meters: distanceToPoi.metters }
       )
-      setColorText("text-blue-600")
     } else if (distanceToPoi.metters === 0) {
       messageDistance = t(
         "You are {{kilometers}} km away from the point of interest",
-        {
-          kilometers: distanceToPoi.kilometters
-        }
+        { kilometers: distanceToPoi.kilometters }
       )
-      setColorText("text-blue-600")
     } else {
       messageDistance = t(
         "You are {{kilometers}} km and {{meters}} m away from the point of interest",
-        {
-          kilometers: distanceToPoi.kilometters,
-          meters: distanceToPoi.metters
-        }
+        { kilometers: distanceToPoi.kilometters, meters: distanceToPoi.metters }
       )
-      setColorText("text-blue-600")
     }
   }
 
   return (
-    <div className='absolute z-50 mx-auto top-0 left-0 right-0 bg-white dark:bg-green-500 shadow-lg rounded-b-lg p-3 text-center'>
+    <div
+      className='absolute z-500 mx-auto top-0 left-0 right-0 bg-white dark:bg-green-500 shadow-lg rounded-b-lg p-3 text-center'
+      style={{
+        zIndex: 500
+      }}
+    >
       <p className={`${colorText} font-semibold`}>{messageDistance}</p>
     </div>
   )

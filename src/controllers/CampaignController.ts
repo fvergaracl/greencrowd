@@ -197,7 +197,6 @@ export default class CampaignControllerCommon {
       throw error
     }
   }
-  // get all campaings allowed to see and include the campaign that the user is in
 
   @withPrismaDisconnect
   static async getAllCampaignsAllowedByUserId(userId: string) {

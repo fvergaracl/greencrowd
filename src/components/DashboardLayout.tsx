@@ -5,7 +5,8 @@ import {
   MdSettings,
   MdEmojiEvents,
   MdAdminPanelSettings,
-  MdLocationOn
+  MdLocationOn,
+  MdCampaign
 } from "react-icons/md"
 import clsx from "clsx"
 import { useTranslation } from "@/hooks/useTranslation"
@@ -78,7 +79,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     },
     {
       label: t("Campaigns"),
-      icon: <MdEmojiEvents className='h-6 w-6' />,
+      icon: <MdCampaign className='h-6 w-6' />,
       path: "/dashboard/campaigns",
       dataCy: "campaigns-button"
     },

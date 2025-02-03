@@ -9,6 +9,7 @@ import axios from "axios"
 import "survey-core/defaultV2.min.css"
 import Swal from "sweetalert2"
 import GoBack from "@/components/Admin/GoBack"
+import DistanceIndicator from "../../../components/Common/Map/DistanceIndicator"
 
 export default function Task() {
   const { t } = useTranslation()
@@ -17,6 +18,7 @@ export default function Task() {
   const { position } = useDashboard()
 
   const [task, setTask] = useState<any>(null)
+  const [isInside, setIsInside] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -35,6 +37,17 @@ export default function Task() {
   }, [id])
 
   const handleSurveyCompletion = async (surveyData: any) => {
+    if (!isInside) {
+      Swal.fire({
+        title: t("You are not inside the point of interest"),
+        text: t(
+          "You must be inside the point of interest to complete the task"
+        ),
+        icon: "error"
+      })
+      return
+    }
+
     Swal.fire({
       title: t("Are you sure?"),
       text: t("You want to submit the response?"),
@@ -73,9 +86,21 @@ export default function Task() {
   return (
     <DashboardLayout>
       <div className='p-4'>
-        <GoBack data-cy='go-back-task' />
-
+        {task?.pointOfInterest && position ? (
+          <DistanceIndicator
+            poi={task.pointOfInterest}
+            position={position}
+            onRadiusChange={isInsidePOI => {
+              setIsInside(!!isInsidePOI)
+            }}
+          />
+        ) : null}
         <div className='bg-white shadow-md rounded-lg p-6'>
+          <GoBack
+            data-cy='go-back-task'
+            className='text-blue-600 cursor-pointer mt-8 mb-4 inline-block'
+          />
+
           {task ? (
             <>
               <h1 className='text-2xl font-bold text-gray-800 mb-4'>
@@ -89,7 +114,14 @@ export default function Task() {
                     model={
                       new SurveyModel({
                         ...task.taskData,
-                        completeText: t("Submit")
+                        completeText: t("Submit"),
+                        onUpdateQuestionCssClasses: (_, options) => {
+                          if (options.cssClasses.navigation) {
+                            options.cssClasses.navigation += isInside
+                              ? ""
+                              : " opacity-50 pointer-events-none"
+                          }
+                        }
                       })
                     }
                     onComplete={survey => handleSurveyCompletion(survey.data)} // Manejar la acción al completar
