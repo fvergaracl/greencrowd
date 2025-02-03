@@ -269,5 +269,11 @@
   "Current location is not available": "Current location is not available",
   "Remove route": "Remove route",
   "This point of interest has no tasks": "This point of interest has no tasks",
-  "You are not close enough to this point of interest": "You are not close enough to this point of interest"
+  "You are not close enough to this point of interest": "You are not close enough to this point of interest",
+  "Calculating distance...": "Calculating distance...",
+  "You are within the point of interest radius": "You are within the point of interest radius",
+  "You are in the point of interest": "You are in the point of interest",
+  "You are {{meters}} m away from the point of interest": "You are {{meters}} m away from the point of interest",
+  "You are {{kilometers}} km away from the point of interest": "You are {{kilometers}} km away from the point of interest",
+  "You will be logged out": "You will be logged out"
 }

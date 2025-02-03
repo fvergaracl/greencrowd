@@ -42,22 +42,25 @@ export default async function handler(
             })
           }
 
-          if (
-            newTaskBody?.availableFrom &&
-            isNaN(Date.parse(newTaskBody?.availableFrom))
-          ) {
-            return res
-              .status(400)
-              .json({ error: "Available from should be a valid date" })
+          if (newTaskBody?.availableFrom) {
+            if (isNaN(Date.parse(newTaskBody?.availableFrom)))
+              return res
+                .status(400)
+                .json({ error: "Available from should be a valid date" })
+
+            newTaskBody.availableFrom = new Date(
+              newTaskBody?.availableFrom
+            ).toISOString()
           }
 
-          if (
-            newTaskBody?.availableTo &&
-            isNaN(Date.parse(newTaskBody?.availableTo))
-          ) {
-            return res
-              .status(400)
-              .json({ error: "Available to should be a valid date" })
+          if (newTaskBody?.availableTo) {
+            if (isNaN(Date.parse(newTaskBody?.availableTo)))
+              return res
+                .status(400)
+                .json({ error: "Available to should be a valid date" })
+            newTaskBody.availableTo = new Date(
+              newTaskBody?.availableTo
+            ).toISOString()
           }
 
           if (

@@ -226,12 +226,12 @@ export default function AreaDetails() {
               ))}
             </ul>
           </div>
-          <button
+          {/* <button
             onClick={handleSavePOIs}
             className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700'
           >
             Save POIs
-          </button>
+          </button> */}
         </div>
         {/* Right Map */}
         <div className='w-1/2 p-6'>
