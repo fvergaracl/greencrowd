@@ -16,23 +16,7 @@ export default class POIController {
       include: {
         area: {
           include: {
-            campaign: {
-              select: {
-                id: true
-              }
-            }
-          },
-          select: {
-            id: true,
-            name: true,
-            polygon: true,
-            campaign: {
-              select: {
-                id: true,
-                name: true,
-                description: true
-              }
-            }
+            campaign: true
           }
         },
         tasks: {

@@ -204,12 +204,28 @@ export default class CampaignControllerCommon {
     try {
       const campaigns = await prisma.campaign.findMany({
         where: {
-          AND: [
-            { isDisabled: false },
+          OR: [
             {
-              allowedUsers: {
-                some: { user: { sub: userId } }
-              }
+              AND: [
+                { isDisabled: false },
+                {
+                  allowedUsers: {
+                    some: { user: { sub: userId } }
+                  }
+                }
+              ]
+            },
+            {
+              AND: [
+                { isDisabled: false },
+                {
+                  OR: [
+                    { startDatetime: null, endDatetime: null },
+                    { startDatetime: { lte: new Date() } },
+                    { endDatetime: { gte: new Date() } }
+                  ]
+                }
+              ]
             }
           ]
         },
