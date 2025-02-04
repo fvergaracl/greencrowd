@@ -1,8 +1,14 @@
 const { withSentryConfig } = require("@sentry/nextjs")
-const { i18n } = require('./next-i18next.config');
+const { i18n } = require("./next-i18next.config")
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "development" 
+})
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig = withPWA({
   i18n,
   eslint: {
     ignoreDuringBuilds: true
@@ -44,7 +50,7 @@ const nextConfig = {
   webpack: (config, { isServer }) => {
     return config
   }
-}
+})
 
 module.exports = withSentryConfig(
   nextConfig,

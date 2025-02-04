@@ -147,3 +147,9 @@ Into docker container run the following command:
 ```bash
 npm run migration:deploy
 ```
+
+if need https run the following command:
+
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout certs/nginx.key -out certs/nginx.crt
+```

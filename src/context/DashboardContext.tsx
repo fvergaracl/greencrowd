@@ -63,8 +63,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           lng: location.coords.longitude
         }
         setPosition(newPosition)
-        console.log("New position:", newPosition)
-        // src/pages/api/userTrajectory/index.ts
+        // console.log("New position:", newPosition)
         axios.post("/api/userTrajectory", newPosition)
 
         if (!mapCenter) setMapCenter(newPosition)
@@ -75,7 +74,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     )
   }
 
-  // Initialize persisted state client-side only
   useEffect(() => {
     const initializeState = () => {
       const persistedUser = getPersistedState<User | null>(
@@ -113,7 +111,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
-  // Persist state changes
   useEffect(() => {
     if (!loading) persistState("dashboard_user", user)
   }, [user, loading])

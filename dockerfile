@@ -22,7 +22,7 @@ RUN npx prisma generate --schema=./prisma/schema.prisma
 FROM base AS dev
 
 # Install additional development dependencies if needed
-RUN npm install --only=development
+RUN npm install 
 
 # Expose the port the app runs on
 EXPOSE 3000

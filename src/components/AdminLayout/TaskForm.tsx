@@ -116,7 +116,6 @@ export default function TaskForm({
 
     setSaving(true)
     try {
-      // responseLimit and responseLimitInterval are optional and should be number
       if (responseLimit && isNaN(responseLimit)) {
         Swal.fire({
           icon: "error",
@@ -133,7 +132,7 @@ export default function TaskForm({
         })
         return
       }
-      // availableFrom and availableTo are optional and should be string
+
       if (availableFrom && isNaN(Date.parse(availableFrom))) {
         Swal.fire({
           icon: "error",
@@ -179,7 +178,6 @@ export default function TaskForm({
         taskData: creator.JSON,
         poiId
       }
-      console.log({ taskId })
       const response =
         mode === "create"
           ? await axios.post("/api/admin/tasks", payload)
