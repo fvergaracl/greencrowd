@@ -14,12 +14,14 @@ import Swal from "sweetalert2"
 const TaskWrapper = React.memo(
   ({ taskData, t, isInside, onComplete }) => {
     const surveyRef = useRef<SurveyModel | null>(null)
+    const [isSubmitted, setIsSubmitted] = useState(false) 
 
     if (!surveyRef.current && taskData) {
       console.log("Inicializando SurveyModel...")
       surveyRef.current = new SurveyModel({
         ...taskData,
-        completeText: t("Submit")
+        completeText: t("Submit"),
+        showCompletedPage: false 
       })
     }
 
@@ -35,25 +37,26 @@ const TaskWrapper = React.memo(
             : " opacity-50 pointer-events-none"
         }
       }
-    }, [isInside]) 
+    }, [isInside])
 
     if (!form) return <p>Cargando encuesta...</p>
 
     return (
-      <Survey
-        model={form}
-        onComplete={survey => onComplete(survey.data)}
-        renderCompleted={() => (
+      <div>
+        {isSubmitted ? (
           <div className='bg-green-100 text-green-800 p-4 rounded-lg'>
             <p>{t("Thank you for completing the task!")}</p>
           </div>
+        ) : (
+          <Survey
+            model={form}
+            onComplete={survey => onComplete(survey, setIsSubmitted)}
+          />
         )}
-      />
+      </div>
     )
   },
-  (prevProps, nextProps) => {
-    return prevProps.taskData === nextProps.taskData
-  }
+  (prevProps, nextProps) => prevProps.taskData === nextProps.taskData
 )
 
 export default function Task() {
@@ -81,7 +84,10 @@ export default function Task() {
     }
   }, [id])
 
-  const handleSurveyCompletion = async (surveyData: any) => {
+  const handleSurveyCompletion = async (
+    survey: SurveyModel,
+    setIsSubmitted: (value: boolean) => void
+  ) => {
     if (!isInside) {
       Swal.fire({
         title: t("You are not inside the point of interest"),
@@ -98,22 +104,30 @@ export default function Task() {
       text: t("You want to submit the response?"),
       icon: "warning",
       showCancelButton: true,
-
       confirmButtonText: t("Yes"),
       cancelButtonText: t("No")
     }).then(async result => {
       if (result.isConfirmed) {
         try {
           await axios.post(`/api/task/${id}/response`, {
-            taskResponse: surveyData,
+            taskResponse: survey.data,
             taskId: id,
             position
           })
+
           Swal.fire(t("Success!"), t("Task completed successfully!"), "success")
+          setIsSubmitted(true) 
         } catch (error) {
           console.error("Error completing task:", error)
-          Swal.fire(t("Error!"), t(error?.response?.data?.error), "error")
+          Swal.fire(
+            t("Error!"),
+            t(error?.response?.data?.error || "An error occurred"),
+            "error"
+          )
         }
+      } else {
+        Swal.fire(t("Submission cancelled"), "", "info")
+        survey.isCompleted = false
       }
     })
   }
