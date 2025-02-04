@@ -84,7 +84,6 @@ export default async function handler(req, res) {
         body: params.toString()
       })
 
-      console.log("Logout response status:", logoutResponse.status)
       await clearAllCookies(req, res)
       if (!logoutResponse.ok) {
         res.setHeader(

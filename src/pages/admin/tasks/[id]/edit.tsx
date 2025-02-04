@@ -77,7 +77,6 @@ export default function EditTaskPage() {
           const { data }: { data: Task } = await axios.get(
             `/api/admin/tasks/${id}`
           )
-          console.log({ data })
           setPoiId(data.pointOfInterest?.id)
           setInitialData({
             title: data.title,

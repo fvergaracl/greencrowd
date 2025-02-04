@@ -51,7 +51,6 @@ export default async function handler(req, res) {
           sub: userSub
         }
       })
-      console.log("New user created:", user)
     } else {
       console.log("User already exists:", user)
     }

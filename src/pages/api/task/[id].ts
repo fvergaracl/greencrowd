@@ -10,8 +10,7 @@ export default async function handler(
       try {
         const { id } = req.query
         const data = await TaskController.getTaskById(String(id))
-        console.log("******** data")
-        console.log(data)
+
         if (!data) {
           return res.status(404).json({ error: "Task not found" })
         } else {

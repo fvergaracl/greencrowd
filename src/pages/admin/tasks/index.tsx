@@ -94,7 +94,6 @@ export default function AdminTasks() {
     const fetchTasks = async () => {
       try {
         const response = await axios.get("/api/admin/tasks")
-        console.log(response.data)
         setTasks(response.data)
         setFilteredTasks(response.data)
       } catch (err) {

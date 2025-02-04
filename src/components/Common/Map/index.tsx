@@ -85,7 +85,6 @@ const Routing = ({ map, start, end, routingControlRef }) => {
     if (!map || !start || !end) return
 
     if (routingControlRef.current) {
-      console.log("Actualizando waypoints de la ruta sin eliminarla...")
       routingControlRef.current
         .getPlan()
         .setWaypoints([
@@ -233,16 +232,14 @@ export default function Map({
       : "h-full"
 
   const checkTaskAndPoi = (poi: PointOfInterest) => {
-    console.log("********** CHECK POI")
-    console.log({ poi, position })
+
     const destination = L.latLng(poi.latitude, poi.longitude)
-    // calculate distance between current position and destination
 
     const distance = mapRef.current?.distance(
       L.latLng(position.lat, position.lng),
       destination
     )
-    console.log({ distance })
+
     if (distance && distance <= poi.radius) {
       if (poi.tasks.length > 0) {
         handleSelectPoi(poi)
@@ -272,7 +269,6 @@ export default function Map({
                 poi={selectedPoi}
                 position={position}
                 onRadiusChange={isInside => {
-                  console.log("isInside", isInside)
                   if (isInside) {
                     setErrorPoi(null)
                   }

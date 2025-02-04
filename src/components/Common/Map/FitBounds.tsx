@@ -20,8 +20,6 @@ const FitBounds: React.FC<FitBoundsProps> = ({ polygons }) => {
       )
       const bounds = new L.LatLngBounds(latLngs.flat())
       map.fitBounds(bounds)
-
-      console.log("Fitting bounds to", bounds)
     }
   }, [polygons, map])
 

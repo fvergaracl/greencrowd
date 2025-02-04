@@ -24,7 +24,6 @@ export default function AdminUsersActivityLogs() {
     const fetchUsersLogs = async () => {
       try {
         const response = await axios.get("/api/admin/activity-logs/users")
-        console.log(response.data)
         setUserActivityLogs(response.data)
         setFilteredUserActivityLogs(response.data)
       } catch (error) {

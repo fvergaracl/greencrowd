@@ -27,7 +27,6 @@ const TaskWrapperComponent = ({
   const [isSubmitted, setIsSubmitted] = useState(false)
 
   if (!surveyRef.current && taskData) {
-    console.log("Inicializando SurveyModel...")
     surveyRef.current = new SurveyModel({
       ...taskData,
       completeText: t("Submit"),
@@ -156,7 +155,6 @@ export default function Task() {
       </DashboardLayout>
     )
   }
-  console.log(task)
   return (
     <DashboardLayout>
       <div className='p-4'>

@@ -49,3 +49,5 @@ next-env.d.ts
 *.ipynb
 .codegpt
 personalNotes.md
+
+certs/nginx.key

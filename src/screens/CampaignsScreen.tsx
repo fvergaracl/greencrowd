@@ -139,7 +139,6 @@ export default function CampaignsScreen() {
       <div className='w-full max-w-xxl space-y-4'>
         {campaigns.map(campaign => {
 
-          console.log(campaign)
           const isExpired = campaign.deadline
             ? new Date(campaign.deadline) < new Date()
             : false

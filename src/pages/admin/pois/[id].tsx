@@ -91,7 +91,6 @@ export default function POIList() {
       const fetchPOI = async () => {
         try {
           const response = await axios.get(`/api/admin/pois/${id}`)
-          console.log(response.data)
           setPOIInformation(response.data)
           setLoading(false)
         } catch (error) {

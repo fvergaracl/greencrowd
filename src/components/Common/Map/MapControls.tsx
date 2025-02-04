@@ -23,9 +23,7 @@ const MapControls: React.FC<MapControlsProps> = ({
   const focusOnCurrentLocation = () => {
     if (position) {
       map.setView([position.lat, position.lng], 16)
-      console.log("Focusing on current location:", position)
     } else {
-      console.warn("Position is not available.")
     }
   }
 

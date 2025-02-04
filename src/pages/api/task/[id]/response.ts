@@ -42,11 +42,9 @@ export default async function handler(
           return res.status(403).json({ error: "Campaign is disabled" })
         }
 
-        // check if position is within the task's area
         const area = taskData.pointOfInterest.area
         const areaPolygon = area.polygon
         const isInsidePolygon = require("point-in-polygon")
-        console.log({ position, areaPolygon, taskData })
         if (!isInsidePolygon(position, areaPolygon)) {
           const distanceWithPOI = haversineDistance(position, [
             taskData.pointOfInterest.latitude,
@@ -111,11 +109,7 @@ export default async function handler(
               .json({ error: "Task is no longer available" })
           }
         }
-        console.log({
-          taskData,
-          user,
-          body
-        })
+
         const response = await UserTaskResponseController.createNewResponse({
           userId: user.id,
           taskId: body.taskId,
@@ -124,7 +118,6 @@ export default async function handler(
           longitude: body?.position?.lng
         })
 
-        console.log({ response })
 
         return res.status(200).json(body)
       } catch (err: any) {
