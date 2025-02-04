@@ -11,51 +11,66 @@ import axios from "axios"
 import "survey-core/defaultV2.min.css"
 import Swal from "sweetalert2"
 
-const TaskWrapper = React.memo(
-  ({ taskData, t, isInside, onComplete }) => {
-    const surveyRef = useRef<SurveyModel | null>(null)
-    const [isSubmitted, setIsSubmitted] = useState(false)
 
-    if (!surveyRef.current && taskData) {
-      console.log("Inicializando SurveyModel...")
-      surveyRef.current = new SurveyModel({
-        ...taskData,
-        completeText: t("Submit"),
-        showCompletedPage: false
-      })
-    }
+const TaskWrapperComponent = ({
+  taskData,
+  t,
+  isInside,
+  onComplete
+}: {
+  taskData: any
+  t: any
+  isInside: boolean
+  onComplete: (survey: any, setIsSubmitted: (value: boolean) => void) => void
+}) => {
+  const surveyRef = useRef<SurveyModel | null>(null)
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
-    const form = surveyRef.current
+  if (!surveyRef.current && taskData) {
+    console.log("Inicializando SurveyModel...")
+    surveyRef.current = new SurveyModel({
+      ...taskData,
+      completeText: t("Submit"),
+      showCompletedPage: false
+    })
+  }
 
-    useEffect(() => {
-      if (!form) return
+  const form = surveyRef.current
 
-      form.onUpdateQuestionCssClasses = (_, options) => {
-        if (options.cssClasses.navigation) {
-          options.cssClasses.navigation += isInside
-            ? ""
-            : " opacity-50 pointer-events-none"
-        }
+  useEffect(() => {
+    if (!form) return
+
+    form.onUpdateQuestionCssClasses = (_, options) => {
+      if (options.cssClasses.navigation) {
+        options.cssClasses.navigation += isInside
+          ? ""
+          : " opacity-50 pointer-events-none"
       }
-    }, [isInside])
+    }
+  }, [isInside])
 
-    if (!form) return <p>Cargando encuesta...</p>
+  if (!form) return <p>Cargando encuesta...</p>
 
-    return (
-      <div>
-        {isSubmitted ? (
-          <div className='bg-green-100 text-green-800 p-4 rounded-lg'>
-            <p>{t("Thank you for completing the task!")}</p>
-          </div>
-        ) : (
-          <Survey
-            model={form}
-            onComplete={survey => onComplete(survey, setIsSubmitted)}
-          />
-        )}
-      </div>
-    )
-  },
+  return (
+    <div>
+      {isSubmitted ? (
+        <div className='bg-green-100 text-green-800 p-4 rounded-lg'>
+          <p>{t("Thank you for completing the task!")}</p>
+        </div>
+      ) : (
+        <Survey
+          model={form}
+          onComplete={(survey: any) => onComplete(survey, setIsSubmitted)}
+        />
+      )}
+    </div>
+  )
+}
+
+TaskWrapperComponent.displayName = "TaskWrapper"
+
+const TaskWrapper = React.memo(
+  TaskWrapperComponent,
   (prevProps, nextProps) => prevProps.taskData === nextProps.taskData
 )
 
