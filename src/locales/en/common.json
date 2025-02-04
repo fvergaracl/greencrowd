@@ -277,5 +277,7 @@
   "You are {{kilometers}} km away from the point of interest": "You are {{kilometers}} km away from the point of interest",
   "You will be logged out": "You will be logged out",
   "You are not inside the point of interest": "You are not inside the point of interest",
-  "You must be inside the point of interest to complete the task": "You must be inside the point of interest to complete the task"
+  "You must be inside the point of interest to complete the task": "You must be inside the point of interest to complete the task",
+  "An error occurred": "An error occurred",
+  "Submission cancelled": "Submission cancelled"
 }

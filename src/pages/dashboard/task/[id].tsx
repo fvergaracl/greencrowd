@@ -14,14 +14,14 @@ import Swal from "sweetalert2"
 const TaskWrapper = React.memo(
   ({ taskData, t, isInside, onComplete }) => {
     const surveyRef = useRef<SurveyModel | null>(null)
-    const [isSubmitted, setIsSubmitted] = useState(false) 
+    const [isSubmitted, setIsSubmitted] = useState(false)
 
     if (!surveyRef.current && taskData) {
       console.log("Inicializando SurveyModel...")
       surveyRef.current = new SurveyModel({
         ...taskData,
         completeText: t("Submit"),
-        showCompletedPage: false 
+        showCompletedPage: false
       })
     }
 
@@ -116,12 +116,12 @@ export default function Task() {
           })
 
           Swal.fire(t("Success!"), t("Task completed successfully!"), "success")
-          setIsSubmitted(true) 
+          setIsSubmitted(true)
         } catch (error) {
           console.error("Error completing task:", error)
           Swal.fire(
             t("Error!"),
-            t(error?.response?.data?.error || "An error occurred"),
+            t(error?.response?.data?.error || t("An error occurred")),
             "error"
           )
         }
