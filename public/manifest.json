@@ -18,5 +18,13 @@
   "background_color": "#ffffff",
   "display": "standalone",
   "start_url": "/",
-  "scope": "/"
+  "scope": "/",
+  "permissions": {
+    "geolocation": {
+      "description": "Access to location services to enhance user experience."
+    },
+    "storage": {
+      "description": "Allows uploading and managing files within the application."
+    }
+  }
 }
