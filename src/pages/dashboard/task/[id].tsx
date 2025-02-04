@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
+import DistanceIndicator from "@/components/Common/Map/DistanceIndicator"
 import DashboardLayout from "@/components/DashboardLayout"
+import GoBack from "@/components/Admin/GoBack"
 import { useTranslation } from "@/hooks/useTranslation"
 import { useDashboard } from "@/context/DashboardContext"
 import { useRouter } from "next/router"
@@ -8,8 +10,51 @@ import { Survey } from "survey-react-ui"
 import axios from "axios"
 import "survey-core/defaultV2.min.css"
 import Swal from "sweetalert2"
-import GoBack from "@/components/Admin/GoBack"
-import DistanceIndicator from "../../../components/Common/Map/DistanceIndicator"
+
+const TaskWrapper = React.memo(
+  ({ taskData, t, isInside, onComplete }) => {
+    const surveyRef = useRef<SurveyModel | null>(null)
+
+    if (!surveyRef.current && taskData) {
+      console.log("Inicializando SurveyModel...")
+      surveyRef.current = new SurveyModel({
+        ...taskData,
+        completeText: t("Submit")
+      })
+    }
+
+    const form = surveyRef.current
+
+    useEffect(() => {
+      if (!form) return
+
+      form.onUpdateQuestionCssClasses = (_, options) => {
+        if (options.cssClasses.navigation) {
+          options.cssClasses.navigation += isInside
+            ? ""
+            : " opacity-50 pointer-events-none"
+        }
+      }
+    }, [isInside]) 
+
+    if (!form) return <p>Cargando encuesta...</p>
+
+    return (
+      <Survey
+        model={form}
+        onComplete={survey => onComplete(survey.data)}
+        renderCompleted={() => (
+          <div className='bg-green-100 text-green-800 p-4 rounded-lg'>
+            <p>{t("Thank you for completing the task!")}</p>
+          </div>
+        )}
+      />
+    )
+  },
+  (prevProps, nextProps) => {
+    return prevProps.taskData === nextProps.taskData
+  }
+)
 
 export default function Task() {
   const { t } = useTranslation()
@@ -89,7 +134,6 @@ export default function Task() {
         {task?.pointOfInterest && position ? (
           <DistanceIndicator
             poi={task.pointOfInterest}
-            position={position}
             onRadiusChange={isInsidePOI => {
               setIsInside(!!isInsidePOI)
             }}
@@ -110,28 +154,11 @@ export default function Task() {
 
               {task.taskData ? (
                 <div>
-                  <Survey
-                    model={
-                      new SurveyModel({
-                        ...task.taskData,
-                        completeText: t("Submit"),
-                        onUpdateQuestionCssClasses: (_, options) => {
-                          if (options.cssClasses.navigation) {
-                            options.cssClasses.navigation += isInside
-                              ? ""
-                              : " opacity-50 pointer-events-none"
-                          }
-                        }
-                      })
-                    }
-                    onComplete={survey => handleSurveyCompletion(survey.data)} // Manejar la acción al completar
-                    renderCompleted={data => {
-                      return (
-                        <div className='bg-green-100 text-green-800 p-4 rounded-lg'>
-                          <p>{t("Thank you for completing the task!")}</p>
-                        </div>
-                      )
-                    }}
+                  <TaskWrapper
+                    taskData={task.taskData}
+                    t={t}
+                    isInside={isInside}
+                    onComplete={handleSurveyCompletion}
                   />
                 </div>
               ) : (

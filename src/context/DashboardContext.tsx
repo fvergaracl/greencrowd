@@ -8,11 +8,10 @@ import {
 import { getPersistedState, persistState } from "../utils/persistentState"
 import axios from "axios"
 
-interface Position {
+export interface IPosition {
   lat: number
   lng: number
 }
-
 interface User {
   name: string
   email: string
@@ -21,12 +20,12 @@ interface User {
 export interface DashboardContextType {
   user: User | null
   setUser: (user: User | null) => void
-  position: Position | null
+  position: IPosition | null
   updatePosition: () => void
   isTracking: boolean
   toggleTracking: () => void
-  mapCenter: Position | null
-  setMapCenter: (center: Position) => void
+  mapCenter: IPosition | null
+  setMapCenter: (center: IPosition) => void
   selectedCampaign: any | null
   setSelectedCampaign: (campaign: any | null) => void
   loading: boolean
@@ -46,8 +45,8 @@ export const useDashboard = () => {
 
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
-  const [position, setPosition] = useState<Position | null>(null)
-  const [mapCenter, setMapCenter] = useState<Position | null>(null)
+  const [position, setPosition] = useState<IPosition | null>(null)
+  const [mapCenter, setMapCenter] = useState<IPosition | null>(null)
   const [isTracking, setIsTracking] = useState<boolean>(true)
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -83,11 +82,11 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         "dashboard_user",
         null
       )
-      const persistedPosition = getPersistedState<Position | null>(
+      const persistedPosition = getPersistedState<IPosition | null>(
         "dashboard_position",
         null
       )
-      const persistedMapCenter = getPersistedState<Position | null>(
+      const persistedMapCenter = getPersistedState<IPosition | null>(
         "dashboard_mapCenter",
         null
       )

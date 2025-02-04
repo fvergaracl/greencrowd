@@ -1,14 +1,10 @@
 import { useState, useEffect, useMemo } from "react"
 import { useTranslation } from "@/hooks/useTranslation"
+import { useDashboard, IPosition } from "@/context/DashboardContext"
 
 interface IDistanceToPoi {
   kilometters: number
   metters: number
-}
-
-interface Position {
-  lat: number
-  lng: number
 }
 
 interface POI {
@@ -21,7 +17,6 @@ interface POI {
 
 interface DistanceIndicatorProps {
   poi: POI
-  position: Position
   onRadiusChange?: (isInside: boolean) => void
 }
 
@@ -56,9 +51,9 @@ const calculateDistance = (
 
 const DistanceIndicator: React.FC<DistanceIndicatorProps> = ({
   poi,
-  position,
   onRadiusChange
 }) => {
+  const { position } = useDashboard()
   const [isInsideRadius, setIsInsideRadius] = useState<boolean>(false)
   const [colorText, setColorText] = useState<string>("text-gray-700")
   const { t } = useTranslation()
