@@ -1,14 +1,15 @@
-import DefaultLayout from "../../../../components/AdminLayout"
 import dynamic from "next/dynamic"
-
-const PoisForm = dynamic(
-  () => import("../../../../components/AdminLayout/PoisForm")
-)
 import { useRouter } from "next/router"
-import Breadcrumb from "../../../../components/Breadcrumbs/Breadcrumb"
+import DefaultLayout from "@/components/AdminLayout"
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
+import { useTranslation } from "@/hooks/useTranslation"
+const PoisForm = dynamic(() => import("@/components/AdminLayout/PoisForm"), {
+  ssr: false
+})
 
 export default function EditAreaPage() {
   const router = useRouter()
+  const { t } = useTranslation()
   const { id } = router.query
 
   return (

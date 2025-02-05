@@ -52,7 +52,6 @@
     "sweetalert2": "^11.15.1",
     "tailwind-scrollbar-hide": "^2.0.0",
     "utf8": "^3.0.0",
-    "workbox-webpack-plugin": "^7.3.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {

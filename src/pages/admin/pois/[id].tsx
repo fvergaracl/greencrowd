@@ -2,13 +2,13 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
+import ReactDOMServer from "react-dom/server"
+import { useTranslation } from "@/hooks/useTranslation"
 import DefaultLayout from "@/components/AdminLayout"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
 import GoBack from "@/components/Admin/GoBack"
-import CustomMarker from "../../../components/marker"
-import ReactDOMServer from "react-dom/server"
+import CustomMarker from "@/components/marker"
 import "leaflet/dist/leaflet.css"
-import { useTranslation } from "@/hooks/useTranslation"
 
 const MapContainer = dynamic(
   () => import("react-leaflet").then(mod => mod.MapContainer),

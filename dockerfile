@@ -1,5 +1,5 @@
 # Use the official Node.js 18 image with Alpine
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
 # Install necessary dependencies
 RUN apk add --no-cache openssl musl-dev libc6-compat

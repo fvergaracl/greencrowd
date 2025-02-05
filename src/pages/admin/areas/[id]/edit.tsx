@@ -5,7 +5,8 @@ import { useTranslation } from "@/hooks/useTranslation"
 import dynamic from "next/dynamic"
 
 const AreaForm = dynamic(
-  () => import("../../../../components/AdminLayout/AreaForm")
+  () => import("../../../../components/AdminLayout/AreaForm"),
+  { ssr: false }
 )
 
 export default function EditAreaPage() {
