@@ -54,7 +54,9 @@ export default function Home({ flashMessage }: HomeProps) {
 }
 
 export async function getServerSideProps({ req, res }) {
-  const cookies = cookie.parse(req.headers.cookie || "")
+  const cookiesHeader = req.headers.cookie || ""
+  const cookies = cookie.parse(cookiesHeader)
+
   const flashMessage = cookies.flash_message || null
 
   if (!flashMessage) {
