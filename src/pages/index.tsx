@@ -1,23 +1,35 @@
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import cookie from "cookie"
 import { useTranslation } from "@/hooks/useTranslation"
 
-interface HomeProps {
-  flashMessage?: string
+/**
+ * Reads a specific cookie value from the browser
+ */
+const getCookie = (name: string) => {
+  if (typeof document === "undefined") return null // Prevents issues in SSR
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"))
+  return match ? decodeURIComponent(match[2]) : null
 }
 
-export default function Home({ flashMessage }: HomeProps) {
+export default function Home() {
   const { t } = useTranslation()
   const router = useRouter()
-  const [message, setMessage] = useState(flashMessage)
+  const [flashMessage, setFlashMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    if (flashMessage) {
-      const timer = setTimeout(() => setMessage(null), 5000) // 5 segundos
-      return () => clearTimeout(timer)
+    // Read `flash_message` cookie on the client side
+    const message = getCookie("flash_message")
+    if (message) {
+      setFlashMessage(message)
+
+      // Clear the cookie after reading it
+      document.cookie =
+        "flash_message=; Path=/; Max-Age=0; SameSite=Lax; Secure"
+
+      // Auto-hide after 5 seconds
+      setTimeout(() => setFlashMessage(null), 5000)
     }
-  }, [flashMessage])
+  }, [])
 
   const handleLogin = () => {
     router.push("/api/auth/login")
@@ -36,8 +48,8 @@ export default function Home({ flashMessage }: HomeProps) {
         <h1 className='text-2xl font-bold text-white mb-4 text-center'>
           {t("Welcome to GREENGAGE")}
         </h1>
-        {message && (
-          <p className='mb-4 text-center text-yellow-400'>{t(message)}</p>
+        {flashMessage && (
+          <p className='mb-4 text-center text-yellow-400'>{t(flashMessage)}</p>
         )}
         <p className='text-center text-gray-300 mb-6'>
           {t("A simple app to manage your campaigns")}
@@ -51,33 +63,4 @@ export default function Home({ flashMessage }: HomeProps) {
       </div>
     </div>
   )
-}
-
-export async function getServerSideProps({ req, res }) {
-  console.log("Headers:", req.headers) // 🐞 Verifica qué headers están llegando
-
-  const cookiesHeader = req.headers?.cookie || ""
-  console.log("Cookies Header:", cookiesHeader) // 🐞 Depuración
-
-  let cookies = {}
-  try {
-    cookies = cookie.parse(cookiesHeader)
-    console.log("Parsed Cookies:", cookies) // 🐞 Depuración
-  } catch (error) {
-    console.error("Error parsing cookies:", error)
-  }
-
-  const flashMessage = cookies.flash_message || null
-
-  if (!flashMessage) {
-    const isAuthenticated = cookies.access_token
-
-    if (isAuthenticated) {
-      res.writeHead(302, { Location: "/dashboard" })
-      res.end()
-      return { props: {} }
-    }
-  }
-
-  return { props: { flashMessage } }
 }

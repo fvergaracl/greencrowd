@@ -7,6 +7,7 @@ import cookie from "cookie"
 const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
+  // secure: false,
   sameSite: "lax",
   path: "/"
 }
@@ -22,14 +23,23 @@ export const setCookies = (
   cookies: Record<string, string | null>,
   maxAge?: number
 ) => {
-  const serializedCookies = Object.entries(cookies).map(([key, value]) =>
-    cookie.serialize(key, value || "", {
-      ...COOKIE_OPTIONS,
-      maxAge: value ? maxAge : 0 
-    })
-  )
+  const validCookies = Object.entries(cookies)
+    .filter(([_, value]) => typeof value === "string" && value.trim() !== "") // Ensure value is valid
+    .map(([key, value]) =>
+      cookie.serialize(key, value as string, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: value ? maxAge : 0,
+        path: "/"
+      })
+    )
 
-  res.setHeader("Set-Cookie", serializedCookies)
+  if (validCookies.length > 0) {
+    res.setHeader("Set-Cookie", validCookies)
+  } else {
+    console.warn("setCookies: No valid cookies to set.")
+  }
 }
 
 /**

@@ -1,5 +1,5 @@
 import { NextApiResponse } from "next"
-import cookie from "cookie"
+import { setCookies } from "@/utils/cookies"
 
 interface TokenData {
   value: string
@@ -12,31 +12,23 @@ interface TokenProps {
   id_token: TokenData
 }
 
+/**
+ * Sets authentication cookies for the user.
+ * @param res - Next.js API response object
+ * @param propsToken - Object containing access, refresh, and ID tokens
+ */
 const setAuthCookies = (res: NextApiResponse, propsToken: TokenProps): void => {
   const { access_token, refresh_token, id_token } = propsToken
-  res.setHeader("Set-Cookie", [
-    cookie.serialize("access_token", access_token?.value, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: access_token?.maxAge,
-      path: "/"
-    }),
-    cookie.serialize("refresh_token", refresh_token?.value, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: refresh_token?.maxAge,
-      path: "/"
-    }),
-    cookie.serialize("id_token", id_token?.value, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: id_token?.maxAge,
-      path: "/"
-    })
-  ])
+
+  setCookies(
+    res,
+    {
+      access_token: access_token?.value,
+      refresh_token: refresh_token?.value,
+      id_token: id_token?.value
+    },
+    access_token?.maxAge
+  )
 }
 
 export default setAuthCookies

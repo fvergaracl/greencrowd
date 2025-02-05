@@ -1,12 +1,14 @@
-import cookie from "cookie"
-import clearAllCookies from "../../../utils/clearAllCookies"
+import { NextApiRequest, NextApiResponse } from "next"
+import { getCookies, setCookies, clearCookies } from "@/utils/cookies"
 
-const validateToken = async token => {
+const validateToken = async (token: string | undefined) => {
+  if (!token) return false
+
   const introspectUrl = `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token/introspect`
 
   const params = new URLSearchParams({
-    client_id: process.env.KEYCLOAK_CLIENT_ID,
-    client_secret: process.env.KEYCLOAK_CLIENT_SECRET,
+    client_id: process.env.KEYCLOAK_CLIENT_ID!,
+    client_secret: process.env.KEYCLOAK_CLIENT_SECRET!,
     token
   })
 
@@ -22,10 +24,13 @@ const validateToken = async token => {
   }
 
   const data = await response.json()
-  return data.active 
+  return data.active
 }
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const {
     KEYCLOAK_BASE_URL,
     KEYCLOAK_REALM,
@@ -33,33 +38,33 @@ export default async function handler(req, res) {
     KEYCLOAK_CLIENT_SECRET
   } = process.env
 
-  const cookies = cookie.parse(req.headers.cookie || "")
+  const cookies = getCookies(req)
   const token = req.headers.authorization?.split(" ")[1] || cookies.access_token
   const refreshToken = req.headers.refresh_token || cookies.refresh_token
-  const idToken = req.headers.idToken || cookies.idToken
+  const idToken = req.headers.idToken || cookies.id_token
 
   try {
     const validToken = await validateToken(token)
+
     if (!refreshToken && !idToken) {
-      await clearAllCookies(req, res)
-      res.setHeader(
-        "Set-Cookie",
-        `flash_message=${encodeURIComponent(
-          "You are already logged out"
-        )}; Path=/; HttpOnly; Secure=${
-          process.env.NODE_ENV === "production"
-        }; Max-Age=30`
+      clearCookies(req, res)
+      setCookies(
+        res,
+        {
+          flash_message: encodeURIComponent("You are already logged out")
+        },
+        30
       )
     }
+
     if (!validToken) {
-      await clearAllCookies(req, res)
-      res.setHeader(
-        "Set-Cookie",
-        `flash_message=${encodeURIComponent(
-          "You are already logged out."
-        )}; Path=/; HttpOnly; Secure=${
-          process.env.NODE_ENV === "production"
-        }; Max-Age=30`
+      clearCookies(req, res)
+      setCookies(
+        res,
+        {
+          flash_message: encodeURIComponent("You are already logged out.")
+        },
+        30
       )
     }
 
@@ -67,8 +72,8 @@ export default async function handler(req, res) {
       const logoutUrl = `${KEYCLOAK_BASE_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/logout`
 
       const params = new URLSearchParams({
-        client_id: KEYCLOAK_CLIENT_ID,
-        client_secret: KEYCLOAK_CLIENT_SECRET
+        client_id: KEYCLOAK_CLIENT_ID!,
+        client_secret: KEYCLOAK_CLIENT_SECRET!
       })
 
       if (refreshToken) {
@@ -84,33 +89,36 @@ export default async function handler(req, res) {
         body: params.toString()
       })
 
-      await clearAllCookies(req, res)
-      if (!logoutResponse.ok) {
-        res.setHeader(
-          "Set-Cookie",
-          `flash_message=${encodeURIComponent(
-            "Failed to log out from Keycloak session"
-          )}; Path=/; HttpOnly; Secure=${
-            process.env.NODE_ENV === "production"
-          }; Max-Age=30`
-        )
+      clearCookies(req, res)
 
+      if (!logoutResponse.ok) {
+        setCookies(
+          res,
+          {
+            flash_message: encodeURIComponent(
+              "Failed to log out from Keycloak session"
+            )
+          },
+          30
+        )
       }
     }
 
     res.redirect("/")
   } catch (error) {
-    await clearAllCookies(req, res)
+    clearCookies(req, res)
     console.error("Error during logout process:", error.message)
 
-    res.setHeader(
-      "Set-Cookie",
-      `flash_message=${encodeURIComponent(
-        "Failed to log out from Keycloak session"
-      )}; Path=/; HttpOnly; Secure=${
-        process.env.NODE_ENV === "production"
-      }; Max-Age=30`
+    setCookies(
+      res,
+      {
+        flash_message: encodeURIComponent(
+          "Failed to log out from Keycloak session"
+        )
+      },
+      30
     )
+
     res.redirect("/")
   }
 }
