@@ -54,8 +54,18 @@ export default function Home({ flashMessage }: HomeProps) {
 }
 
 export async function getServerSideProps({ req, res }) {
-  const cookiesHeader = req.headers.cookie || ""
-  const cookies = cookie.parse(cookiesHeader)
+  console.log("Headers:", req.headers) // 🐞 Verifica qué headers están llegando
+
+  const cookiesHeader = req.headers?.cookie || ""
+  console.log("Cookies Header:", cookiesHeader) // 🐞 Depuración
+
+  let cookies = {}
+  try {
+    cookies = cookie.parse(cookiesHeader)
+    console.log("Parsed Cookies:", cookies) // 🐞 Depuración
+  } catch (error) {
+    console.error("Error parsing cookies:", error)
+  }
 
   const flashMessage = cookies.flash_message || null
 

@@ -1,7 +1,8 @@
 import {
   generateCodeVerifier,
   generateCodeChallenge
-} from "../../../utils/pkce"
+} from "@/utils/pkce"
+import { setCookies } from "@/utils/cookies"
 
 export default async function handler(req, res) {
   const {
@@ -24,11 +25,16 @@ export default async function handler(req, res) {
     }; Max-Age=0`
   ])
 
-  // Generar PKCE para la nueva sesión
+    
+
   const codeVerifier = generateCodeVerifier()
   const codeChallenge = await generateCodeChallenge(codeVerifier)
-
-  // Almacenar el code_verifier en una cookie para usarlo más tarde
+  console.log("-----------------------")
+  console.log("-----------------------")
+  console.log("-----------------------")
+  console.log("-----------------------")
+  console.log("-----------------------")
+  
   res.setHeader(
     "Set-Cookie",
     `code_verifier=${codeVerifier}; HttpOnly; Path=/; Secure=${

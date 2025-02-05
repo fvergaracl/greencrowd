@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Authorization code missing" })
   }
 
-  const cookies = cookie.parse(req.headers.cookie || "")
+  const cookies = cookie.parse(req?.headers?.cookie || "")
   const codeVerifier = cookies.code_verifier
 
   try {
