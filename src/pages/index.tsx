@@ -24,7 +24,7 @@ export default function Home() {
 
       // Clear the cookie after reading it
       document.cookie =
-        "flash_message=; Path=/; Max-Age=0; SameSite=Lax; Secure"
+        "flash_message=; Path=/; Max-Age=0; SameSite=None; Secure"
 
       // Auto-hide after 5 seconds
       setTimeout(() => setFlashMessage(null), 5000)
