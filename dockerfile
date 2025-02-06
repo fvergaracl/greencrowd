@@ -18,8 +18,6 @@ RUN npx prisma generate --schema=./prisma/schema.prisma
 FROM base AS dev
 RUN echo "<<<<<<<<<<<<<<<<<<< Building development image"
 
-RUN npm install
-
 EXPOSE 3000
 
 CMD ["npm", "run", "dev"]

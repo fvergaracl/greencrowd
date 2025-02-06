@@ -7,7 +7,6 @@ import cookie from "cookie"
 const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  // secure: false,
   sameSite: "lax",
   path: "/"
 }
@@ -23,15 +22,17 @@ export const setCookies = (
   cookies: Record<string, string | null>,
   maxAge?: number
 ) => {
+  if (!res) {
+    console.warn("setCookies: Response object is undefined.")
+    return
+  }
+
   const validCookies = Object.entries(cookies)
     .filter(([_, value]) => typeof value === "string" && value.trim() !== "") // Ensure value is valid
     .map(([key, value]) =>
       cookie.serialize(key, value as string, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: value ? maxAge : 0,
-        path: "/"
+        ...COOKIE_OPTIONS,
+        maxAge: value ? maxAge : 0
       })
     )
 
@@ -44,13 +45,26 @@ export const setCookies = (
 
 /**
  * Clears all cookies set in the response.
- * @param res - Next.js HTTP response
  * @param req - Next.js HTTP request (used to read current cookies)
+ * @param res - Next.js HTTP response
  */
 export const clearCookies = (req: NextApiRequest, res: NextApiResponse) => {
-  if (!req.headers.cookie) return
+  if (!req || !res) {
+    console.warn("clearCookies: Request or Response object is undefined.")
+    return
+  }
+
+  if (!req.headers.cookie) {
+    console.warn("clearCookies: No cookies found in request.")
+    return
+  }
 
   const parsedCookies = cookie.parse(req.headers.cookie)
+  if (Object.keys(parsedCookies).length === 0) {
+    console.warn("clearCookies: No cookies to clear.")
+    return
+  }
+
   const expiredCookies = Object.keys(parsedCookies).map(cookieName =>
     cookie.serialize(cookieName, "", {
       ...COOKIE_OPTIONS,
@@ -67,6 +81,8 @@ export const clearCookies = (req: NextApiRequest, res: NextApiResponse) => {
  * @returns An object containing parsed cookies
  */
 export const getCookies = (req: NextApiRequest): Record<string, string> => {
-  if (!req.headers.cookie) return {}
+  if (!req || !req.headers || !req.headers.cookie) {
+    return {}
+  }
   return cookie.parse(req.headers.cookie)
 }
