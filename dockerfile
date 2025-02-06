@@ -20,7 +20,7 @@ RUN npx prisma generate --schema=./prisma/schema.prisma
 # Development target
 # ----------------------------------
 FROM base AS dev
-
+RUN echo "<<<<<<<<<<<<<<<<<<< Building development image"
 # Install additional development dependencies if needed
 RUN npm install 
 
@@ -34,7 +34,7 @@ CMD ["npm", "run", "dev"]
 # Production target
 # ----------------------------------
 FROM base AS prod
-
+RUN echo ">>>>>>>>>>>>>>>>>Building production image"
 # Build the application
 RUN npm run build
 
