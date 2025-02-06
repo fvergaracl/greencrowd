@@ -4,11 +4,10 @@ RUN apk add --no-cache openssl musl-dev libc6-compat
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
+COPY . .
 
 RUN npm install 
 
-COPY . .
 
 RUN npx prisma generate --schema=./prisma/schema.prisma
 
