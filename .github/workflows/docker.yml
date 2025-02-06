@@ -11,7 +11,12 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "::set-output name=date::$(date +'%Y%m%d')"
+        run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_ENV
+
+      - name: Get Git commit hash
+        id: commit
+        run: echo "GIT_COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -29,8 +34,11 @@ jobs:
         with:
           context: .
           file: Dockerfile
-          build-args: TARGET=prod
+          build-args: |
+            TARGET=prod
+            GIT_COMMIT_HASH=${{ env.GIT_COMMIT_HASH }}
           push: true
           tags: |
             fvergaracl/interralink:latest
-            fvergaracl/interralink:${{ github.ref_name }}.${{ steps.date.outputs.date }}
+            fvergaracl/interralink:${{ github.ref_name }}.${{ env.date }}
+            fvergaracl/interralink:commit-${{ env.GIT_COMMIT_HASH }}

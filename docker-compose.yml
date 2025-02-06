@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: prod
+      args:
+        GIT_COMMIT_HASH: "${GIT_COMMIT_HASH}"
     container_name: interralink_prod
     ports:
       - "3000:3000"

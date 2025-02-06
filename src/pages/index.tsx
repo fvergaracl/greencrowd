@@ -54,6 +54,11 @@ export default function Home() {
         <p className='text-center text-gray-300 mb-6'>
           {t("A simple app to manage your campaigns")}
         </p>
+        {process?.env?.GIT_COMMIT_HASH && (
+          <small className='text-center text-gray-300 mb-6'>
+            {t("Commit hash")}: {process.env.GIT_COMMIT_HASH}
+          </small>
+        )}
         <button
           onClick={handleLogin}
           className='w-full py-3 text-white font-bold bg-blue-600 rounded-lg hover:bg-blue-700 transition-all'

@@ -12,6 +12,11 @@ COPY . .
 
 RUN npx prisma generate --schema=./prisma/schema.prisma
 
+ARG GIT_COMMIT_HASH
+ENV NEXT_PUBLIC_GIT_COMMIT_HASH=$GIT_COMMIT_HASH
+
+RUN echo "Building with NEXT_PUBLIC_GIT_COMMIT_HASH=${NEXT_PUBLIC_GIT_COMMIT_HASH}"
+
 # -------------------------------
 # Development Environment
 # -------------------------------
