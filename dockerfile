@@ -1,50 +1,44 @@
-# Use the official Node.js 18 image with Alpine
 FROM node:20-alpine AS base
 
-# Install necessary dependencies
 RUN apk add --no-cache openssl musl-dev libc6-compat
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
-# Install dependencies
-RUN npm install
+RUN npm install 
 
 COPY . .
 
-# Generate Prisma Client with the correct binary target
 RUN npx prisma generate --schema=./prisma/schema.prisma
 
-# ----------------------------------
-# Development target
-# ----------------------------------
+# -------------------------------
+# Development Environment
+# -------------------------------
 FROM base AS dev
 RUN echo "<<<<<<<<<<<<<<<<<<< Building development image"
-# Install additional development dependencies if needed
-RUN npm install 
 
-# Expose the port the app runs on
+RUN npm install
+
 EXPOSE 3000
 
-# Run the app in development mode
 CMD ["npm", "run", "dev"]
 
-# ----------------------------------
-# Production target
-# ----------------------------------
+# -------------------------------
+# Production Environment
+# -------------------------------
 FROM base AS prod
-RUN echo ">>>>>>>>>>>>>>>>>Building production image"
-# Build the application
+RUN echo ">>>>>>>>>>>>>>>>> Building production image"
+
 RUN npm run build
 
-# Expose the port the app runs on
+RUN npm prune --production
+
 EXPOSE 3000
 
-# Start the application
 CMD ["npm", "start"]
 
-# ----------------------------------
-# Default stage (set to production)
-# ----------------------------------
+# -------------------------------
+# Default Environment
+# -------------------------------
 FROM prod AS default
