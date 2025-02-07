@@ -1,15 +1,22 @@
 import { NextApiResponse, NextApiRequest } from "next"
-import * as cookie from "cookie";
+import * as cookie from "cookie"
+
+const isSecure = (req: NextApiRequest): boolean => {
+  return (
+    process.env.NEXTAUTH_URL?.startsWith("https") ||
+    req.headers["x-forwarded-proto"] === "https"
+  )
+}
 
 /**
  * Defines common cookie configuration options.
  */
-const COOKIE_OPTIONS = {
+const getCookieOptions = (req: NextApiRequest) => ({
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  secure: isSecure(req),
   sameSite: "None",
   path: "/"
-}
+})
 
 /**
  * Sets multiple cookies in the response.
@@ -31,7 +38,7 @@ export const setCookies = (
     .filter(([_, value]) => typeof value === "string" && value.trim() !== "") // Ensure value is valid
     .map(([key, value]) =>
       cookie.serialize(key, value as string, {
-        ...COOKIE_OPTIONS,
+        ...getCookieOptions(req),
         maxAge: value ? maxAge : 0
       })
     )
@@ -67,7 +74,7 @@ export const clearCookies = (req: NextApiRequest, res: NextApiResponse) => {
 
   const expiredCookies = Object.keys(parsedCookies).map(cookieName =>
     cookie.serialize(cookieName, "", {
-      ...COOKIE_OPTIONS,
+      ...getCookieOptions(req),
       expires: new Date(0)
     })
   )
