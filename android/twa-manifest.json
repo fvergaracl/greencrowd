@@ -19,12 +19,12 @@
     "path": "/home/fvergara/interralink/android/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "3",
-  "appVersionCode": 3,
+  "appVersionName": "4",
+  "appVersionCode": 4,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://interralink.16.171.94.204.nip.io/manifest.json",
-  "fallbackType": "customtabs",
+  "fallbackType": "webview",
   "features": {
     "locationDelegation": {
       "enabled": true
@@ -42,7 +42,5 @@
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "3",
-  "fullscreen": true,
-  "enableUrlBarHiding": true
+  "appVersion": "4"
 }
