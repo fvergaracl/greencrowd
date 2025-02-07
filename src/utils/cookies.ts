@@ -1,5 +1,5 @@
 import { NextApiResponse, NextApiRequest } from "next"
-import cookie from "cookie"
+import * as cookie from "cookie";
 
 /**
  * Defines common cookie configuration options.
