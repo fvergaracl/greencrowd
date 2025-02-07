@@ -6,7 +6,6 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN npm install
 
 RUN npx prisma generate --schema=./prisma/schema.prisma
 
@@ -34,7 +33,7 @@ RUN echo ">>>>>>>>>>>>>>>>> Building production image"
 RUN npm run build
 
 EXPOSE 3000
-
+RUN echo ">>>>>>>>>>>>>>>>> Building production image [FINISHED]"
 # Script de arranque para definir variables en runtime
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
