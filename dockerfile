@@ -6,8 +6,7 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN npm install 
-
+RUN npm install
 
 RUN npx prisma generate --schema=./prisma/schema.prisma
 
@@ -36,9 +35,8 @@ RUN npm run build
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# Script de arranque para definir variables en runtime
+COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# -------------------------------
-# Default Environment
-# -------------------------------
-FROM prod AS default
+CMD ["/usr/local/bin/entrypoint.sh"]
