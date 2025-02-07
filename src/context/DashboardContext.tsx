@@ -3,161 +3,161 @@ import {
   useContext,
   useState,
   ReactNode,
-  useEffect
-} from "react"
-import { getPersistedState, persistState } from "../utils/persistentState"
-import axios from "axios"
-import { API_BASE_URL } from "@/config/api"
+  useEffect,
+} from "react";
+import { getPersistedState, persistState } from "../utils/persistentState";
+import axios from "axios";
+import { getApiBaseUrl } from "@/config/api";
 
 export interface IPosition {
-  lat: number
-  lng: number
+  lat: number;
+  lng: number;
 }
 interface User {
-  name: string
-  email: string
+  name: string;
+  email: string;
 }
 
 export interface DashboardContextType {
-  user: User | null
-  setUser: (user: User | null) => void
-  position: IPosition | null
-  updatePosition: () => void
-  isTracking: boolean
-  toggleTracking: () => void
-  mapCenter: IPosition | null
-  setMapCenter: (center: IPosition) => void
-  selectedCampaign: any | null
-  setSelectedCampaign: (campaign: any | null) => void
-  loading: boolean
+  user: User | null;
+  setUser: (user: User | null) => void;
+  position: IPosition | null;
+  updatePosition: () => void;
+  isTracking: boolean;
+  toggleTracking: () => void;
+  mapCenter: IPosition | null;
+  setMapCenter: (center: IPosition) => void;
+  selectedCampaign: any | null;
+  setSelectedCampaign: (campaign: any | null) => void;
+  loading: boolean;
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(
   undefined
-)
+);
 
 export const useDashboard = () => {
-  const context = useContext(DashboardContext)
+  const context = useContext(DashboardContext);
   if (!context) {
-    throw new Error("useDashboard must be used within a DashboardProvider")
+    throw new Error("useDashboard must be used within a DashboardProvider");
   }
-  return context
-}
+  return context;
+};
 
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null)
-  const [position, setPosition] = useState<IPosition | null>(null)
-  const [mapCenter, setMapCenter] = useState<IPosition | null>(null)
-  const [isTracking, setIsTracking] = useState<boolean>(true)
-  const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null);
+  const [position, setPosition] = useState<IPosition | null>(null);
+  const [mapCenter, setMapCenter] = useState<IPosition | null>(null);
+  const [isTracking, setIsTracking] = useState<boolean>(true);
+  const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const toggleTracking = () => setIsTracking(prev => !prev)
+  const toggleTracking = () => setIsTracking((prev) => !prev);
 
   const updatePosition = async () => {
-    if (!isTracking) return
+    if (!isTracking) return;
 
     navigator.geolocation.getCurrentPosition(
-      location => {
+      (location) => {
         const newPosition = {
           lat: location.coords.latitude,
-          lng: location.coords.longitude
-        }
-        setPosition(newPosition)
+          lng: location.coords.longitude,
+        };
+        setPosition(newPosition);
         // console.log("New position:", newPosition)
-        axios.post(`${API_BASE_URL}/userTrajectory`, newPosition)
+        axios.post(`${getApiBaseUrl()}/userTrajectory`, newPosition);
 
-        if (!mapCenter) setMapCenter(newPosition)
+        if (!mapCenter) setMapCenter(newPosition);
       },
-      error => {
-        console.error("Error fetching location:", error)
+      (error) => {
+        console.error("Error fetching location:", error);
       }
-    )
-  }
+    );
+  };
 
   useEffect(() => {
     const initializeState = () => {
       const persistedUser = getPersistedState<User | null>(
         "dashboard_user",
         null
-      )
+      );
       const persistedPosition = getPersistedState<IPosition | null>(
         "dashboard_position",
         null
-      )
+      );
       const persistedMapCenter = getPersistedState<IPosition | null>(
         "dashboard_mapCenter",
         null
-      )
+      );
       const persistedIsTracking = getPersistedState<boolean>(
         "dashboard_isTracking",
         true
-      )
+      );
       const persistedCampaign = getPersistedState<string | null>(
         "dashboard_selectedCampaign",
         null
-      )
+      );
 
-      setUser(persistedUser)
-      setPosition(persistedPosition)
-      setMapCenter(persistedMapCenter)
-      setIsTracking(persistedIsTracking)
-      setSelectedCampaign(persistedCampaign)
+      setUser(persistedUser);
+      setPosition(persistedPosition);
+      setMapCenter(persistedMapCenter);
+      setIsTracking(persistedIsTracking);
+      setSelectedCampaign(persistedCampaign);
 
-      setLoading(false)
-    }
+      setLoading(false);
+    };
 
     if (typeof window !== "undefined") {
-      initializeState()
+      initializeState();
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if (!loading) persistState("dashboard_user", user)
-  }, [user, loading])
+    if (!loading) persistState("dashboard_user", user);
+  }, [user, loading]);
 
   useEffect(() => {
-    if (!loading) persistState("dashboard_position", position)
-  }, [position, loading])
+    if (!loading) persistState("dashboard_position", position);
+  }, [position, loading]);
 
   useEffect(() => {
-    if (!loading) persistState("dashboard_mapCenter", mapCenter)
-  }, [mapCenter, loading])
+    if (!loading) persistState("dashboard_mapCenter", mapCenter);
+  }, [mapCenter, loading]);
 
   useEffect(() => {
-    if (!loading) persistState("dashboard_isTracking", isTracking)
-  }, [isTracking, loading])
+    if (!loading) persistState("dashboard_isTracking", isTracking);
+  }, [isTracking, loading]);
 
   useEffect(() => {
-    if (!loading) persistState("dashboard_selectedCampaign", selectedCampaign)
-  }, [selectedCampaign, loading])
+    if (!loading) persistState("dashboard_selectedCampaign", selectedCampaign);
+  }, [selectedCampaign, loading]);
 
   useEffect(() => {
-    if (!isTracking) return
+    if (!isTracking) return;
 
     const interval = setInterval(() => {
-      updatePosition()
-    }, 5000)
+      updatePosition();
+    }, 5000);
 
-    updatePosition()
+    updatePosition();
 
-    return () => clearInterval(interval)
-  }, [isTracking])
+    return () => clearInterval(interval);
+  }, [isTracking]);
 
   const logout = () => {
-    document.cookie = "access_token=; Max-Age=0; path=/"
+    document.cookie = "access_token=; Max-Age=0; path=/";
 
-    localStorage.clear()
-    setUser(null)
-    window.location.href = "/api/auth/logout"
-  }
+    localStorage.clear();
+    setUser(null);
+    window.location.href = "/api/auth/logout";
+  };
 
   if (loading) {
     return (
-      <div className='h-screen flex items-center justify-center'>
-        <p className='text-gray-500'>Loading...</p>
+      <div className="h-screen flex items-center justify-center">
+        <p className="text-gray-500">Loading...</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -174,10 +174,10 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         selectedCampaign,
         setSelectedCampaign,
         loading,
-        logout
+        logout,
       }}
     >
       {children}
     </DashboardContext.Provider>
-  )
-}
+  );
+};

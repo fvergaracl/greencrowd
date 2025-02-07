@@ -1,4 +1,4 @@
-export const API_BASE_URL = (() => {
+export const getApiBaseUrl = (): string => {
   if (
     typeof window !== "undefined" &&
     window.__ENV__?.NEXT_PUBLIC_API_BASE_URL
@@ -17,4 +17,4 @@ export const API_BASE_URL = (() => {
   return (
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://default.example.com/api"
   );
-})();
+};

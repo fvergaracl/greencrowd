@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { DashboardProvider } from "../context/DashboardContext";
 import { AdminProvider } from "../context/AdminContext";
 import enhanceConsole from "@/utils/enhanceConsole";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 let isEnhanced = false;
 if (!isEnhanced) {
@@ -31,15 +31,22 @@ const withProvider = (
 };
 
 export default function MyApp({ Component, pageProps }: AppProps) {
+  const [configLoaded, setConfigLoaded] = useState(false);
+  
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "/runtime-config.js";
     script.async = false;
     script.onload = () => {
-      console.log("runtime-config.js cargado:", window.__ENV__);
+      console.log("[+] runtime-config.js cargado:", window.__ENV__);
+      setConfigLoaded(true);
     };
     document.body.appendChild(script);
   }, []);
+
+  if (!configLoaded) {
+    return <div>Cargando configuración...</div>;
+  }
 
   const router = useRouter();
 
