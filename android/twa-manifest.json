@@ -3,7 +3,7 @@
   "host": "interralink.16.171.94.204.nip.io",
   "name": "INTERRALINK",
   "launcherName": "INTERRALINK",
-  "display": "standalone",
+  "display": "fullscreen",
   "themeColor": "#FFFFFF",
   "themeColorDark": "#000000",
   "navigationColor": "#000000",
@@ -19,8 +19,8 @@
     "path": "/home/fvergara/interralink/android/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "1",
-  "appVersionCode": 1,
+  "appVersionName": "2",
+  "appVersionCode": 2,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://interralink.16.171.94.204.nip.io/manifest.json",
@@ -38,9 +38,11 @@
   "isMetaQuest": false,
   "fullScopeUrl": "https://interralink.16.171.94.204.nip.io/",
   "minSdkVersion": 21,
-  "orientation": "default",
+  "orientation": "portrait",
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "1"
+  "appVersion": "2",
+  "fullscreen": true,
+  "enableUrlBarHiding": true
 }
