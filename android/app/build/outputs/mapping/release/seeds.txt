@@ -1,0 +1,105 @@
+androidx.lifecycle.ReflectiveGenericLifecycleObserver
+com.google.android.gms.location.LocationResult
+com.google.android.gms.common.api.Status
+com.google.android.gms.common.GooglePlayServicesMissingManifestValueException
+com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity
+androidx.versionedparcelable.CustomVersionedParcelable
+androidx.lifecycle.SingleGeneratedAdapterObserver
+androidx.core.app.RemoteActionCompatParcelizer
+android.support.v4.app.RemoteActionCompatParcelizer
+androidx.core.content.FileProvider
+com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity
+com.fvergaracl.interralink.LauncherActivity
+com.google.android.gms.common.GooglePlayServicesManifestException
+androidx.core.app.RemoteActionCompat
+androidx.versionedparcelable.ParcelImpl
+com.google.android.gms.common.GooglePlayServicesIncorrectManifestValueException
+com.fvergaracl.interralink.DelegationService
+com.google.android.gms.common.api.internal.BasePendingResult
+androidx.browser.browseractions.BrowserActionsFallbackMenuView
+com.google.androidbrowserhelper.locationdelegation.PermissionRequestActivity
+com.google.android.gms.common.api.internal.LifecycleCallback
+androidx.core.graphics.drawable.IconCompatParcelizer
+com.google.android.gms.common.api.Scope
+com.google.android.gms.location.LocationAvailability
+androidx.lifecycle.CompositeGeneratedAdaptersObserver
+android.support.v4.graphics.drawable.IconCompatParcelizer
+com.google.android.gms.common.internal.ReflectedParcelable
+com.google.android.gms.common.annotation.KeepName
+com.google.android.gms.dynamite.DynamiteModule$DynamiteLoaderClassLoader
+com.google.androidbrowserhelper.trusted.WebViewFallbackActivity
+androidx.annotation.Keep
+androidx.lifecycle.FullLifecycleObserverAdapter
+com.google.android.gms.common.api.GoogleApiActivity
+androidx.core.app.CoreComponentFactory
+com.google.android.gms.auth.api.signin.GoogleSignInAccount
+com.google.android.gms.location.LocationRequest
+androidx.core.graphics.drawable.IconCompat
+androidx.lifecycle.LiveData$LifecycleBoundObserver
+com.google.android.gms.common.util.DynamiteApi
+com.fvergaracl.interralink.Application
+com.google.androidbrowserhelper.trusted.FocusActivity
+com.google.android.gms.common.ConnectionResult: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.internal.location.zzg: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.internal.location.zzdd: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.signin.internal.zai: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.location.LocationAvailability: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.common.internal.GetServiceRequest: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.common.internal.zav: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.signin.internal.zaa: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.internal.location.zzd: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.common.Feature: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.common.internal.ConnectionTelemetryConfiguration: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.location.LastLocationRequest: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.common.internal.ClientIdentity: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.common.internal.TelemetryData: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.dynamite.DynamiteModule$DynamiteLoaderClassLoader: java.lang.ClassLoader sClassLoader
+com.google.android.gms.common.internal.RootTelemetryConfiguration: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.signin.internal.zag: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.signin.internal.zak: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.internal.location.zzdf: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.location.LocationResult: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.location.zzac: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.common.api.Status: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.common.api.Scope: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.common.internal.zzj: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.internal.location.zzdb: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.common.internal.MethodInvocation: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.location.LocationRequest: android.os.Parcelable$Creator CREATOR
+androidx.versionedparcelable.ParcelImpl: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.auth.api.signin.GoogleSignInAccount: android.os.Parcelable$Creator CREATOR
+com.google.android.gms.common.internal.zat: android.os.Parcelable$Creator CREATOR
+com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity: NotificationPermissionRequestActivity()
+android.support.v4.app.RemoteActionCompatParcelizer: RemoteActionCompatParcelizer()
+androidx.core.graphics.drawable.IconCompatParcelizer: void write(androidx.core.graphics.drawable.IconCompat,androidx.versionedparcelable.VersionedParcel)
+com.google.android.gms.dynamite.DynamiteModule$DynamiteLoaderClassLoader: DynamiteModule$DynamiteLoaderClassLoader()
+android.support.v4.app.RemoteActionCompatParcelizer: void write(androidx.core.app.RemoteActionCompat,androidx.versionedparcelable.VersionedParcel)
+androidx.core.app.RemoteActionCompatParcelizer: void write(androidx.core.app.RemoteActionCompat,androidx.versionedparcelable.VersionedParcel)
+androidx.versionedparcelable.CustomVersionedParcelable: CustomVersionedParcelable()
+com.google.androidbrowserhelper.trusted.WebViewFallbackActivity: WebViewFallbackActivity()
+com.google.android.gms.common.api.internal.zzb: zzb()
+androidx.core.app.CoreComponentFactory: CoreComponentFactory()
+com.google.androidbrowserhelper.locationdelegation.PermissionRequestActivity: PermissionRequestActivity()
+android.support.v4.graphics.drawable.IconCompatParcelizer: androidx.core.graphics.drawable.IconCompat read(androidx.versionedparcelable.VersionedParcel)
+com.fvergaracl.interralink.Application: Application()
+com.fvergaracl.interralink.DelegationService: DelegationService()
+androidx.core.app.RemoteActionCompat: RemoteActionCompat()
+androidx.core.graphics.drawable.IconCompatParcelizer: androidx.core.graphics.drawable.IconCompat read(androidx.versionedparcelable.VersionedParcel)
+com.google.android.gms.common.api.internal.LifecycleCallback: com.google.android.gms.common.api.internal.LifecycleFragment getChimeraLifecycleFragmentImpl(com.google.android.gms.common.api.internal.LifecycleActivity)
+androidx.core.graphics.drawable.IconCompat: IconCompat()
+androidx.core.content.FileProvider: FileProvider()
+androidx.core.app.RemoteActionCompatParcelizer: androidx.core.app.RemoteActionCompat read(androidx.versionedparcelable.VersionedParcel)
+com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity: ManageDataLauncherActivity()
+android.support.v4.graphics.drawable.IconCompatParcelizer: IconCompatParcelizer()
+android.support.v4.app.RemoteActionCompatParcelizer: androidx.core.app.RemoteActionCompat read(androidx.versionedparcelable.VersionedParcel)
+android.support.v4.graphics.drawable.IconCompatParcelizer: void write(androidx.core.graphics.drawable.IconCompat,androidx.versionedparcelable.VersionedParcel)
+androidx.lifecycle.Lifecycle$State: androidx.lifecycle.Lifecycle$State valueOf(java.lang.String)
+com.fvergaracl.interralink.LauncherActivity: LauncherActivity()
+com.google.android.gms.common.GooglePlayServicesMissingManifestValueException: GooglePlayServicesMissingManifestValueException()
+com.google.android.gms.common.ErrorDialogFragment: ErrorDialogFragment()
+androidx.browser.browseractions.BrowserActionsFallbackMenuView: BrowserActionsFallbackMenuView(android.content.Context,android.util.AttributeSet)
+com.google.android.gms.common.api.GoogleApiActivity: GoogleApiActivity()
+androidx.lifecycle.Lifecycle$State: androidx.lifecycle.Lifecycle$State[] values()
+androidx.core.graphics.drawable.IconCompatParcelizer: IconCompatParcelizer()
+androidx.core.app.RemoteActionCompatParcelizer: RemoteActionCompatParcelizer()
+com.google.androidbrowserhelper.trusted.FocusActivity: FocusActivity()

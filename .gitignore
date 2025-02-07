@@ -52,3 +52,5 @@ next-env.d.ts
 personalNotes.md
 
 certs/nginx.key
+android/android.keystore
+**.keystore
