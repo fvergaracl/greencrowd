@@ -1,50 +1,52 @@
 import "leaflet/dist/leaflet.css";
 import "../styles/globals.css";
-import { StrictMode, ReactNode } from "react";
+import { StrictMode, ReactNode, useEffect, useState } from "react";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { DashboardProvider } from "../context/DashboardContext";
 import { AdminProvider } from "../context/AdminContext";
 import enhanceConsole from "@/utils/enhanceConsole";
-import { useEffect, useState } from "react";
 
-let isEnhanced = false;
-if (!isEnhanced) {
-  enhanceConsole();
-  isEnhanced = true;
+// Evita ejecutar `enhanceConsole` múltiples veces en modo SSR
+if (typeof window !== "undefined") {
+  let isEnhanced = (window as any).__ENHANCED_CONSOLE__ || false;
+  if (!isEnhanced) {
+    enhanceConsole();
+    (window as any).__ENHANCED_CONSOLE__ = true;
+  }
 }
-const withProvider = (
-  Component: AppProps["Component"],
-  Provider: ({ children }: { children: ReactNode }) => JSX.Element
-) => {
-  const WrappedComponent = (props: AppProps) => (
-    <Provider>
-      <Component {...props.pageProps} />
-    </Provider>
-  );
-
-  WrappedComponent.displayName = `WithProvider(${
-    Component.displayName || Component.name || "Anonymous"
-  })`;
-
-  return WrappedComponent;
-};
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const [configLoaded, setConfigLoaded] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "/runtime-config.js";
-    script.async = false;
-    script.onload = () => {
-      console.log("[+] runtime-config.js cargado:", window.__ENV__);
-      setConfigLoaded(true);
+    const loadRuntimeConfig = () => {
+      return new Promise<void>((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = "/runtime-config.js";
+        script.async = false;
+        script.onload = () => {
+          console.log("[+] runtime-config.js cargado:", window.__ENV__);
+          setConfigLoaded(true);
+          resolve();
+        };
+        script.onerror = () => {
+          console.error("[-] Error cargando runtime-config.js");
+          reject();
+        };
+        document.body.appendChild(script);
+      });
     };
-    document.body.appendChild(script);
+
+    loadRuntimeConfig().catch(() =>
+      console.error("No se pudo cargar la configuración en runtime.")
+    );
   }, []);
 
-  const router = useRouter();
+  if (!configLoaded) {
+    return <></>;
+  }
 
   const contextMapping: Record<
     string,
@@ -68,3 +70,21 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     </StrictMode>
   );
 }
+
+/**
+ * Higher Order Component para envolver un componente en un Provider
+ */
+const withProvider = (
+  Component: AppProps["Component"],
+  Provider: ({ children }: { children: ReactNode }) => JSX.Element
+) => {
+  const WrappedComponent = (props: AppProps) => (
+    <Provider>
+      <Component {...props.pageProps} />
+    </Provider>
+  );
+
+  WrappedComponent.displayName = `WithProvider(${Component.displayName || Component.name || "Anonymous"})`;
+
+  return WrappedComponent;
+};
