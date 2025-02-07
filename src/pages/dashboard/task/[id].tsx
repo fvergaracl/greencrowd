@@ -10,7 +10,7 @@ import { Survey } from "survey-react-ui"
 import axios from "axios"
 import "survey-core/defaultV2.min.css"
 import Swal from "sweetalert2"
-
+import { API_BASE_URL } from "@/config/api"
 
 const TaskWrapperComponent = ({
   taskData,
@@ -86,7 +86,7 @@ export default function Task() {
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const { data } = await axios.get(`/api/task/${id}`)
+        const { data } = await axios.get(`${API_BASE_URL}/task/${id}`)
         setTask(data)
       } catch (error) {
         console.error("Error fetching task data:", error)
@@ -123,7 +123,7 @@ export default function Task() {
     }).then(async result => {
       if (result.isConfirmed) {
         try {
-          await axios.post(`/api/task/${id}/response`, {
+          await axios.post(`${API_BASE_URL}/task/${id}/response`, {
             taskResponse: survey.data,
             taskId: id,
             position

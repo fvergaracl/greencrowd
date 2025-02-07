@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import axios from "axios"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { Survey, Model } from "survey-react-ui"
 import { MdOutlineAssignment } from "react-icons/md"
-import Breadcrumb from "../../../../components/Breadcrumbs/Breadcrumb"
-import DefaultLayout from "../../../../components/AdminLayout"
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
+import DefaultLayout from "@/components/AdminLayout"
+import { API_BASE_URL } from "@/config/api"
 
 interface TaskDetails {
   id: string
@@ -43,7 +42,7 @@ export default function TaskDetailsPage() {
 
     const fetchTaskDetails = async () => {
       try {
-        const response = await axios.get(`/api/admin/tasks/${id}`)
+        const response = await axios.get(`${API_BASE_URL}/admin/tasks/${id}`)
         setTask(response.data)
       } catch (err) {
         console.error("Failed to fetch task details:", err)
@@ -65,7 +64,7 @@ export default function TaskDetailsPage() {
   const handleDelete = async () => {
     if (task) {
       try {
-        await axios.delete(`/api/admin/tasks/${task.id}`)
+        await axios.delete(`${API_BASE_URL}/admin/tasks/${task.id}`)
         router.push("/admin/tasks")
       } catch (err) {
         console.error("Failed to delete task:", err)

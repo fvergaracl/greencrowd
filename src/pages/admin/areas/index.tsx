@@ -10,7 +10,7 @@ import Swal from "sweetalert2"
 import { FaDrawPolygon, FaTasks, FaUsers } from "react-icons/fa"
 import { MdOutlinePinDrop } from "react-icons/md"
 import { useTranslation } from "@/hooks/useTranslation"
-
+import { API_BASE_URL } from "@/config/api"
 interface Area {
   id: string
   name: string
@@ -70,7 +70,7 @@ export default function AdminAreas() {
   useEffect(() => {
     const fetchAreas = async () => {
       try {
-        const response = await axios.get("/api/admin/areas")
+        const response = await axios.get(`${API_BASE_URL}/admin/areas`)
         setAllAreas(response.data)
         setFilteredAreas(response.data)
       } catch (err) {
@@ -80,7 +80,9 @@ export default function AdminAreas() {
 
     const fetchCampaigns = async () => {
       try {
-        const response = await axios.get("/api/admin/campaigns/names")
+        const response = await axios.get(
+          `${API_BASE_URL}/admin/campaigns/names`
+        )
         setCampaigns(response.data)
       } catch (err) {
         console.error("Failed to fetch campaigns:", err)
@@ -129,7 +131,7 @@ export default function AdminAreas() {
       }).then(async result => {
         if (result.isConfirmed) {
           try {
-            await axios.delete(`/api/admin/areas/${id}`)
+            await axios.delete(`${API_BASE_URL}/admin/areas/${id}`)
             setAllAreas(prev => prev.filter(area => area.id !== id))
             Swal.fire(t("Deleted!"), t("The area has been deleted."), "success")
           } catch (error) {

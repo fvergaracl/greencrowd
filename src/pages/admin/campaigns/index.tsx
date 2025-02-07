@@ -12,7 +12,7 @@ import { FaDrawPolygon, FaTasks, FaUsers } from "react-icons/fa"
 import { MdOutlinePinDrop } from "react-icons/md"
 import ColumnSelector from "@/components/Admin/ColumnSelector"
 import { useTranslation } from "@/hooks/useTranslation"
-
+import { API_BASE_URL } from "@/config/api"
 interface Campaign {
   id: string
   name: string
@@ -102,7 +102,7 @@ export default function AdminCampaigns() {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await axios.get("/api/admin/campaigns")
+        const response = await axios.get(`${API_BASE_URL}/admin/campaigns`)
         setAllCampaigns(response.data)
         setFilteredCampaigns(response.data)
       } catch (err) {
@@ -176,7 +176,7 @@ export default function AdminCampaigns() {
       }).then(async result => {
         if (result.isConfirmed) {
           try {
-            await axios.delete(`/api/admin/campaigns/${id}`)
+            await axios.delete(`${API_BASE_URL}/admin/campaigns/${id}`)
             Swal.fire(
               t("Deleted!"),
               t("The campaign has been deleted."),

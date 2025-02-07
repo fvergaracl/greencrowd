@@ -10,7 +10,7 @@ import GoBack from "@/components/Admin/GoBack"
 import { TbLassoPolygon } from "react-icons/tb"
 import { FaCloudDownloadAlt } from "react-icons/fa"
 import accessTypeColors from "@/utils/accessTypeColors"
-
+import { API_BASE_URL } from "@/config/api"
 interface Campaign {
   id: string
   name: string
@@ -60,7 +60,9 @@ export default function CampaignDetails() {
     if (id) {
       const fetchCampaignDetails = async () => {
         try {
-          const response = await axios.get(`/api/admin/campaigns/${id}`)
+          const response = await axios.get(
+            `${API_BASE_URL}/admin/campaigns/${id}`
+          )
           setCampaign(response.data)
         } catch (error) {
           console.error("Error fetching campaign details:", error)

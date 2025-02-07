@@ -4,6 +4,8 @@ import axios from "axios"
 import Swal from "sweetalert2"
 import GoBack from "@/components/Admin/GoBack"
 import { isUUID } from "@/utils/isUUID"
+import { API_BASE_URL } from "@/config/api"
+
 interface CampaignFormProps {
   campaignId?: string
   onSuccess?: () => void
@@ -36,7 +38,9 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
       const fetchCampaign = async () => {
         try {
           setLoading(true)
-          const response = await axios.get(`/api/admin/campaigns/${campaignId}`)
+          const response = await axios.get(
+            `${API_BASE_URL}/admin/campaigns/${campaignId}`
+          )
           setFormValues({
             name: response.data.name,
             description: response.data.description || "",
@@ -159,9 +163,9 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
         gameId: hasGamification ? formValues?.gameId : null
       }
       if (campaignId) {
-        await axios.put(`/api/admin/campaigns/${campaignId}`, formValuesCleaned)
+        await axios.put(`${API_BASE_URL}/admin/campaigns/${campaignId}`, formValuesCleaned)
       } else {
-        await axios.post("/api/admin/campaigns", formValuesCleaned)
+        await axios.post(`${API_BASE_URL}/admin/campaigns`, formValuesCleaned)
       }
 
       setLoading(false)

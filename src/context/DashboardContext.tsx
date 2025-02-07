@@ -7,6 +7,7 @@ import {
 } from "react"
 import { getPersistedState, persistState } from "../utils/persistentState"
 import axios from "axios"
+import { API_BASE_URL } from "@/config/api"
 
 export interface IPosition {
   lat: number
@@ -64,7 +65,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         }
         setPosition(newPosition)
         // console.log("New position:", newPosition)
-        axios.post("/api/userTrajectory", newPosition)
+        axios.post(`${API_BASE_URL}/userTrajectory`, newPosition)
 
         if (!mapCenter) setMapCenter(newPosition)
       },

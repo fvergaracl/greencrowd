@@ -4,6 +4,7 @@ import axios from "axios"
 import Swal from "sweetalert2"
 import { useRouter } from "next/router"
 import { useTranslation } from "@/hooks/useTranslation"
+import { API_BASE_URL } from "@/config/api"
 const DropdownUser = () => {
   const { t } = useTranslation()
   const router = useRouter()
@@ -22,7 +23,7 @@ const DropdownUser = () => {
       }
 
       try {
-        const response = await axios.get("/api/auth/user")
+        const response = await axios.get(`${API_BASE_URL}/auth/user`)
         const userData = response.data
         setUser({
           sub: userData.sub,

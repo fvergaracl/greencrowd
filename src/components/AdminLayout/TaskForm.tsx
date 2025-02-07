@@ -7,6 +7,7 @@ import "survey-creator-core/survey-creator-core.min.css"
 import { SurveyCreatorComponent, SurveyCreator } from "survey-creator-react"
 import GoBack from "@/components/Admin/GoBack"
 import { useTranslation } from "@/hooks/useTranslation"
+import { API_BASE_URL } from "@/config/api"
 
 interface SurveyElement {
   name: string
@@ -180,8 +181,8 @@ export default function TaskForm({
       }
       const response =
         mode === "create"
-          ? await axios.post("/api/admin/tasks", payload)
-          : await axios.put(`/api/admin/tasks/${taskId}`, payload)
+          ? await axios.post(`${API_BASE_URL}/admin/tasks`, payload)
+          : await axios.put(`${API_BASE_URL}/admin/tasks/${taskId}`, payload)
 
       if (response.status === 201 || response.status === 200) {
         Swal.fire({

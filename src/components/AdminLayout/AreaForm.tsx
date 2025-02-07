@@ -14,6 +14,7 @@ import {
 import { EditControl } from "react-leaflet-draw"
 import GoBack from "@/components/Admin/GoBack"
 import { useTranslation } from "@/hooks/useTranslation"
+import { API_BASE_URL } from "@/config/api"
 import "leaflet/dist/leaflet.css"
 import "leaflet-draw/dist/leaflet.draw.css"
 import L, { DivIcon } from "leaflet"
@@ -65,7 +66,9 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
       const fetchArea = async () => {
         try {
           setLoading(true)
-          const response = await axios.get(`/api/admin/areas/${areaId}`)
+          const response = await axios.get(
+            `${API_BASE_URL}/admin/areas/${areaId}`
+          )
           setFormValues({
             name: response.data.name,
             description: response.data.description || "",
@@ -86,7 +89,9 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await axios.get("/api/admin/campaigns/areas")
+        const response = await axios.get(
+          `${API_BASE_URL}/admin/campaigns/areas`
+        )
         setAllCampaigns(response.data)
       } catch (err) {
         console.error("Failed to fetch campaigns:", err)
@@ -157,7 +162,7 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
           const { latitude, longitude } = position.coords
           const newLocation: [number, number] = [latitude, longitude]
           setUserLocation(newLocation)
-          setMapCenter(newLocation) 
+          setMapCenter(newLocation)
         },
         error => {
           console.warn("Geolocation not enabled or denied.", error)
@@ -231,9 +236,12 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
       })
       let responseCreated = null
       if (areaId) {
-        await axios.put(`/api/admin/areas/${areaId}`, formValues)
+        await axios.put(`${API_BASE_URL}/admin/areas/${areaId}`, formValues)
       } else {
-        responseCreated = await axios.post("/api/admin/areas", formValues)
+        responseCreated = await axios.post(
+          `${API_BASE_URL}/admin/areas`,
+          formValues
+        )
       }
 
       setLoading(false)

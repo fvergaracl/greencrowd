@@ -14,7 +14,7 @@ import {
 import "leaflet/dist/leaflet.css"
 import CustomMarker from "../marker"
 import ReactDOMServer from "react-dom/server"
-
+import { API_BASE_URL } from "@/config/api"
 interface CenterMapProps {
   center: [number, number]
 }
@@ -68,7 +68,7 @@ const POIForm: React.FC<POIFormProps> = ({ poiId, onSuccess }) => {
   useEffect(() => {
     const fetchAreas = async () => {
       try {
-        const response = await axios.get("/api/admin/areas")
+        const response = await axios.get(`${API_BASE_URL}/admin/areas`)
         setAreas(response.data)
       } catch (err) {
         console.error("Failed to fetch areas:", err)
@@ -80,7 +80,9 @@ const POIForm: React.FC<POIFormProps> = ({ poiId, onSuccess }) => {
       if (poiId) {
         try {
           setLoading(true)
-          const response = await axios.get(`/api/admin/pois/${poiId}`)
+          const response = await axios.get(
+            `${API_BASE_URL}/admin/pois/${poiId}`
+          )
           setFormValues({
             name: response.data.name,
             description: response.data.description || "",
@@ -166,12 +168,12 @@ const POIForm: React.FC<POIFormProps> = ({ poiId, onSuccess }) => {
       let response = null
 
       if (poiId) {
-        response = await axios.put(`/api/admin/pois/${poiId}`, {
+        response = await axios.put(`${API_BASE_URL}/admin/pois/${poiId}`, {
           ...formValues,
           radius: parseInt(formValues.radius)
         })
       } else {
-        response = await axios.post("/api/admin/pois", formValues)
+        response = await axios.post(`${API_BASE_URL}/admin/pois`, formValues)
       }
       if (response.status !== 200 && response.status !== 201) {
         const errorMsg = `Failed to ${

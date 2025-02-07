@@ -1,11 +1,12 @@
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import DefaultLayout from "../../../components/AdminLayout"
-import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
+import DefaultLayout from "@/components/AdminLayout"
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
 import dynamic from "next/dynamic"
 import { useTranslation } from "@/hooks/useTranslation"
 import GoBack from "@/components/Admin/GoBack"
+import { API_BASE_URL } from "@/config/api"
 
 // Dynamically import Leaflet components
 const MapContainer = dynamic(
@@ -48,7 +49,7 @@ export default function AreaDetails() {
     if (id) {
       const fetchAreaDetails = async () => {
         try {
-          const response = await axios.get(`/api/admin/areas/${id}`)
+          const response = await axios.get(`${API_BASE_URL}/admin/areas/${id}`)
           setArea(response.data)
         } catch (error) {
           console.error("Error fetching area details:", error)

@@ -8,6 +8,7 @@ import ColumnSelector from "@/components/Admin/ColumnSelector"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
 import DefaultLayout from "@/components/AdminLayout"
 import { useTranslation } from "@/hooks/useTranslation"
+import { API_BASE_URL } from "@/config/api"
 import Swal from "sweetalert2"
 interface PointOfInterest {
   id: string
@@ -79,7 +80,7 @@ export default function AdminPOIs() {
   useEffect(() => {
     const fetchPOIs = async () => {
       try {
-        const response = await axios.get("/api/admin/pois")
+        const response = await axios.get(`${API_BASE_URL}/admin/pois`)
         setPois(response.data)
         setFilteredPOIs(response.data)
       } catch (err) {
@@ -89,7 +90,9 @@ export default function AdminPOIs() {
 
     const fetchCampaigns = async () => {
       try {
-        const response = await axios.get("/api/admin/campaigns/names")
+        const response = await axios.get(
+          `${API_BASE_URL}/admin/campaigns/names`
+        )
         setCampaigns(response.data)
       } catch (err) {
         console.error("Failed to fetch campaigns:", err)
@@ -149,7 +152,7 @@ export default function AdminPOIs() {
     }
 
     try {
-      await axios.delete(`/api/admin/pois/${id}`)
+      await axios.delete(`${API_BASE_URL}/admin/pois/${id}`)
       const updatedPOIs = pois.filter(poi => poi.id !== id)
       setPois(updatedPOIs)
       setFilteredPOIs(updatedPOIs)

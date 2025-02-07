@@ -2,10 +2,11 @@ import { useRouter } from "next/router"
 import { useEffect, useState, useMemo } from "react"
 import axios from "axios"
 import dynamic from "next/dynamic"
-import DefaultLayout from "../../../../components/AdminLayout"
-import Breadcrumb from "../../../../components/Breadcrumbs/Breadcrumb"
+import DefaultLayout from "@/components/AdminLayout"
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
 import Swal from "sweetalert2"
-// Dynamically import Leaflet components
+import { API_BASE_URL } from "@/config/api"
+
 const MapContainer = dynamic(
   () => import("react-leaflet").then(mod => mod.MapContainer),
   { ssr: false }
@@ -58,7 +59,7 @@ export default function AreaDetails() {
     if (id) {
       const fetchAreaDetails = async () => {
         try {
-          const response = await axios.get(`/api/admin/areas/${id}`)
+          const response = await axios.get(`${API_BASE_URL}/admin/areas/${id}`)
           setArea(response.data)
         } catch (error) {
           console.error("Error fetching area details:", error)
@@ -141,9 +142,12 @@ export default function AreaDetails() {
     if (!id) return
 
     try {
-      const response = await axios.put(`/api/admin/areas/${id}/pois`, {
-        pois: area?.pointOfInterests
-      })
+      const response = await axios.put(
+        `${API_BASE_URL}/admin/areas/${id}/pois`,
+        {
+          pois: area?.pointOfInterests
+        }
+      )
       Swal.fire({
         title: "Success",
         text: "POIs updated successfully.",

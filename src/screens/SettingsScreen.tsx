@@ -7,6 +7,7 @@ import { useTranslation } from "@/hooks/useTranslation"
 import LanguageDropdown from "@/components/Common/LanguageDropdown"
 import axios from "axios"
 import Swal from "sweetalert2"
+import { API_BASE_URL } from "@/config/api"
 
 const SettingsScreen = ({ DashboardContext }) => {
   const { t } = useTranslation()
@@ -21,7 +22,7 @@ const SettingsScreen = ({ DashboardContext }) => {
       }
 
       try {
-        const response = await axios.get("/api/auth/user")
+        const response = await axios.get(`${API_BASE_URL}/auth/user`)
         const userData = response.data
 
         setUser({
@@ -83,11 +84,15 @@ const SettingsScreen = ({ DashboardContext }) => {
     formData.append("file", file)
 
     try {
-      const response = await axios.put("/api/updatePhotoUser", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
+      const response = await axios.put(
+        `${API_BASE_URL}/updatePhotoUser`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
         }
-      })
+      )
 
       if (response.status === 200) {
         const newPhotoUrl = response.data.url

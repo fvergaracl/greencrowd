@@ -8,6 +8,7 @@ import DefaultLayout from "@/components/AdminLayout"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
 import GoBack from "@/components/Admin/GoBack"
 import CustomMarker from "@/components/marker"
+import { API_BASE_URL } from "@/config/api"
 import "leaflet/dist/leaflet.css"
 
 const MapContainer = dynamic(
@@ -90,7 +91,7 @@ export default function POIList() {
     if (id) {
       const fetchPOI = async () => {
         try {
-          const response = await axios.get(`/api/admin/pois/${id}`)
+          const response = await axios.get(`${API_BASE_URL}/admin/pois/${id}`)
           setPOIInformation(response.data)
           setLoading(false)
         } catch (error) {

@@ -4,6 +4,7 @@ import DefaultLayout from "@/components/AdminLayout"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
 import TaskForm from "@/components/AdminLayout/TaskForm"
 import { useTranslation } from "@/hooks/useTranslation"
+import { API_BASE_URL } from "@/config/api"
 import axios from "axios"
 
 interface SurveyElement {
@@ -75,7 +76,7 @@ export default function EditTaskPage() {
       const fetchTask = async () => {
         try {
           const { data }: { data: Task } = await axios.get(
-            `/api/admin/tasks/${id}`
+            `${API_BASE_URL}/admin/tasks/${id}`
           )
           setPoiId(data.pointOfInterest?.id)
           setInitialData({

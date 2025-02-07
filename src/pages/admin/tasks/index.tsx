@@ -9,7 +9,7 @@ import DefaultLayout from "@/components/AdminLayout"
 import ColumnSelector from "@/components/Admin/ColumnSelector"
 import { useTranslation } from "@/hooks/useTranslation"
 import Swal from "sweetalert2"
-
+import { API_BASE_URL } from "@/config/api"
 interface Task {
   id: string
   title: string
@@ -93,7 +93,7 @@ export default function AdminTasks() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("/api/admin/tasks")
+        const response = await axios.get(`${API_BASE_URL}/admin/tasks`)
         setTasks(response.data)
         setFilteredTasks(response.data)
       } catch (err) {
@@ -147,7 +147,7 @@ export default function AdminTasks() {
     }
 
     try {
-      await axios.delete(`/api/admin/tasks/${id}`)
+      await axios.delete(`${API_BASE_URL}/admin/tasks/${id}`)
       const deletedTask = tasks.find(task => task.id === id)
       if (deletedTask) {
         setTasks(tasks.filter(task => task.id !== id))
