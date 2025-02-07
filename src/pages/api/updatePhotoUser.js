@@ -152,7 +152,7 @@ export default async function handler(req, res) {
           maxAge: tokenData.expires_in
         }
       }
-      setAuthCookies(res, newTokenData)
+      setAuthCookies(req , res, newTokenData)
 
       return res.status(200).json({ success: true, url: photoUrl })
     } catch (error) {

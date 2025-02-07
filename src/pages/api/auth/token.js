@@ -27,7 +27,7 @@ export default async function handler(req, res) {
         maxAge: tokenData.expires_in
       }
     }
-    setAuthCookies(res, newTokenData)
+    setAuthCookies(req , res, newTokenData)
   } catch (error) {
     console.error("Error refreshing token:", error.message)
     return res.status(401).json({ error: "Failed to refresh token" })

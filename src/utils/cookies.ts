@@ -25,6 +25,7 @@ const getCookieOptions = (req: NextApiRequest) => ({
  * @param maxAge - Optional max age for the cookies in seconds
  */
 export const setCookies = (
+  req: NextApiRequest,
   res: NextApiResponse,
   cookies: Record<string, string | null>,
   maxAge?: number

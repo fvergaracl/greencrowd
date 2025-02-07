@@ -69,7 +69,7 @@ export default async function handler(req, res) {
         maxAge: expires_in
       }
     }
-    setAuthCookies(res, newTokenData)
+    setAuthCookies(req, res, newTokenData)
 
     res.redirect("/dashboard")
   } catch (error) {

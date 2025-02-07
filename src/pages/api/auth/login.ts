@@ -32,7 +32,7 @@ export default async function handler(
   // Debugging: Log before setting the cookie
   console.log("Setting cookie: code_verifier =", codeVerifier)
 
-  setCookies(res, { code_verifier: codeVerifier })
+  setCookies(req, res, { code_verifier: codeVerifier })
 
   // Define logout URL
   const logoutUrl = `${KEYCLOAK_BASE_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/logout?redirect_uri=${encodeURIComponent(

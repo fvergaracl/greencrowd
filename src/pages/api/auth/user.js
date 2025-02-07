@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     }
     token = tokenDataRefreshed.access_token
 
-    setAuthCookies(res, newTokenData)
+    setAuthCookies(req, res, newTokenData)
 
     console.log("> Refreshed token. New expiration times:")
   }

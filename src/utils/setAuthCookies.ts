@@ -1,4 +1,4 @@
-import { NextApiResponse } from "next"
+import { NextApiRequest, NextApiResponse } from "next"
 import { setCookies } from "@/utils/cookies"
 
 interface TokenData {
@@ -17,10 +17,15 @@ interface TokenProps {
  * @param res - Next.js API response object
  * @param propsToken - Object containing access, refresh, and ID tokens
  */
-const setAuthCookies = (res: NextApiResponse, propsToken: TokenProps): void => {
+const setAuthCookies = (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  propsToken: TokenProps
+): void => {
   const { access_token, refresh_token, id_token } = propsToken
 
   setCookies(
+    req,
     res,
     {
       access_token: access_token?.value,

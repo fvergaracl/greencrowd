@@ -49,6 +49,7 @@ export default async function handler(
     if (!refreshToken && !idToken) {
       clearCookies(req, res)
       setCookies(
+        req,
         res,
         {
           flash_message: encodeURIComponent("You are already logged out")
@@ -60,6 +61,7 @@ export default async function handler(
     if (!validToken) {
       clearCookies(req, res)
       setCookies(
+        req,
         res,
         {
           flash_message: encodeURIComponent("You are already logged out.")
@@ -93,6 +95,7 @@ export default async function handler(
 
       if (!logoutResponse.ok) {
         setCookies(
+          req,
           res,
           {
             flash_message: encodeURIComponent(
@@ -110,6 +113,7 @@ export default async function handler(
     console.error("Error during logout process:", error.message)
 
     setCookies(
+      req,
       res,
       {
         flash_message: encodeURIComponent(
