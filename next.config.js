@@ -9,8 +9,20 @@ const withPWA = require("next-pwa")({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withPWA({
+  env: {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    NEXTAUTH_URL_INTERNAL: process.env.NEXTAUTH_URL_INTERNAL
+  },
   experimental: {
     trustHostHeader: true
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [{ key: "X-Forwarded-Proto", value: "https" }]
+      }
+    ]
   },
   i18n,
   eslint: {
