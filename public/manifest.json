@@ -25,6 +25,12 @@
     },
     "storage": {
       "description": "Allows uploading and managing files within the application."
+    },
+    "camera": {
+      "description": "Allows taking photos and videos for use within the application."
+    },
+    "microphone": {
+      "description": "Allows recording audio for voice input or communication features."
     }
   }
 }
