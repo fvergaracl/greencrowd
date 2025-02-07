@@ -1,5 +1,5 @@
 import axios from "axios"
-import cookie from "cookie"
+import { getCookies } from "@/utils/cookies"
 import getUserInfo from "@/utils/getUserInfo"
 import prisma from "@/prismaClient"
 import setAuthCookies from "@/utils/setAuthCookies"
@@ -12,14 +12,18 @@ export default async function handler(req, res) {
     KEYCLOAK_CLIENT_ID,
     NEXTAUTH_URL
   } = process.env
+  console.log("🟡 Headers en callback:", req.headers)
+  console.log("🟡 Cookies en callback:", req.headers.cookie)
+  console.log("🟡 Query params:", req.query)
 
+  console.log("🟡 Cookies parseadas:", cookies)
   const { code } = req.query
 
   if (!code) {
     return res.status(400).json({ error: "Authorization code missing" })
   }
 
-  const cookies = cookie.parse(req?.headers?.cookie || "")
+  const cookies = getCookies(req)
   const codeVerifier = cookies.code_verifier
 
   try {
