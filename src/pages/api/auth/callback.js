@@ -16,6 +16,8 @@ export default async function handler(req, res) {
   console.log("🟡 Cookies en callback:", req.headers.cookie)
   console.log("🟡 Query params:", req.query)
 
+  const cookies = getCookies(req)
+
   console.log("🟡 Cookies parseadas:", cookies)
   const { code } = req.query
 
@@ -23,7 +25,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Authorization code missing" })
   }
 
-  const cookies = getCookies(req)
   const codeVerifier = cookies.code_verifier
 
   try {
