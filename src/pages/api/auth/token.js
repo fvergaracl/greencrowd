@@ -1,9 +1,9 @@
-import cookie from "cookie"
+import { getCookies } from "@/utils/cookies"
 import refreshAccessToken from "@/utils/refreshAccessToken"
 import setAuthCookies from "@/utils/setAuthCookies"
 
 export default async function handler(req, res) {
-  const cookies = cookie.parse(req.headers.cookie || "")
+  const cookies = getCookies(req)
   const access_token =
     req.headers.authorization?.split(" ")[1] || cookies.access_token
   const refreshToken = req.headers?.refresh_token || cookies?.refresh_token
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
         maxAge: tokenData.expires_in
       }
     }
-    setAuthCookies(req , res, newTokenData)
+    setAuthCookies(req, res, newTokenData)
   } catch (error) {
     console.error("Error refreshing token:", error.message)
     return res.status(401).json({ error: "Failed to refresh token" })

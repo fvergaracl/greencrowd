@@ -5,6 +5,7 @@ import cookie from "cookie"
 import sharp from "sharp"
 import refreshAccessToken from "@/utils/refreshAccessToken"
 import setAuthCookies from "@/utils/setAuthCookies"
+import { getCookies } from "@/utils/cookies"
 
 const KcAdminClient = require("keycloak-admin").default
 
@@ -87,7 +88,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "File upload failed" })
     }
 
-    const cookies = cookie.parse(req.headers.cookie || "")
+    const cookies = getCookies(req)
     const token =
       req.headers.authorization?.split(" ")[1] || cookies.access_token
     const refreshToken = req.headers.refresh_token || cookies.refresh_token

@@ -3,9 +3,10 @@ import cookie from "cookie"
 import jwt from "jsonwebtoken"
 import refreshAccessToken from "@/utils/refreshAccessToken"
 import setAuthCookies from "@/utils/setAuthCookies"
+import { getCookies } from "@/utils/cookies"
 
 export default async function handler(req, res) {
-  const cookies = cookie.parse(req.headers?.cookie || "")
+  const cookies = getCookies(req)
   let token = req.headers.authorization?.split(" ")[1] || cookies?.access_token
   const refreshToken = req.headers?.refresh_token || cookies?.refresh_token
 

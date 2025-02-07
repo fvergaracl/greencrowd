@@ -1,9 +1,10 @@
 import cookie from "cookie"
 import getUserInfo from "./getUserInfo"
+import { getCookies } from "@/utils/cookies"
 
 export async function validateKeycloakToken(req: any, res?: any) {
   try {
-    const cookies = cookie.parse(req.headers.cookie || "")
+    const cookies = getCookies(req)
     const token = cookies.access_token
 
     if (!token) {
