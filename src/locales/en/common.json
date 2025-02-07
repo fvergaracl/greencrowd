@@ -279,5 +279,12 @@
   "You are not inside the point of interest": "You are not inside the point of interest",
   "You must be inside the point of interest to complete the task": "You must be inside the point of interest to complete the task",
   "An error occurred": "An error occurred",
-  "Submission cancelled": "Submission cancelled"
+  "Submission cancelled": "Submission cancelled",
+  "No task found": "No task found",
+  "Task Details": "Task Details",
+  "N/A": "N/A",
+  "Associated POI": "Associated POI",
+  "Task Preview": "Task Preview",
+  "This is a preview of the task form": "This is a preview of the task form",
+  "Failed to load task details":"Failed to load task details" 
 }

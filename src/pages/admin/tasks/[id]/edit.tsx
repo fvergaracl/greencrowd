@@ -97,11 +97,11 @@ export default function EditTaskPage() {
   }, [id])
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>{t("Loading...")}</div>
   }
 
   if (!initialData) {
-    return <div>Task not found.</div>
+    return <div>{t("Task not found. Please contact the administrator.")}</div>
   }
 
   return (
@@ -115,7 +115,7 @@ export default function EditTaskPage() {
         poiId={poiId}
         taskId={id as string}
         initialData={initialData}
-      />{" "}
+      />
     </DefaultLayout>
   )
 }

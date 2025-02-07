@@ -1,5 +1,8 @@
 import React from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useTranslation } from "@/hooks/useTranslation"
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
+import DefaultLayout from "@/components/AdminLayout"
 import {
   faCircle,
   faUser,
@@ -7,9 +10,6 @@ import {
   faTasks,
   faFlag
 } from "@fortawesome/free-solid-svg-icons"
-import { useTranslation } from "@/hooks/useTranslation"
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
-import DefaultLayout from "@/components/AdminLayout"
 
 export default function Admin() {
   const { t } = useTranslation()

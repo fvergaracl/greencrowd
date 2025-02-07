@@ -6,6 +6,7 @@ import { MdOutlineAssignment } from "react-icons/md"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
 import DefaultLayout from "@/components/AdminLayout"
 import { API_BASE_URL } from "@/config/api"
+import { useTranslation } from "@/hooks/useTranslation"
 
 interface TaskDetails {
   id: string
@@ -32,6 +33,7 @@ interface TaskDetails {
 
 export default function TaskDetailsPage() {
   const router = useRouter()
+  const { t } = useTranslation()
   const { id } = router.query
   const [task, setTask] = useState<TaskDetails | null>(null)
   const [loading, setLoading] = useState(true)
@@ -46,7 +48,7 @@ export default function TaskDetailsPage() {
         setTask(response.data)
       } catch (err) {
         console.error("Failed to fetch task details:", err)
-        setError("Failed to load task details.")
+        setError(t("Failed to load task details"))
       } finally {
         setLoading(false)
       }
@@ -68,13 +70,13 @@ export default function TaskDetailsPage() {
         router.push("/admin/tasks")
       } catch (err) {
         console.error("Failed to delete task:", err)
-        setError("Failed to delete task.")
+        setError(t("Failed to delete task"))
       }
     }
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>{t("Loading...")}</div>
   }
 
   if (error) {
@@ -82,7 +84,7 @@ export default function TaskDetailsPage() {
   }
 
   if (!task) {
-    return <div>No task found.</div>
+    return <div>{t("No task found")}.</div>
   }
 
   const surveyModel = new Model(task.taskData)
@@ -97,18 +99,20 @@ export default function TaskDetailsPage() {
 
       <div className='overflow-x-auto rounded-lg bg-white p-6 shadow-lg dark:bg-boxdark'>
         <h1 className='text-2xl font-bold text-gray-800 dark:text-white mb-4'>
-          Task Details
+          {t("Task Details")}
         </h1>
 
         <div className='space-y-4'>
           <div>
-            <strong className='text-gray-700 dark:text-gray-300'>Title:</strong>
+            <strong className='text-gray-700 dark:text-gray-300'>
+              {t("Title")}:
+            </strong>
             <p className='text-gray-800 dark:text-white'>{task.title}</p>
           </div>
 
           <div>
             <strong className='text-gray-700 dark:text-gray-300'>
-              Description:
+              {t("Description")}:
             </strong>
             <p className='text-gray-800 dark:text-white'>
               {task.description || "N/A"}
@@ -116,13 +120,15 @@ export default function TaskDetailsPage() {
           </div>
 
           <div>
-            <strong className='text-gray-700 dark:text-gray-300'>Type:</strong>
+            <strong className='text-gray-700 dark:text-gray-300'>
+              {t("Type")}:
+            </strong>
             <p className='text-gray-800 dark:text-white'>{task.type}</p>
           </div>
 
           <div>
             <strong className='text-gray-700 dark:text-gray-300'>
-              Associated POI:
+              {t("Associated POI")}:
             </strong>
             <p className='text-gray-800 dark:text-white'>
               {task.pointOfInterest.name}
@@ -130,7 +136,9 @@ export default function TaskDetailsPage() {
           </div>
 
           <div>
-            <strong className='text-gray-700 dark:text-gray-300'>Area:</strong>
+            <strong className='text-gray-700 dark:text-gray-300'>
+              {t("Area")}:
+            </strong>
             <p className='text-gray-800 dark:text-white'>
               {task.pointOfInterest.area.name}
             </p>
@@ -138,7 +146,7 @@ export default function TaskDetailsPage() {
 
           <div>
             <strong className='text-gray-700 dark:text-gray-300'>
-              Campaign:
+              {t("Campaign")}:
             </strong>
             <p className='text-gray-800 dark:text-white'>
               {task.pointOfInterest.area.campaign.name}
@@ -146,18 +154,18 @@ export default function TaskDetailsPage() {
           </div>
 
           <strong className='text-gray-700 dark:text-gray-300'>
-            Task Preview:
+            {t("Task Preview")}:
           </strong>
           <div className='border border-gray-300 rounded p-4 bg-gray-50 dark:bg-gray-800'>
             <Survey model={surveyModel} />
             <p className='text-sm text-gray-500 mt-2'>
-              This is a preview of the task form.
+              {t("This is a preview of the task form")}.
             </p>
           </div>
 
           <div>
             <strong className='text-gray-700 dark:text-gray-300'>
-              Created At:
+              {t("Created At")}:
             </strong>
             <p className='text-gray-800 dark:text-white'>
               {new Date(task.createdAt).toLocaleString()}
@@ -166,7 +174,7 @@ export default function TaskDetailsPage() {
 
           <div>
             <strong className='text-gray-700 dark:text-gray-300'>
-              Updated At:
+              {t("Updated At")}:
             </strong>
             <p className='text-gray-800 dark:text-white'>
               {new Date(task.updatedAt).toLocaleString()}
@@ -179,7 +187,7 @@ export default function TaskDetailsPage() {
             onClick={handleEdit}
             className='px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600'
           >
-            Edit Task
+            {t("Edit Task")}
           </button>
         </div>
       </div>
