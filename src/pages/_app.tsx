@@ -32,7 +32,7 @@ const withProvider = (
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const [configLoaded, setConfigLoaded] = useState(false);
-  
+
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "/runtime-config.js";
@@ -43,10 +43,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     };
     document.body.appendChild(script);
   }, []);
-
-  if (!configLoaded) {
-    return <div>Cargando configuración...</div>;
-  }
 
   const router = useRouter();
 
