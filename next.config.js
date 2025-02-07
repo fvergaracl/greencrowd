@@ -10,8 +10,14 @@ const withPWA = require("next-pwa")({
 /** @type {import('next').NextConfig} */
 const nextConfig = withPWA({
   env: {
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    NEXTAUTH_URL_INTERNAL: process.env.NEXTAUTH_URL_INTERNAL
+    NEXT_PUBLIC_KEYCLOAK_REALM: process.env.NEXT_PUBLIC_KEYCLOAK_REALM,
+    NEXT_PUBLIC_KEYCLOAK_BASE_URL: process.env.NEXT_PUBLIC_KEYCLOAK_BASE_URL,
+    NEXT_PUBLIC_IS_DEVELOPMENT: process.env.NEXT_PUBLIC_IS_DEVELOPMENT,
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
+    NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    NEXT_PUBLIC_SENTRY_ENVIRONMENT: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
+    NEXT_PUBLIC_SENTRY_ENABLED: process.env.NEXT_PUBLIC_SENTRY_ENABLED
   },
   experimental: {
     trustHostHeader: true
