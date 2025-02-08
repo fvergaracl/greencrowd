@@ -1,53 +1,65 @@
-import { FiMapPin } from "react-icons/fi"
-import { LuRouteOff } from "react-icons/lu"
-import { TbLassoPolygon } from "react-icons/tb"
-import L from "leaflet"
-import { useMap } from "react-leaflet"
-import { Position, CampaignData } from "./types"
-import { useTranslation } from "@/hooks/useTranslation"
+import { FiMapPin } from "react-icons/fi";
+import { LuRouteOff } from "react-icons/lu";
+import { TbLassoPolygon } from "react-icons/tb";
+import L from "leaflet";
+import { useMap } from "react-leaflet";
+import { Position, CampaignData } from "./types";
+import { useTranslation } from "@/hooks/useTranslation";
+import { logEvent } from "@/utils/logger";
 
 interface MapControlsProps {
-  position: Position | null
-  removeRoute: () => void | null
-  campaignData: CampaignData | null
+  position: Position | null;
+  removeRoute: () => void | null;
+  campaignData: CampaignData | null;
 }
 
 const MapControls: React.FC<MapControlsProps> = ({
   position,
   removeRoute = null,
-  campaignData
+  campaignData,
 }) => {
-  const { t } = useTranslation()
-  const map = useMap()
+  const { t } = useTranslation();
+  const map = useMap();
 
   const focusOnCurrentLocation = () => {
     if (position) {
-      map.setView([position.lat, position.lng], 16)
+      logEvent(
+        "BUTTON_CLICKED_FOCUS_ON_CURRENT_LOCATION_WITH_COORDINATES",
+        "User clicked on focus on current location button with coordinates",
+        { position }
+      );
+      map.setView([position.lat, position.lng], 16);
     } else {
+      console.warn("Current location is not available.");
     }
-  }
+  };
 
   const focusOnCampaign = () => {
     if (campaignData?.areas) {
-      const bounds = L.latLngBounds([])
+      const bounds = L.latLngBounds([]);
       campaignData.areas.forEach((area: any) => {
         area.polygon.forEach(([lat, lng]: [number, number]) => {
-          bounds.extend([lat, lng])
-        })
-      })
-      map.fitBounds(bounds)
-      console.log("Focusing on campaign area.")
+          bounds.extend([lat, lng]);
+        });
+      });
+      map.fitBounds(bounds);
+      console.log("Focusing on campaign area.");
+      logEvent(
+        "BUTTON_CLICKED_FOCUS_ON_CAMPAIGN_AREA",
+        "User clicked on focus on campaign area button",
+        { campaignData, bounds }
+      );
     } else {
-      console.warn("Campaign data is not available.")
+      console.warn("Campaign data is not available.");
     }
-  }
+  };
 
   return (
-    <div className='absolute bottom-4 right-4 z-99999 flex flex-col gap-2'>
+    <div className="absolute bottom-4 right-4 z-99999 flex flex-col gap-2">
       {removeRoute && (
         <button
           onClick={removeRoute}
-          className='p-3 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md focus:outline-none'
+          className="p-3 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md focus:outline-none"
           title={t("Remove route")}
         >
           <LuRouteOff size={24} />
@@ -61,6 +73,7 @@ const MapControls: React.FC<MapControlsProps> = ({
             : "bg-gray-300"
         } text-white rounded-full shadow-md focus:outline-none`}
         title={t("Focus on campaign area")}
+        data-cy="focus-on-campaign"
         disabled={!campaignData?.areas}
       >
         <TbLassoPolygon size={24} />
@@ -80,7 +93,7 @@ const MapControls: React.FC<MapControlsProps> = ({
         <FiMapPin size={24} />
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default MapControls
+export default MapControls;

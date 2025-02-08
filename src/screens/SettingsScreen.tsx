@@ -8,11 +8,16 @@ import LanguageDropdown from "@/components/Common/LanguageDropdown";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { getApiBaseUrl } from "@/config/api";
+import { logEvent } from "@/utils/logger";
 
 const SettingsScreen = ({ DashboardContext }) => {
   const { t } = useTranslation();
   const { setUser, logout, user } = DashboardContext();
   const lastFetchTime = useRef<number | null>(null);
+
+  useEffect(() => {
+    logEvent("RENDER_SETTINGS_SCREEN", "User viewed the settings screen");
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {

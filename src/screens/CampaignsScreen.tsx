@@ -6,6 +6,7 @@ import { getApiBaseUrl } from "../config/api"; // Import API config
 import { useRouter } from "next/router";
 import { SlEnvolopeLetter } from "react-icons/sl";
 import { useTranslation } from "@/hooks/useTranslation";
+import { logEvent } from "@/utils/logger";
 
 export default function CampaignsScreen() {
   const { t } = useTranslation();
@@ -50,6 +51,8 @@ export default function CampaignsScreen() {
   };
 
   useEffect(() => {
+    logEvent("RENDER_CAMPAIGNS_SCREEN", "User rendered the campaigns screen");
+
     fetchCampaigns();
   }, []);
 
@@ -208,7 +211,34 @@ export default function CampaignsScreen() {
               </div>
 
               <button
-                onClick={() => handleJoin(campaign)}
+                onClick={() => {
+                  let eventName = "CLICK_ON_CAMPAIGN";
+                  if (isSelected) {
+                    eventName = "CLICK_ON_SELECTED_CAMPAIGN";
+                  } else if (isExpired) {
+                    eventName = "CLICK_ON_EXPIRED_CAMPAIGN";
+                  } else if (campaign.isJoined) {
+                    eventName = "CLICK_ON_JOINED_CAMPAIGN";
+                  } else if (loadingCampaignId === campaign.id) {
+                    eventName = "CLICK_ON_LOADING_CAMPAIGN";
+                  } else if (campaign?.isOpen === false) {
+                    eventName = "CLICK_ON_INVITATION_ONLY_CAMPAIGN";
+                  } else if (campaign.gameId) {
+                    eventName = "CLICK_ON_GAME_CAMPAIGN";
+                  }
+                  logEvent(
+                    eventName,
+                    `User clicked on campaign ${campaign.name}`,
+                    {
+                      campaign,
+                      isSelected,
+                      isExpired,
+                      isJoined: campaign.isJoined,
+                      loadingCampaignId,
+                    }
+                  );
+                  handleJoin(campaign);
+                }}
                 disabled={isExpired || loadingCampaignId === campaign.id}
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
                   isExpired

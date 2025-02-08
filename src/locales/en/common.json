@@ -286,5 +286,8 @@
   "Associated POI": "Associated POI",
   "Task Preview": "Task Preview",
   "This is a preview of the task form": "This is a preview of the task form",
-  "Failed to load task details":"Failed to load task details" 
+  "Failed to load task details":"Failed to load task details",
+  "404 - Page Not Found": "404 - Page Not Found",
+  "The page you are looking for does not exist or has been moved":"The page you are looking for does not exist or has been moved",
+  "Go to Home": "Go to Home"
 }
