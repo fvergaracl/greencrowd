@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import prisma from "@/prismaClient"
-import { validateKeycloakToken } from "@/utils/validateToken" // Reusable token validator
+import { validateKeycloakToken } from "@/utils/validateToken"
 
 export default async function handler(
   req: NextApiRequest,

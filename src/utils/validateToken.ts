@@ -1,4 +1,3 @@
-import cookie from "cookie"
 import getUserInfo from "./getUserInfo"
 import { getCookies } from "@/utils/cookies"
 
