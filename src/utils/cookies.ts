@@ -1,22 +1,22 @@
-import { NextApiResponse, NextApiRequest } from "next"
-import * as cookie from "cookie"
+import { NextApiResponse, NextApiRequest } from "next";
+import * as cookie from "cookie";
 
 const isSecure = (req: NextApiRequest): boolean => {
   return (
     process.env.NEXTAUTH_URL?.startsWith("https") ||
     req.headers["x-forwarded-proto"] === "https"
-  )
-}
+  );
+};
 
 /**
  * Defines common cookie configuration options.
  */
 const getCookieOptions = (req: NextApiRequest) => ({
   httpOnly: true,
-  secure: isSecure(req),
-  sameSite: "None",
-  path: "/"
-})
+  secure: isSecure(req) || false,
+  sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+  path: "/",
+});
 
 /**
  * Sets multiple cookies in the response.
@@ -31,8 +31,8 @@ export const setCookies = (
   maxAge?: number
 ) => {
   if (!res) {
-    console.warn("setCookies: Response object is undefined.")
-    return
+    console.warn("setCookies: Response object is undefined.");
+    return;
   }
 
   const validCookies = Object.entries(cookies)
@@ -40,16 +40,16 @@ export const setCookies = (
     .map(([key, value]) =>
       cookie.serialize(key, value as string, {
         ...getCookieOptions(req),
-        maxAge: value ? maxAge : 0
+        maxAge: value ? maxAge : 0,
       })
-    )
+    );
 
   if (validCookies.length > 0) {
-    res.setHeader("Set-Cookie", validCookies)
+    res.setHeader("Set-Cookie", validCookies);
   } else {
-    console.warn("setCookies: No valid cookies to set.")
+    console.warn("setCookies: No valid cookies to set.");
   }
-}
+};
 
 /**
  * Clears all cookies set in the response.
@@ -58,30 +58,30 @@ export const setCookies = (
  */
 export const clearCookies = (req: NextApiRequest, res: NextApiResponse) => {
   if (!req || !res) {
-    console.warn("clearCookies: Request or Response object is undefined.")
-    return
+    console.warn("clearCookies: Request or Response object is undefined.");
+    return;
   }
 
   if (!req.headers.cookie) {
-    console.warn("clearCookies: No cookies found in request.")
-    return
+    console.warn("clearCookies: No cookies found in request.");
+    return;
   }
 
-  const parsedCookies = cookie.parse(req.headers.cookie)
+  const parsedCookies = cookie.parse(req.headers.cookie);
   if (Object.keys(parsedCookies).length === 0) {
-    console.warn("clearCookies: No cookies to clear.")
-    return
+    console.warn("clearCookies: No cookies to clear.");
+    return;
   }
 
-  const expiredCookies = Object.keys(parsedCookies).map(cookieName =>
+  const expiredCookies = Object.keys(parsedCookies).map((cookieName) =>
     cookie.serialize(cookieName, "", {
       ...getCookieOptions(req),
-      expires: new Date(0)
+      expires: new Date(0),
     })
-  )
+  );
 
-  res.setHeader("Set-Cookie", expiredCookies)
-}
+  res.setHeader("Set-Cookie", expiredCookies);
+};
 
 /**
  * Retrieves cookies from the request.
@@ -90,7 +90,7 @@ export const clearCookies = (req: NextApiRequest, res: NextApiResponse) => {
  */
 export const getCookies = (req: NextApiRequest): Record<string, string> => {
   if (!req || !req.headers || !req.headers.cookie) {
-    return {}
+    return {};
   }
-  return cookie.parse(req.headers.cookie)
-}
+  return cookie.parse(req.headers.cookie);
+};

@@ -39,13 +39,13 @@ const TaskWrapperComponent = ({
   useEffect(() => {
     if (!form) return;
 
-    form.onUpdateQuestionCssClasses = (_, options) => {
-      if (options.cssClasses.navigation) {
-        options.cssClasses.navigation += isInside
-          ? ""
-          : " opacity-50 pointer-events-none";
-      }
-    };
+    // form.onUpdateQuestionCssClasses = (_, options) => {
+    //   if (options.cssClasses.navigation) {
+    //     options.cssClasses.navigation += isInside
+    //       ? ""
+    //       : " opacity-50 pointer-events-none";
+    //   }
+    // };
   }, [isInside]);
 
   if (!form) return <p>Cargando encuesta...</p>;
@@ -59,7 +59,10 @@ const TaskWrapperComponent = ({
       ) : (
         <Survey
           model={form}
-          onComplete={(survey: any) => onComplete(survey, setIsSubmitted)}
+          onComplete={(survey: any) => {
+            console.log("Survey completed <<<<<<<<<<<<<<<<<");
+            onComplete(survey, setIsSubmitted);
+          }}
         />
       )}
     </div>
@@ -102,6 +105,7 @@ export default function Task() {
     survey: SurveyModel,
     setIsSubmitted: (value: boolean) => void
   ) => {
+    console.log("----------------1");
     if (!isInside) {
       Swal.fire({
         title: t("You are not inside the point of interest"),

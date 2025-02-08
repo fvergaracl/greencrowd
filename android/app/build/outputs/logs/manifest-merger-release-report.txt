@@ -1,0 +1,398 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:22:1-195:12
+INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:22:1-195:12
+INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:22:1-195:12
+INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:22:1-195:12
+MERGED from [com.google.androidbrowserhelper:locationdelegation:1.1.1] /home/fvergara/.gradle/caches/8.8/transforms/ad3286f937b2a8d61d644356a246454e/transformed/locationdelegation-1.1.1/AndroidManifest.xml:2:1-18:12
+MERGED from [com.google.androidbrowserhelper:androidbrowserhelper:2.5.0] /home/fvergara/.gradle/caches/8.8/transforms/d3335fbdff4200978ad121d7b141def7/transformed/androidbrowserhelper-2.5.0/AndroidManifest.xml:17:1-36:12
+MERGED from [com.google.android.gms:play-services-location:21.0.1] /home/fvergara/.gradle/caches/8.8/transforms/8b0430d7a43a0932acd7449379328644/transformed/play-services-location-21.0.1/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.browser:browser:1.4.0] /home/fvergara/.gradle/caches/8.8/transforms/b511174c15fdde7dea3e957094b4390b/transformed/browser-1.4.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/9d7b38f1d96938519477dd5bb030ea7d/transformed/play-services-base-18.1.0/AndroidManifest.xml:16:1-24:12
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /home/fvergara/.gradle/caches/8.8/transforms/a1c11eb546b62108efac676d4abf22a9/transformed/play-services-tasks-18.0.2/AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/070e01525a9f4da3b88a8516a42b5c99/transformed/play-services-basement-18.1.0/AndroidManifest.xml:16:1-26:12
+MERGED from [androidx.fragment:fragment:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/e3627cac7d4bcbed3a6e7aa9fc7150e1/transformed/fragment-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/a637b18d44c1fa53a59b15d7b9a6e66a/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/b62f08573129c3b08abafae5c700beec/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/75a2ccd4691d118f41617dd645ae627e/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/0035ff57f2f60e468a00d5e77b739649/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/7b5725f0698d53851dbd128b6d233666/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/0c335f7e0dabb5e1c56044e7c635a0a4/transformed/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/202c329bb335d744cd843e9d7215faa0/transformed/slidingpanelayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/16555387727fd6e9b3499bb89740582d/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/ed440750fa12ca4b2bef421de8347924/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/6ee0b6473c2454066747de781500b3c6/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.2.0] /home/fvergara/.gradle/caches/8.8/transforms/feb8e2b099a13ef41f9cf940d6fd2758/transformed/core-1.2.0/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/fvergara/.gradle/caches/8.8/transforms/2fd04857057ce230bd6016b4ac1ced40/transformed/versionedparcelable-1.1.0/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/b0650a412e26a3a2ee3caaa6aaf8b7f8/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/e807fb6701c5feba89b5db3fc097d290/transformed/lifecycle-runtime-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/3946e355e7642ef81970d7efeb062234/transformed/lifecycle-viewmodel-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/ce8629ae52d1518b32fe017e0737f64c/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/7064c2b476deb9b0aaa8b43d9eb8020f/transformed/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/8177c1fc185240a426ff4942dea8702c/transformed/core-runtime-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/96ef1b3d87206cc8b948e1ce215eddc2/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/4c593f3ccd186c5fdc45bc6747306ffb/transformed/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/e33f938d833f67b1814851e8003f28ac/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/efe4c8131cd7d0841f28a2134ab29b31/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
+	package
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:23:5-41
+		INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:22:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:26:9-70
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:26:26-68
+uses-permission#android.permission.POST_NOTIFICATIONS
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:28:9-80
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:28:26-78
+application
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:37:5-194:19
+INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:37:5-194:19
+MERGED from [com.google.androidbrowserhelper:locationdelegation:1.1.1] /home/fvergara/.gradle/caches/8.8/transforms/ad3286f937b2a8d61d644356a246454e/transformed/locationdelegation-1.1.1/AndroidManifest.xml:14:5-16:19
+MERGED from [com.google.androidbrowserhelper:locationdelegation:1.1.1] /home/fvergara/.gradle/caches/8.8/transforms/ad3286f937b2a8d61d644356a246454e/transformed/locationdelegation-1.1.1/AndroidManifest.xml:14:5-16:19
+MERGED from [com.google.android.gms:play-services-location:21.0.1] /home/fvergara/.gradle/caches/8.8/transforms/8b0430d7a43a0932acd7449379328644/transformed/play-services-location-21.0.1/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-location:21.0.1] /home/fvergara/.gradle/caches/8.8/transforms/8b0430d7a43a0932acd7449379328644/transformed/play-services-location-21.0.1/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/9d7b38f1d96938519477dd5bb030ea7d/transformed/play-services-base-18.1.0/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/9d7b38f1d96938519477dd5bb030ea7d/transformed/play-services-base-18.1.0/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /home/fvergara/.gradle/caches/8.8/transforms/a1c11eb546b62108efac676d4abf22a9/transformed/play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /home/fvergara/.gradle/caches/8.8/transforms/a1c11eb546b62108efac676d4abf22a9/transformed/play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/070e01525a9f4da3b88a8516a42b5c99/transformed/play-services-basement-18.1.0/AndroidManifest.xml:20:5-24:19
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/070e01525a9f4da3b88a8516a42b5c99/transformed/play-services-basement-18.1.0/AndroidManifest.xml:20:5-24:19
+MERGED from [androidx.core:core:1.2.0] /home/fvergara/.gradle/caches/8.8/transforms/feb8e2b099a13ef41f9cf940d6fd2758/transformed/core-1.2.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.2.0] /home/fvergara/.gradle/caches/8.8/transforms/feb8e2b099a13ef41f9cf940d6fd2758/transformed/core-1.2.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/fvergara/.gradle/caches/8.8/transforms/2fd04857057ce230bd6016b4ac1ced40/transformed/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/fvergara/.gradle/caches/8.8/transforms/2fd04857057ce230bd6016b4ac1ced40/transformed/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+	android:extractNativeLibs
+		INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.2.0] /home/fvergara/.gradle/caches/8.8/transforms/feb8e2b099a13ef41f9cf940d6fd2758/transformed/core-1.2.0/AndroidManifest.xml:24:18-86
+	android:supportsRtl
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:45:9-35
+	android:label
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:41:9-40
+	android:manageSpaceActivity
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:43:9-105
+	android:icon
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:40:9-43
+	android:allowBackup
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:39:9-35
+	android:theme
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:46:9-68
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:38:9-35
+meta-data#asset_statements
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:48:9-50:58
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:50:13-55
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:49:13-44
+meta-data#web_manifest_url
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:53:13-55:58
+	android:value
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:55:17-55
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:54:17-48
+meta-data#twa_generator
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:58:9-60:52
+	android:value
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:60:13-49
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:59:13-41
+activity#com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:67:13-71:24
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:67:23-104
+meta-data#android.support.customtabs.trusted.MANAGE_SPACE_URL
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:68:13-70:53
+	android:value
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:70:17-50
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:69:17-83
+activity#com.fvergaracl.interralink.LauncherActivity
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:74:9-152:20
+	android:label
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:76:13-49
+	android:exported
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:77:13-36
+	android:alwaysRetainTaskState
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:75:13-49
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:74:19-50
+meta-data#android.support.customtabs.trusted.DEFAULT_URL
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:78:13-79:53
+	android:value
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:79:17-50
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:78:24-85
+meta-data#android.support.customtabs.trusted.STATUS_BAR_COLOR
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:81:13-83:58
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:83:17-55
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:82:17-83
+meta-data#android.support.customtabs.trusted.STATUS_BAR_COLOR_DARK
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:85:13-87:62
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:87:17-59
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:86:17-88
+meta-data#android.support.customtabs.trusted.NAVIGATION_BAR_COLOR
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:89:13-91:61
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:91:17-58
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:90:17-87
+meta-data#android.support.customtabs.trusted.NAVIGATION_BAR_COLOR_DARK
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:93:13-95:65
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:95:17-62
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:94:17-92
+meta-data#androix.browser.trusted.NAVIGATION_BAR_DIVIDER_COLOR
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:97:13-99:68
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:99:17-65
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:98:17-84
+meta-data#androix.browser.trusted.NAVIGATION_BAR_DIVIDER_COLOR_DARK
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:101:13-103:72
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:103:17-69
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:102:17-89
+meta-data#android.support.customtabs.trusted.SPLASH_IMAGE_DRAWABLE
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:105:13-106:54
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:106:17-52
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:105:24-95
+meta-data#android.support.customtabs.trusted.SPLASH_SCREEN_BACKGROUND_COLOR
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:108:13-109:60
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:109:17-58
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:108:24-104
+meta-data#android.support.customtabs.trusted.SPLASH_SCREEN_FADE_OUT_DURATION
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:111:13-112:71
+	android:value
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:112:17-69
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:111:24-105
+meta-data#android.support.customtabs.trusted.FILE_PROVIDER_AUTHORITY
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:114:13-115:60
+	android:value
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:115:17-58
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:114:24-97
+meta-data#android.app.shortcuts
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:117:13-97
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:117:61-94
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:117:24-60
+meta-data#android.support.customtabs.trusted.FALLBACK_STRATEGY
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:119:13-120:56
+	android:value
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:120:17-53
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:119:24-91
+meta-data#android.support.customtabs.trusted.DISPLAY_MODE
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:125:13-126:45
+	android:value
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:126:17-42
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:125:24-86
+meta-data#android.support.customtabs.trusted.SCREEN_ORIENTATION
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:129:13-130:54
+	android:value
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:130:17-52
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:129:24-92
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:136:13-139:29
+action#android.intent.action.MAIN
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:137:17-69
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:137:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:138:17-77
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:138:27-74
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:@string/hostName+data:scheme:https
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:141:13-149:29
+	android:autoVerify
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:141:28-53
+action#android.intent.action.VIEW
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:142:17-68
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:142:25-66
+category#android.intent.category.DEFAULT
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:143:17-76
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:143:27-73
+category#android.intent.category.BROWSABLE
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:144:17-77
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:144:27-75
+data
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:145:17-148:19
+	android:host
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:146:21-52
+	android:scheme
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:145:23-45
+activity#com.google.androidbrowserhelper.trusted.FocusActivity
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:154:9-90
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:154:19-87
+activity#com.google.androidbrowserhelper.trusted.WebViewFallbackActivity
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:156:9-157:62
+	android:configChanges
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:157:13-59
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:156:19-97
+provider#androidx.core.content.FileProvider
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:159:9-167:20
+	android:grantUriPermissions
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:162:13-47
+	android:authorities
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:161:13-60
+	android:exported
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:163:13-37
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:160:13-62
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:164:13-166:53
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:166:17-50
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:165:17-67
+service#com.fvergaracl.interralink.DelegationService
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:169:9-184:19
+	android:enabled
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:171:13-55
+	android:exported
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:172:13-56
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:170:13-46
+meta-data#android.support.customtabs.trusted.SMALL_ICON
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:175:17-177:73
+	android:resource
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:177:21-70
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:176:21-81
+intent-filter#action:name:android.support.customtabs.trusted.TRUSTED_WEB_ACTIVITY_SERVICE+category:name:android.intent.category.DEFAULT
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:180:13-183:29
+action#android.support.customtabs.trusted.TRUSTED_WEB_ACTIVITY_SERVICE
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:181:17-105
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:181:25-103
+activity#com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:187:13-118
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:187:23-115
+activity#com.google.androidbrowserhelper.locationdelegation.PermissionRequestActivity
+ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:191:13-192:89
+MERGED from [com.google.androidbrowserhelper:locationdelegation:1.1.1] /home/fvergara/.gradle/caches/8.8/transforms/ad3286f937b2a8d61d644356a246454e/transformed/locationdelegation-1.1.1/AndroidManifest.xml:15:9-113
+MERGED from [com.google.androidbrowserhelper:locationdelegation:1.1.1] /home/fvergara/.gradle/caches/8.8/transforms/ad3286f937b2a8d61d644356a246454e/transformed/locationdelegation-1.1.1/AndroidManifest.xml:15:9-113
+	android:name
+		ADDED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml:191:23-123
+uses-sdk
+INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml
+INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml
+MERGED from [com.google.androidbrowserhelper:locationdelegation:1.1.1] /home/fvergara/.gradle/caches/8.8/transforms/ad3286f937b2a8d61d644356a246454e/transformed/locationdelegation-1.1.1/AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.androidbrowserhelper:locationdelegation:1.1.1] /home/fvergara/.gradle/caches/8.8/transforms/ad3286f937b2a8d61d644356a246454e/transformed/locationdelegation-1.1.1/AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.androidbrowserhelper:androidbrowserhelper:2.5.0] /home/fvergara/.gradle/caches/8.8/transforms/d3335fbdff4200978ad121d7b141def7/transformed/androidbrowserhelper-2.5.0/AndroidManifest.xml:22:5-24:41
+MERGED from [com.google.androidbrowserhelper:androidbrowserhelper:2.5.0] /home/fvergara/.gradle/caches/8.8/transforms/d3335fbdff4200978ad121d7b141def7/transformed/androidbrowserhelper-2.5.0/AndroidManifest.xml:22:5-24:41
+MERGED from [com.google.android.gms:play-services-location:21.0.1] /home/fvergara/.gradle/caches/8.8/transforms/8b0430d7a43a0932acd7449379328644/transformed/play-services-location-21.0.1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-location:21.0.1] /home/fvergara/.gradle/caches/8.8/transforms/8b0430d7a43a0932acd7449379328644/transformed/play-services-location-21.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.browser:browser:1.4.0] /home/fvergara/.gradle/caches/8.8/transforms/b511174c15fdde7dea3e957094b4390b/transformed/browser-1.4.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.browser:browser:1.4.0] /home/fvergara/.gradle/caches/8.8/transforms/b511174c15fdde7dea3e957094b4390b/transformed/browser-1.4.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/9d7b38f1d96938519477dd5bb030ea7d/transformed/play-services-base-18.1.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/9d7b38f1d96938519477dd5bb030ea7d/transformed/play-services-base-18.1.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /home/fvergara/.gradle/caches/8.8/transforms/a1c11eb546b62108efac676d4abf22a9/transformed/play-services-tasks-18.0.2/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /home/fvergara/.gradle/caches/8.8/transforms/a1c11eb546b62108efac676d4abf22a9/transformed/play-services-tasks-18.0.2/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/070e01525a9f4da3b88a8516a42b5c99/transformed/play-services-basement-18.1.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/070e01525a9f4da3b88a8516a42b5c99/transformed/play-services-basement-18.1.0/AndroidManifest.xml:18:5-43
+MERGED from [androidx.fragment:fragment:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/e3627cac7d4bcbed3a6e7aa9fc7150e1/transformed/fragment-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/e3627cac7d4bcbed3a6e7aa9fc7150e1/transformed/fragment-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/a637b18d44c1fa53a59b15d7b9a6e66a/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/a637b18d44c1fa53a59b15d7b9a6e66a/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/b62f08573129c3b08abafae5c700beec/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/b62f08573129c3b08abafae5c700beec/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/75a2ccd4691d118f41617dd645ae627e/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/75a2ccd4691d118f41617dd645ae627e/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/0035ff57f2f60e468a00d5e77b739649/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/0035ff57f2f60e468a00d5e77b739649/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/7b5725f0698d53851dbd128b6d233666/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/7b5725f0698d53851dbd128b6d233666/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/0c335f7e0dabb5e1c56044e7c635a0a4/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/0c335f7e0dabb5e1c56044e7c635a0a4/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/202c329bb335d744cd843e9d7215faa0/transformed/slidingpanelayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/202c329bb335d744cd843e9d7215faa0/transformed/slidingpanelayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/16555387727fd6e9b3499bb89740582d/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/16555387727fd6e9b3499bb89740582d/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/ed440750fa12ca4b2bef421de8347924/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/ed440750fa12ca4b2bef421de8347924/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/6ee0b6473c2454066747de781500b3c6/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/6ee0b6473c2454066747de781500b3c6/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.2.0] /home/fvergara/.gradle/caches/8.8/transforms/feb8e2b099a13ef41f9cf940d6fd2758/transformed/core-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.2.0] /home/fvergara/.gradle/caches/8.8/transforms/feb8e2b099a13ef41f9cf940d6fd2758/transformed/core-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/fvergara/.gradle/caches/8.8/transforms/2fd04857057ce230bd6016b4ac1ced40/transformed/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/fvergara/.gradle/caches/8.8/transforms/2fd04857057ce230bd6016b4ac1ced40/transformed/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/b0650a412e26a3a2ee3caaa6aaf8b7f8/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/b0650a412e26a3a2ee3caaa6aaf8b7f8/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/e807fb6701c5feba89b5db3fc097d290/transformed/lifecycle-runtime-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/e807fb6701c5feba89b5db3fc097d290/transformed/lifecycle-runtime-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/3946e355e7642ef81970d7efeb062234/transformed/lifecycle-viewmodel-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/3946e355e7642ef81970d7efeb062234/transformed/lifecycle-viewmodel-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/ce8629ae52d1518b32fe017e0737f64c/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/ce8629ae52d1518b32fe017e0737f64c/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/7064c2b476deb9b0aaa8b43d9eb8020f/transformed/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/7064c2b476deb9b0aaa8b43d9eb8020f/transformed/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/8177c1fc185240a426ff4942dea8702c/transformed/core-runtime-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /home/fvergara/.gradle/caches/8.8/transforms/8177c1fc185240a426ff4942dea8702c/transformed/core-runtime-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/96ef1b3d87206cc8b948e1ce215eddc2/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/96ef1b3d87206cc8b948e1ce215eddc2/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/4c593f3ccd186c5fdc45bc6747306ffb/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/4c593f3ccd186c5fdc45bc6747306ffb/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/e33f938d833f67b1814851e8003f28ac/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/e33f938d833f67b1814851e8003f28ac/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/efe4c8131cd7d0841f28a2134ab29b31/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/fvergara/.gradle/caches/8.8/transforms/efe4c8131cd7d0841f28a2134ab29b31/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+	android:targetSdkVersion
+		INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/fvergara/interralink/android/app/src/main/AndroidManifest.xml
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from [com.google.androidbrowserhelper:locationdelegation:1.1.1] /home/fvergara/.gradle/caches/8.8/transforms/ad3286f937b2a8d61d644356a246454e/transformed/locationdelegation-1.1.1/AndroidManifest.xml:11:5-79
+	android:name
+		ADDED from [com.google.androidbrowserhelper:locationdelegation:1.1.1] /home/fvergara/.gradle/caches/8.8/transforms/ad3286f937b2a8d61d644356a246454e/transformed/locationdelegation-1.1.1/AndroidManifest.xml:11:22-76
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from [com.google.androidbrowserhelper:locationdelegation:1.1.1] /home/fvergara/.gradle/caches/8.8/transforms/ad3286f937b2a8d61d644356a246454e/transformed/locationdelegation-1.1.1/AndroidManifest.xml:12:5-81
+	android:name
+		ADDED from [com.google.androidbrowserhelper:locationdelegation:1.1.1] /home/fvergara/.gradle/caches/8.8/transforms/ad3286f937b2a8d61d644356a246454e/transformed/locationdelegation-1.1.1/AndroidManifest.xml:12:22-78
+queries
+ADDED from [com.google.androidbrowserhelper:androidbrowserhelper:2.5.0] /home/fvergara/.gradle/caches/8.8/transforms/d3335fbdff4200978ad121d7b141def7/transformed/androidbrowserhelper-2.5.0/AndroidManifest.xml:26:5-34:15
+intent#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+data:scheme:https
+ADDED from [com.google.androidbrowserhelper:androidbrowserhelper:2.5.0] /home/fvergara/.gradle/caches/8.8/transforms/d3335fbdff4200978ad121d7b141def7/transformed/androidbrowserhelper-2.5.0/AndroidManifest.xml:27:9-33:18
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/9d7b38f1d96938519477dd5bb030ea7d/transformed/play-services-base-18.1.0/AndroidManifest.xml:20:9-22:45
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/9d7b38f1d96938519477dd5bb030ea7d/transformed/play-services-base-18.1.0/AndroidManifest.xml:22:19-43
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/9d7b38f1d96938519477dd5bb030ea7d/transformed/play-services-base-18.1.0/AndroidManifest.xml:21:19-78
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/9d7b38f1d96938519477dd5bb030ea7d/transformed/play-services-base-18.1.0/AndroidManifest.xml:20:19-85
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/070e01525a9f4da3b88a8516a42b5c99/transformed/play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/070e01525a9f4da3b88a8516a42b5c99/transformed/play-services-basement-18.1.0/AndroidManifest.xml:23:13-66
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:18.1.0] /home/fvergara/.gradle/caches/8.8/transforms/070e01525a9f4da3b88a8516a42b5c99/transformed/play-services-basement-18.1.0/AndroidManifest.xml:22:13-58

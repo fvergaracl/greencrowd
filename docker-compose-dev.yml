@@ -11,12 +11,12 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-      - ./public:/usr/src/app/public # Persistencia del Service Worker (PWA)
+      - ./public:/usr/src/app/public
     env_file:
       - .env.local
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_HTTPS=true
+      - NEXT_PUBLIC_HTTPS=false
       - NEXT_PUBLIC_PWA=true
     depends_on:
       - postgresgc
