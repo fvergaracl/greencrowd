@@ -1,8 +1,8 @@
 import axios from "axios";
-import { getApiBaseUrl } from "@/config/api"; // Import API config
+import { getApiBaseUrl, getLogginEnabled } from "@/config/api"; // Import API config
 
 // Flag to enable or disable logging globally
-const LOGGING_ENABLED = process.env.NEXT_PUBLIC_LOGGING_ENABLED === "true";
+const LOGGING_ENABLED = getLogginEnabled();
 
 /**
  * Centralized function for sending logs to a logging endpoint.
