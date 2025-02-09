@@ -8,7 +8,7 @@ import {
 import { getPersistedState, persistState } from "../utils/persistentState";
 import axios from "axios";
 import { getApiBaseUrl } from "@/config/api";
-
+import { logEvent } from "@/utils/logger";
 export interface IPosition {
   lat: number;
   lng: number;
@@ -72,22 +72,73 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const updatePosition = async () => {
     if (!isTracking) return;
 
+    const geoOptions = {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 10000,
+    };
+
     navigator.geolocation.getCurrentPosition(
-      (location) => {
+      async (location) => {
         const newPosition = {
           lat: location.coords.latitude,
           lng: location.coords.longitude,
         };
+
         setPositionFullDetails(location.coords);
         setPosition(newPosition);
-        // console.log("New position:", newPosition)
-        axios.post(`${getApiBaseUrl()}/userTrajectory`, newPosition);
+
+        try {
+          await axios.post(`${getApiBaseUrl()}/userTrajectory`, newPosition);
+        } catch (error) {
+          console.error("Error sending user trajectory:", error);
+        }
 
         if (!mapCenter) setMapCenter(newPosition);
       },
       (error) => {
-        console.error("Error fetching location:", error);
-      }
+        switch (error.code) {
+          case error.PERMISSION_DENIED: {
+            console.error("User denied the request for Geolocation.");
+
+            logEvent(
+              "GEOLOCATION_PERMISSION_DENIED_IN_UPDATE_POSITION",
+              "User denied the request for Geolocation.",
+              { error: error }
+            );
+
+            break;
+          }
+          case error.POSITION_UNAVAILABLE: {
+            console.error("Location information is unavailable.");
+            logEvent(
+              "GEOLOCATION_POSITION_UNAVAILABLE_IN_UPDATE_POSITION",
+              "Location information is unavailable.",
+              { error: error }
+            );
+            break;
+          }
+          case error.TIMEOUT: {
+            console.error("The request to get user location timed out.");
+            logEvent(
+              "GEOLOCATION_TIMEOUT_IN_UPDATE_POSITION",
+              "The request to get user location timed out.",
+              { error: error }
+            );
+            break;
+          }
+          default: {
+            console.error("An unknown error occurred.");
+            logEvent(
+              "GEOLOCATION_UNKNOWN_ERROR_IN_UPDATE_POSITION",
+              "An unknown error occurred.",
+              { error: error }
+            );
+            break;
+          }
+        }
+      },
+      geoOptions
     );
   };
 

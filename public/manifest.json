@@ -21,7 +21,13 @@
     "scope": "/",
     "permissions": {
         "geolocation": {
-            "description": "Access to location services to enhance user experience."
+            "description": "Access to location services to enhance user experience, including background geolocation."
+        },
+        "gyroscope": {
+            "description": "Access to device orientation and movement to provide direction information."
+        },
+        "accelerometer": {
+            "description": "Access to accelerometer for movement-based features."
         },
         "storage": {
             "description": "Allows uploading and managing files within the application."
