@@ -35,3 +35,24 @@ export const getLogginEnabled = (): boolean => {
   );
   return process.env.NEXT_PUBLIC_LOGGING_ENABLED === "true";
 };
+
+// NEXT_PUBLIC_SENTRY_ENABLED
+
+export const getSentryEnabled = (): boolean => {
+  if (
+    typeof window !== "undefined" &&
+    window.__ENV__?.NEXT_PUBLIC_SENTRY_ENABLED
+  ) {
+    console.log(
+      "[+] Usando SENTRY_ENABLED desde window.__ENV__:",
+      window.__ENV__.NEXT_PUBLIC_SENTRY_ENABLED
+    );
+    return window.__ENV__.NEXT_PUBLIC_SENTRY_ENABLED === "true";
+  }
+
+  console.log(
+    "[-] Usando SENTRY_ENABLED desde process.env:",
+    process.env.NEXT_PUBLIC_SENTRY_ENABLED === "true"
+  );
+  return process.env.NEXT_PUBLIC_SENTRY_ENABLED === "true";
+};

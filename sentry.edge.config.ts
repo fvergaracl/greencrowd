@@ -7,12 +7,12 @@
  * Documentation: https://docs.sentry.io/platforms/javascript/guides/nextjs/
  */
 
-import * as Sentry from "@sentry/nextjs"
-
+import * as Sentry from "@sentry/nextjs";
+import { getSentryEnabled } from "@/config/api";
 // Ensure the Sentry DSN is provided before initializing
-const SENTRY_DSN = process?.env?.NEXT_PUBLIC_SENTRY_DSN
-const SENTRY_ENABLED = process?.env?.NEXT_PUBLIC_SENTRY_ENABLED || false
-const ENVIRONMENT = process?.env?.NEXT_PUBLIC_SENTRY_ENVIRONMENT
+const SENTRY_DSN = getSentryEnabled();
+const SENTRY_ENABLED = process?.env?.NEXT_PUBLIC_SENTRY_ENABLED || false;
+const ENVIRONMENT = process?.env?.NEXT_PUBLIC_SENTRY_ENVIRONMENT;
 
 if (SENTRY_DSN && SENTRY_ENABLED) {
   Sentry.init({
@@ -24,10 +24,10 @@ if (SENTRY_DSN && SENTRY_ENABLED) {
     tracesSampleRate: process?.env?.NODE_ENV === "production" ? 0.1 : 1.0,
 
     // Enable debugging in non-production environments for easier setup troubleshooting.
-    debug: process?.env?.NODE_ENV !== "production"
-  })
+    debug: process?.env?.NODE_ENV !== "production",
+  });
 } else {
   console.warn(
     "Sentry DSN is not provided. Sentry for edge features will not be initialized."
-  )
+  );
 }

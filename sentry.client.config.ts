@@ -6,12 +6,13 @@
  * Documentation: https://docs.sentry.io/platforms/javascript/guides/nextjs/
  */
 
-import * as Sentry from "@sentry/nextjs"
+import * as Sentry from "@sentry/nextjs";
+import { getSentryEnabled } from "@/config/api";
 
 // Ensure the Sentry DSN is provided before initializing
-const SENTRY_DSN = process?.env?.NEXT_PUBLIC_SENTRY_DSN
-const SENTRY_ENABLED = process?.env?.NEXT_PUBLIC_SENTRY_ENABLED || false
-const ENVIRONMENT = process?.env?.NEXT_PUBLIC_SENTRY_ENVIRONMENT
+const SENTRY_DSN = getSentryEnabled();
+const SENTRY_ENABLED = process?.env?.NEXT_PUBLIC_SENTRY_ENABLED || false;
+const ENVIRONMENT = process?.env?.NEXT_PUBLIC_SENTRY_ENVIRONMENT;
 
 if (SENTRY_DSN && SENTRY_ENABLED) {
   Sentry.init({
@@ -34,10 +35,10 @@ if (SENTRY_DSN && SENTRY_ENABLED) {
     integrations: [
       Sentry.replayIntegration({
         maskAllText: true, // Mask all text inputs to avoid sensitive data leaks
-        blockAllMedia: true // Block all media elements from being captured
-      })
-    ]
-  })
+        blockAllMedia: true, // Block all media elements from being captured
+      }),
+    ],
+  });
 } else {
-  console.warn("Sentry DSN is not provided. Sentry will not be initialized.")
+  console.warn("Sentry DSN is not provided. Sentry will not be initialized.");
 }
