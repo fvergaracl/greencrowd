@@ -13,6 +13,17 @@ export interface IPosition {
   lat: number;
   lng: number;
 }
+
+export interface IPositionFullDetails {
+  accuracy: number;
+  latitude: number;
+  longitude: number;
+  altitude: number | null;
+  altitudeAccuracy: number | null;
+  heading: number | null;
+  speed: number | null;
+}
+
 interface User {
   name: string;
   email: string;
@@ -30,6 +41,8 @@ export interface DashboardContextType {
   selectedCampaign: any | null;
   setSelectedCampaign: (campaign: any | null) => void;
   loading: boolean;
+  logout: () => void;
+  positionFullDetails: IPositionFullDetails | null;
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(
@@ -47,6 +60,8 @@ export const useDashboard = () => {
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [position, setPosition] = useState<IPosition | null>(null);
+  const [positionFullDetails, setPositionFullDetails] =
+    useState<IPositionFullDetails | null>(null);
   const [mapCenter, setMapCenter] = useState<IPosition | null>(null);
   const [isTracking, setIsTracking] = useState<boolean>(true);
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
@@ -63,6 +78,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           lat: location.coords.latitude,
           lng: location.coords.longitude,
         };
+        setPositionFullDetails(location.coords);
         setPosition(newPosition);
         // console.log("New position:", newPosition)
         axios.post(`${getApiBaseUrl()}/userTrajectory`, newPosition);
@@ -175,6 +191,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         setSelectedCampaign,
         loading,
         logout,
+        positionFullDetails,
       }}
     >
       {children}

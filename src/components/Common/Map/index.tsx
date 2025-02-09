@@ -138,7 +138,8 @@ export default function Map({
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { mapCenter, position, isTracking } = useContextMapping();
+  const { mapCenter, position, isTracking, positionFullDetails } =
+    useContextMapping();
   const mapRef = useRef<L.Map | null>(null);
   const [campaignData, setCampaignData] = useState<any>(null);
   const [selectedPoi, setSelectedPoi] = useState<PointOfInterest | null>(null);
@@ -211,11 +212,23 @@ export default function Map({
 
   const markerIcon = useMemo(() => {
     if (isTracking) {
+      const heading = positionFullDetails?.heading || 0;
       return new DivIcon({
         className: "blinking-marker-icon",
         html: `
-          <div class="blinking-marker">
+         <div class="blinking-marker" style="transform: rotate(${heading}deg);">
             <div class="inner-circle"></div>
+            <div class="arrow" style="
+              position: absolute;
+              bottom: -10px;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 0;
+              height: 0;
+              border-left: 5px solid transparent;
+              border-right: 5px solid transparent;
+              border-top: 10px solid red;
+            "></div>
           </div>
         `,
         iconSize: [20, 20],
@@ -530,21 +543,33 @@ export default function Map({
                         </p>
 
                         {errorPoi && (
-                          <p className="text-red-500 text-xs mt-2">
-                            {t("You cannot access this task:")} {t(errorPoi)}
-                          </p>
+                          <div className="relative">
+                            <p
+                              className="absolute top-0 left-0 w-full bg-red-600 text-white text-sm font-bold p-2 rounded-lg shadow-lg animate-bounce z-1000"
+                              style={{ pointerEvents: "auto" }}
+                            >
+                              {t("You cannot access this task:")} {t(errorPoi)}
+                            </p>
+                          </div>
                         )}
 
                         <button
                           onClick={() => {
-                            logEvent(
-                              "USER_CLICKED_ENTER_TASK",
-                              "User clicked on the enter task button",
-                              { poi: selectedPoi, task }
-                            );
+                            if (errorPoi) {
+                              logEvent(
+                                "USER_CLICKED_ENTER_TASK_ERROR",
+                                "User clicked on the enter task button but there was an error",
+                                { poi: selectedPoi, task, location }
+                              );
+                            } else {
+                              logEvent(
+                                "USER_CLICKED_ENTER_TASK",
+                                "User clicked on the enter task button",
+                                { poi: selectedPoi, task }
+                              );
 
-                            !errorPoi &&
-                              (window.location.href = `/dashboard/task/${task.id}`);
+                              window.location.href = `/dashboard/task/${task.id}`;
+                            }
                           }}
                           className={`mt-1 px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none text-center transition ${
                             errorPoi
@@ -552,7 +577,6 @@ export default function Map({
                               : "bg-blue-600 hover:bg-blue-700 focus:ring focus:ring-blue-400"
                           }`}
                           data-cy={`enter-task-${task.id}`}
-                          disabled={!!errorPoi}
                         >
                           {t("Enter Task")}
                         </button>
