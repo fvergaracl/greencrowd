@@ -15,11 +15,6 @@ export const logEvent = async (
   description: string,
   metadata?: Record<string, any>
 ): Promise<void> => {
-  if (!LOGGING_ENABLED) {
-    console.info(`[Logging disabled]: ${eventType} - ${description}`, metadata);
-    return;
-  }
-
   try {
     await axios.post(`${getApiBaseUrl()}/log`, {
       eventType,
