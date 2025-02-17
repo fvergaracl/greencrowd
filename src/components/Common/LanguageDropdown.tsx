@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useTranslation } from "@/hooks/useTranslation"
 
 type LocaleKey = "en" | "dk" | "es" | "nl" | "it"
@@ -11,21 +11,41 @@ const locales: Record<LocaleKey, { label: string; flag: string }> = {
   it: { label: "Italian", flag: "🇮🇹" }
 }
 
-export default function LanguageDropdown() {
-  const currentLocale = (localStorage.getItem("locale") as LocaleKey) || "en"
+interface LanguageDropdownProps {
+  showLabel?: boolean // Optional prop to toggle label visibility
+}
+
+const LanguageDropdown: React.FC<LanguageDropdownProps> = ({
+  showLabel = true
+}) => {
   const { t, setLocale } = useTranslation()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [currentLocale, setCurrentLocale] = useState<LocaleKey>("en")
+
+  useEffect(() => {
+    const savedLocale = (localStorage.getItem("locale") as LocaleKey) || "en"
+    if (Object.keys(locales).includes(savedLocale)) {
+      setCurrentLocale(savedLocale)
+      setLocale(savedLocale)
+    }
+  }, [])
 
   const handleLocaleChange = (locale: LocaleKey) => {
     setLocale(locale)
+    setCurrentLocale(locale)
+    localStorage.setItem("locale", locale)
     setIsOpen(false)
   }
 
   return (
     <div className='relative inline-block text-left'>
-      <p className='text-gray-600 mt-4' data-cy='settings-user-locale-label'>
-        {t("Language")}
-      </p>
+      {/* Conditional rendering of the label */}
+      {showLabel && (
+        <p className='text-gray-600 mt-4' data-cy='settings-user-locale-label'>
+          {t("Language")}
+        </p>
+      )}
+
       <div
         className='font-medium text-gray-800 flex items-center gap-2 cursor-pointer'
         onClick={() => setIsOpen(!isOpen)}
@@ -38,7 +58,7 @@ export default function LanguageDropdown() {
           {locales[currentLocale]?.label || t("Unknown Locale")}
         </span>
         <svg
-          className='w-5 h-5 ml-2 text-gray-600 transform transition-transform'
+          className='w-5 h-5 ml-2 text-gray-600 transition-transform'
           viewBox='0 0 20 20'
           fill='currentColor'
           xmlns='http://www.w3.org/2000/svg'
@@ -51,6 +71,7 @@ export default function LanguageDropdown() {
           />
         </svg>
       </div>
+
       {isOpen && (
         <div
           className='absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10'
@@ -73,3 +94,5 @@ export default function LanguageDropdown() {
     </div>
   )
 }
+
+export default LanguageDropdown
