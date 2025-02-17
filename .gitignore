@@ -54,3 +54,55 @@ personalNotes.md
 certs/nginx.key
 android/android.keystore
 **.keystore
+
+
+
+# Compiled Java class files
+/android/app/build/
+/android/.gradle/
+/android/.idea/
+/android/local.properties
+/android/app/release/
+/android/app/debug/
+/android/gradlew
+/android/gradlew.bat
+/android/gradle/
+android/app/src/main/assets/index.android.bundle
+android/app/src/main/res/drawable-*
+android/app/src/main/res/raw*
+android/app/src/main/res/xml*
+
+
+# Settings and configuration files
+/.gradle/
+/gradle/
+/gradlew
+/gradlew.bat
+/build/
+*.iml
+*.log
+.gradle
+
+# Binary files and compiled files
+*.apk
+*.aab
+*.keystore
+
+# Prisma
+/prisma/migrations/
+
+# related with Next.js and React.js
+/.next/
+/.next/
+/out/
+/build/
+/.npm/
+/.npmrc
+.npm-debug.log*
+
+
+/coverage/
+*.swp
+.vscode/
+.idea/
+*.log
