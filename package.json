@@ -29,6 +29,7 @@
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "leaflet-routing-machine": "^3.2.12",
+    "lottie-react": "^2.4.1",
     "minio": "^7.1.4",
     "multer": "^1.4.5-lts.1",
     "next": "^14.2.23",
