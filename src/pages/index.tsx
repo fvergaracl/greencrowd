@@ -1,40 +1,37 @@
-import { useEffect, useState } from "react"
-import { useTranslation } from "@/hooks/useTranslation"
-import { setCookies, getCookie } from "@/utils/cookies"
-import { Step1, Step2 } from "@/components/Onboarding"
+import { useState, useCallback } from "react"
+import { Step1, Step2, Step3, Step4 } from "@/components/Onboarding"
 import { motion, AnimatePresence } from "framer-motion"
 
-export default function Home() {
-  const { t } = useTranslation()
-  const [stepNumber, setStepNumber] = useState<number>(1)
+type StepNumber = 1 | 2 | 3 | 4
 
-  // Recuperar el paso desde cookies al cargar
-  useEffect(() => {
-    const savedStep = getCookie("onboarding_step")
-    if (savedStep) {
-      const step = Number(savedStep)
-      if (!isNaN(step)) {
+export default function Home() {
+  const [stepNumber, setStepNumber] = useState<StepNumber>(1)
+
+  const steps = [Step1, Step2, Step3, Step4]
+
+  const goToStep = useCallback(
+    (step: StepNumber) => {
+      if (step >= 1 && step <= steps.length) {
         setStepNumber(step)
       }
-    }
-  }, [])
+    },
+    [steps.length]
+  )
+
+  const CurrentStep = steps[stepNumber - 1]
 
   return (
     <div className='h-screen bg-gradient-to-r from-blue-400 to-green-400 flex items-center justify-center relative overflow-hidden'>
       <AnimatePresence mode='wait'>
         <motion.div
-          key={stepNumber} // Clave única para animación de cambio
+          key={stepNumber}
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.4, ease: "backInOut" }}
           className='absolute w-full flex items-center justify-center'
         >
-          {stepNumber === 1 ? (
-            <Step1 setStepNumber={setStepNumber} />
-          ) : (
-            <Step2 />
-          )}
+          <CurrentStep setStepNumber={goToStep} />
         </motion.div>
       </AnimatePresence>
     </div>
