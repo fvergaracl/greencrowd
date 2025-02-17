@@ -1,4 +1,4 @@
-package com.fvergaracl.interralink;
+package com.fvergaracl.greencrowd;
 
 
 import com.google.androidbrowserhelper.locationdelegation.LocationDelegationExtraCommandHandler;
