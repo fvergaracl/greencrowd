@@ -5,7 +5,7 @@
         ],
         "target": {
             "namespace": "android_app",
-            "package_name": "com.fvergaracl.interralink",
+            "package_name": "com.fvergaracl.greencrowd",
             "sha256_cert_fingerprints": [
                 "33:DD:BB:6C:C6:35:04:AA:9C:C9:A3:AA:1D:74:80:4E:D0:05:F4:09:2F:99:E4:58:49:54:33:80:17:31:6A:D9"
             ]

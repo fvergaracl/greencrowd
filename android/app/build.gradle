@@ -21,11 +21,11 @@ plugins {
 }
 
 def twaManifest = [
-    applicationId: 'com.fvergaracl.interralink',
-    hostName: 'interralink.16.171.94.204.nip.io', // The domain being opened in the TWA.
+    applicationId: 'com.fvergaracl.greencrowd',
+    hostName: 'greencrowd.16.171.94.204.nip.io', // The domain being opened in the TWA.
     launchUrl: '/', // The start path for the TWA. Must be relative to the domain.
-    name: 'INTERRALINK', // The application name.
-    launcherName: 'INTERRALINK', // The name shown on the Android Launcher.
+    name: 'GreenCrowd', // The application name.
+    launcherName: 'GreenCrowd', // The name shown on the Android Launcher.
     themeColor: '#FFFFFF', // The color used for the status bar.
     themeColorDark: '#000000', // The color used for the dark status bar.
     navigationColor: '#000000', // The color used for the navigation bar.
@@ -52,9 +52,9 @@ def twaManifest = [
 
 android {
     compileSdkVersion 35
-    namespace "com.fvergaracl.interralink"
+    namespace "com.fvergaracl.greencrowd"
     defaultConfig {
-        applicationId "com.fvergaracl.interralink"
+        applicationId "com.fvergaracl.greencrowd"
         minSdkVersion 21
         targetSdkVersion 35
         versionCode 6
@@ -74,12 +74,12 @@ android {
             // The URL the Web Manifest for the Progressive Web App that the TWA points to. This
             // is used by Chrome OS and Meta Quest to open the Web version of the PWA instead of
             // the TWA, as it will probably give a better user experience for non-mobile devices.
-            resValue "string", "webManifestUrl", 'https://interralink.16.171.94.204.nip.io/manifest.json'
+            resValue "string", "webManifestUrl", 'https://greencrowd.16.171.94.204.nip.io/manifest.json'
         
 
         
             // This is used by Meta Quest.
-            resValue "string", "fullScopeUrl", 'https://interralink.16.171.94.204.nip.io/'
+            resValue "string", "fullScopeUrl", 'https://greencrowd.16.171.94.204.nip.io/'
         
 
         

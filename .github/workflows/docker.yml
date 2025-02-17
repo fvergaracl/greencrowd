@@ -39,6 +39,6 @@ jobs:
             GIT_COMMIT_HASH=${{ env.GIT_COMMIT_HASH }}
           push: true
           tags: |
-            fvergaracl/interralink:latest
-            fvergaracl/interralink:${{ github.ref_name }}.${{ env.date }}
-            fvergaracl/interralink:commit-${{ env.GIT_COMMIT_HASH }}
+            fvergaracl/greencrowd:latest
+            fvergaracl/greencrowd:${{ github.ref_name }}.${{ env.date }}
+            fvergaracl/greencrowd:commit-${{ env.GIT_COMMIT_HASH }}

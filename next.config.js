@@ -68,7 +68,7 @@ const nextConfig = withPWA({
       },
       {
         protocol: "https",
-        hostname: "interralink.16.171.94.204.nip.io",
+        hostname: "greencrowd.16.171.94.204.nip.io",
         pathname: "/**",
       },
     ],

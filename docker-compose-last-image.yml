@@ -2,8 +2,8 @@ version: "3.7"
 
 services:
   appgc:
-    image: fvergaracl/interralink:latest
-    container_name: interralink_prod
+    image: fvergaracl/greencrowd:latest
+    container_name: greencrowd_prod
     ports:
       - "3000:3000"
     volumes:
