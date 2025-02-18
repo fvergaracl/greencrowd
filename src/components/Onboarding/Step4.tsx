@@ -11,28 +11,36 @@ interface Step4Props {
 }
 
 function openLocationSettings() {
-  const userAgent = navigator.userAgent.toLowerCase()
+  const userAgent = navigator.userAgent.toLowerCase();
 
-  if (userAgent.includes("chrome")) {
-    window.open("chrome://settings/content/location", "_blank")
+  if (userAgent.includes("wv") || userAgent.includes("version/") && userAgent.includes("chrome/")) {
+    // 🚀 WebView (Android) - Open system location settings
+    window.location.href = "intent://settings#Intent;action=android.settings.LOCATION_SOURCE_SETTINGS;end";
+  } else if (userAgent.includes("chrome")) {
+    // 🚀 Chrome Browser
+    window.open("chrome://settings/content/location", "_blank");
   } else if (userAgent.includes("firefox")) {
-    window.open("about:preferences#privacy", "_blank")
+    // 🚀 Firefox Browser
+    window.open("about:preferences#privacy", "_blank");
   } else if (userAgent.includes("safari")) {
+    // 🚀 Safari (iOS)
     Swal.fire({
       title: "Enable Location on iOS",
       text: "Go to: Settings > Privacy > Location Services > Safari, and set it to 'While Using the App'.",
       icon: "info",
       confirmButtonText: "OK"
-    })
+    });
   } else {
+    // 🚀 Default case for other browsers
     Swal.fire({
       title: "Enable Location",
       text: "Please open your browser settings and allow location access.",
       icon: "info",
       confirmButtonText: "OK"
-    })
+    });
   }
 }
+
 
 export const Step4 = ({ setStepNumber }: Step4Props) => {
   const { t } = useTranslation()
