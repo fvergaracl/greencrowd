@@ -9,139 +9,45 @@ import Swal from "sweetalert2"
 interface Step4Props {
   setStepNumber: (step: number) => void
 }
-function openLocationSettings() {
-  const userAgent = navigator.userAgent.toLowerCase()
-  console.log("UserAgent:", userAgent)
-
-  // 🔍 Detectar WebView en Android
-  const isWebView =
-    /wv/.test(userAgent) ||
-    /; wv/.test(userAgent) ||
-    /\bversion\/[\d.]+.*chrome\/[\d.]+/i.test(userAgent)
-
-  if (isWebView) {
-    // 🚀 WebView en Android: Abre la configuración del sistema para ubicación
-    window.location.href =
-      "intent://settings#Intent;action=android.settings.LOCATION_SOURCE_SETTINGS;end"
-  } else if (/android/.test(userAgent)) {
-    // 🚀 Chrome en Android (Navegador Completo)
-    Swal.fire({
-      title: "Enable Location on Android",
-      text: "Go to: Settings > Apps > Your App > Permissions > Enable Location.",
-      icon: "info",
-      confirmButtonText: "Open Settings"
-    }).then(result => {
-      if (result.isConfirmed) {
-        window.location.href =
-          "intent://settings#Intent;action=android.settings.APPLICATION_DETAILS_SETTINGS;end"
-      }
-    })
-  } else if (/chrome/.test(userAgent)) {
-    // 🚀 Chrome en escritorio
-    Swal.fire({
-      title: "Enable Location",
-      text: "Go to Chrome settings and allow location access.",
-      icon: "info",
-      confirmButtonText: "Open Settings"
-    }).then(result => {
-      if (result.isConfirmed) {
-        window.open("https://myaccount.google.com/permissions", "_blank")
-      }
-    })
-  } else if (/firefox/.test(userAgent)) {
-    // 🚀 Firefox
-    window.open("about:preferences#privacy", "_blank")
-  } else if (/safari/.test(userAgent) && !/chrome/.test(userAgent)) {
-    // 🚀 Safari en iOS
-    Swal.fire({
-      title: "Enable Location on iOS",
-      text: "Go to: Settings > Privacy > Location Services > Safari, and set it to 'While Using the App'.",
-      icon: "info",
-      confirmButtonText: "OK"
-    })
-  } else {
-    // 🚀 Caso por defecto para otros navegadores
-    Swal.fire({
-      title: "Enable Location",
-      text: "Please open your browser settings and allow location access.",
-      icon: "info",
-      confirmButtonText: "OK"
-    })
-  }
-}
 
 export const Step4 = ({ setStepNumber }: Step4Props) => {
   const { t } = useTranslation()
 
   // Function to request location manually
-  async function requestLocation() {
-    if (!("geolocation" in navigator)) {
+  const requestLocation = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          console.log("Location enabled:", position)
+
+          // Show success message and move to the next step
+          Swal.fire({
+            title: t("Location Enabled!"),
+            text: t("Thank you! Now you can access location-based campaigns."),
+            icon: "success",
+            confirmButtonText: t("Continue")
+          }).then(() => {
+            setStepNumber(5) // Move to the next step
+          })
+        },
+        error => {
+          console.error("Location access denied:", error)
+          Swal.fire({
+            title: t("Location Access Denied"),
+            text: t("Please enable location access in your settings."),
+            icon: "error",
+            confirmButtonText: t("OK")
+          })
+        }
+      )
+    } else {
       Swal.fire({
         title: t("Geolocation Not Supported"),
         text: t("Your browser does not support geolocation."),
         icon: "warning",
         confirmButtonText: t("OK")
       })
-      return
     }
-
-    try {
-      const permissionStatus = await navigator.permissions.query({
-        name: "geolocation"
-      })
-
-      if (permissionStatus.state === "denied") {
-        console.warn("⚠️ Location permission is permanently denied.")
-        Swal.fire({
-          title: t("Location Access Denied"),
-          text: t(
-            "Please enable location access manually in your browser settings."
-          ),
-          icon: "error",
-          confirmButtonText: t("Open Settings"),
-          showCancelButton: true
-        }).then(result => {
-          if (result.isConfirmed) {
-            openLocationSettings()
-          }
-        })
-        return
-      }
-    } catch (error) {
-      console.error("Error checking location permissions:", error)
-    }
-
-    // 🚀 Intentar solicitar la ubicación
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        console.log("✅ Location enabled:", position)
-        Swal.fire({
-          title: t("Location Enabled!"),
-          text: t("Thank you! Now you can access location-based campaigns."),
-          icon: "success",
-          confirmButtonText: t("Continue")
-        }).then(() => {
-          setStepNumber(5)
-        })
-      },
-      error => {
-        console.error("❌ Location access denied:", error)
-        Swal.fire({
-          title: t("Location Access Denied"),
-          text: t(
-            "We couldn't access your location. Please enable it in your device settings."
-          ),
-          icon: "error",
-          confirmButtonText: t("Open Settings"),
-          showCancelButton: true
-        }).then(result => {
-          if (result.isConfirmed) {
-            openLocationSettings()
-          }
-        })
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    )
   }
 
   return (
