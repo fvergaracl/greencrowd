@@ -15,7 +15,6 @@ export interface IPosition {
   lng: number
 }
 
-
 export interface IPositionFullDetails {
   accuracy: number
   lat: number
@@ -103,7 +102,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           accuracy: location.coords.accuracy,
           altitude: location.coords.altitude,
           altitudeAccuracy: location.coords.altitudeAccuracy,
-          heading: location.coords.heading,
+          heading: finalHeading,
           speed: location.coords.speed
         }
         console.log("----------------location")
