@@ -19,8 +19,8 @@
     "path": "/home/fvergara/greencrowd/android/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "3",
-  "appVersionCode": 3,
+  "appVersionName": "4",
+  "appVersionCode": 4,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://greencrowd.16.171.94.204.nip.io/manifest.json",
@@ -42,5 +42,5 @@
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "3"
+  "appVersion": "4"
 }
