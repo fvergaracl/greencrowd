@@ -81,21 +81,21 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
 
     navigator.geolocation.getCurrentPosition(
       async location => {
-        /*
-        {
-    "timestamp": 1739881784744,
-    "coords": {
-        "accuracy": 11.957,
-        "latitude": 43.2718392,
-        "longitude": -2.9401936,
-        "altitude": null,
-        "altitudeAccuracy": null,
-        "heading": null,
-        "speed": null
-    }
-}
+        let finalHeading = location.coords.heading
 
-*/
+        if (finalHeading === null) {
+          window.addEventListener(
+            "deviceorientationabsolute",
+            event => {
+              if (event.alpha !== null) {
+                finalHeading = event.alpha // Brújula
+                console.log(`📍 Brújula Heading: ${finalHeading}°`)
+              }
+            },
+            { once: true }
+          )
+        }
+
         const newPosition = {
           lat: location.coords.latitude,
           lng: location.coords.longitude,
@@ -234,17 +234,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     if (typeof window !== "undefined") {
       initializeState()
     }
-
-    window.addEventListener("deviceorientationabsolute", event => {
-      const heading = event.alpha // Dirección en grados
-      if (heading !== null) {
-        console.log(`>>>>>>>>>>>>>>>>>>>>>>>>>>>>>< Brújula: ${heading}°`)
-      } else {
-        console.warn(
-          ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>< El navegador no proporciona orientación del dispositivo."
-        )
-      }
-    })
   }, [])
 
   useEffect(() => {

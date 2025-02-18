@@ -19,8 +19,8 @@
     "path": "/home/fvergara/greencrowd/android/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "4",
-  "appVersionCode": 4,
+  "appVersionName": "10",
+  "appVersionCode": 10,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://greencrowd.16.171.94.204.nip.io/manifest.json",
@@ -33,16 +33,6 @@
   "alphaDependencies": {
     "enabled": false
   },
-  "host_permissions": [
-    "android.permission.ACCESS_FINE_LOCATION",
-    "android.permission.ACCESS_COARSE_LOCATION",
-    "android.permission.ACCESS_BACKGROUND_LOCATION",
-    "android.permission.INTERNET",
-    "android.permission.ACCESS_NETWORK_STATE",
-    "android.permission.CAMERA",
-    "android.permission.READ_EXTERNAL_STORAGE",
-    "android.permission.WRITE_EXTERNAL_STORAGE"
-  ],
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
@@ -52,5 +42,5 @@
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "4"
+  "appVersion": "10"
 }

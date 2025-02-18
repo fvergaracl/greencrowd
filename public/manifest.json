@@ -21,12 +21,24 @@
         "fullscreen",
         "minimal-ui"
     ],
-    "start_url": "/?source=pwa",
+    "start_url": "/",
     "scope": "/",
     "related_applications": [
         {
             "platform": "webapp",
             "url": "https://auth1.demo.greengage-project.eu/manifest.json"
+        }
+    ],
+    "host_permissions": [
+        {
+            "host": "greencrowd.16.171.94.204.nip.io",
+            "permissions": [
+                "geolocation",
+                "gyroscope",
+                "accelerometer",
+                "camera",
+                "storage"
+            ]
         }
     ],
     "permissions": {
@@ -35,6 +47,9 @@
         },
         "gyroscope": {
             "description": "Access to device orientation and movement to provide direction information."
+        },
+        "magnetometer": {
+            "description": "Access to compass data for directional accuracy."
         },
         "accelerometer": {
             "description": "Access to accelerometer for movement-based features."
