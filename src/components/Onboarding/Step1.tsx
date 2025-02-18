@@ -1,7 +1,7 @@
 import { useTranslation } from "@/hooks/useTranslation"
 import { motion } from "framer-motion"
-import LanguageDropdown from "@/components/Common/LanguageDropdown"
-
+import { HeaderOnboarding } from "@/components/Onboarding/HeaderOnboarding"
+// Step1: Welcome Screen
 interface Step1Props {
   setStepNumber: (step: number) => void
 }
@@ -11,9 +11,7 @@ export const Step1 = ({ setStepNumber }: Step1Props) => {
 
   return (
     <div className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'>
-      <div className='absolute top-1 right-1'>
-        <LanguageDropdown showLabel={false} />
-      </div>
+      <HeaderOnboarding setStepNumber={setStepNumber} />
       <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>
         {/* Logo at the top */}
 
@@ -21,7 +19,7 @@ export const Step1 = ({ setStepNumber }: Step1Props) => {
           <img
             src='/icons/icon-512x512.png'
             alt='GreenCrowd Logo'
-            className='w-24 h-24 rounded-full shadow-md'
+            className=' rounded-full shadow-md'
           />
         </div>
 

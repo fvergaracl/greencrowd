@@ -1,9 +1,10 @@
 import { useTranslation } from "@/hooks/useTranslation"
 import { motion } from "framer-motion"
 import Lottie from "lottie-react"
-import LanguageDropdown from "@/components/Common/LanguageDropdown"
+import { HeaderOnboarding } from "@/components/Onboarding/HeaderOnboarding"
 import onboardingLocation from "@/lotties/onboarding_location.json"
 import Swal from "sweetalert2"
+// Step4: Enable location
 
 interface Step4Props {
   setStepNumber: (step: number) => void
@@ -51,9 +52,8 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
 
   return (
     <div className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'>
-      <div className='absolute top-1 right-1'>
-        <LanguageDropdown showLabel={false} />
-      </div>
+      <HeaderOnboarding setStepNumber={setStepNumber} />
+
       <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>
         <div className='flex justify-center mt-2'>
           <Lottie animationData={onboardingLocation} loop className='w-2/3' />

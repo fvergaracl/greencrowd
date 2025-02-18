@@ -1,13 +1,15 @@
 import { useTranslation } from "@/hooks/useTranslation"
 import { motion } from "framer-motion"
+import Lottie from "lottie-react"
 import { HeaderOnboarding } from "@/components/Onboarding/HeaderOnboarding"
-// Step2: Select Campaign
+import onboardingRoute from "@/lotties/onboarding_route.json"
+// Step5: Route to complete the task
 
-interface Step3Props {
+interface Step5Props {
   setStepNumber: (step: number) => void
 }
 
-export const Step3 = ({ setStepNumber }: Step3Props) => {
+export const Step5 = ({ setStepNumber }: Step5Props) => {
   const { t } = useTranslation()
 
   return (
@@ -16,20 +18,21 @@ export const Step3 = ({ setStepNumber }: Step3Props) => {
 
       <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>
         <div className='flex justify-center mt-2'>
-          <img
-            src='/images/campaign_screen.png'
-            alt='GreenCrowd Campaign'
-            className='mx-auto w-3/5 sm:w-1/2 md:w-2/5 max-w-lg h-auto object-contain max-h-110'
-          />
+          <Lottie animationData={onboardingRoute} loop className='w-2/3' />
         </div>
 
         <div className='flex-1 flex flex-col justify-center'>
           <h2 className='text-3xl font-bold text-gray-900'>
-            {t("Select Your Campaign")}
+            {t("Navigate to Your Destination")}
           </h2>
           <p className='text-gray-800 mt-4 text-lg'>
             {t(
-              "Browse and choose a campaign to contribute to. Your participation helps advance citizen science and environmental research."
+              "A route has been generated to guide you to the point of interest. Follow the directions and reach the location to complete your task."
+            )}
+          </p>
+          <p className='text-gray-800 mt-2 text-sm italic text-center text-weight-light'>
+            {t(
+              "Ensure your GPS is active for real-time updates and the best navigation experience."
             )}
           </p>
         </div>
@@ -38,11 +41,11 @@ export const Step3 = ({ setStepNumber }: Step3Props) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.5, ease: "easeOut", delay: 1 }}
-          className='mb-6'
+          className='mb-6 flex flex-col gap-4 w-full'
         >
           <button
-            className='w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-md'
-            onClick={() => setStepNumber(4)}
+            className='w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-md'
+            onClick={() => setStepNumber(6)}
           >
             {t("Continue")}
           </button>

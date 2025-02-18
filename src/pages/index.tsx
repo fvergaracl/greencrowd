@@ -1,13 +1,21 @@
 import { useState, useCallback } from "react"
-import { Step1, Step2, Step3, Step4 } from "@/components/Onboarding"
+import {
+  Step1,
+  Step2,
+  Step3,
+  Step4,
+  Step5,
+  Step6,
+  Step7
+} from "@/components/Onboarding"
 import { motion, AnimatePresence } from "framer-motion"
 
-type StepNumber = 1 | 2 | 3 | 4
+type StepNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7
 
 export default function Home() {
   const [stepNumber, setStepNumber] = useState<StepNumber>(1)
 
-  const steps = [Step1, Step2, Step3, Step4]
+  const steps = [Step1, Step2, Step3, Step4, Step5, Step6, Step7]
 
   const goToStep = useCallback(
     (step: StepNumber) => {

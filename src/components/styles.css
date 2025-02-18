@@ -1,9 +1,8 @@
-/* Ícono palpitante */
 .blinking-marker {
   position: relative;
   width: 20px;
   height: 20px;
-  background-color: rgba(255, 0, 0, 0.5);
+  background-color: rgba(0, 17, 255, 0.438);
   border-radius: 50%;
   animation: pulse 1.5s infinite;
 }
@@ -15,10 +14,21 @@
   transform: translate(-50%, -50%);
   width: 10px;
   height: 10px;
-  background-color: red;
+  background-color: blue;
   border-radius: 50%;
 }
 
+.blinking-marker .arrow {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 10px solid blue;
+}
 @keyframes pulse {
   0% {
     transform: scale(1);
