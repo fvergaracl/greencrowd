@@ -13,41 +13,51 @@ interface Step4Props {
 export const Step4 = ({ setStepNumber }: Step4Props) => {
   const { t } = useTranslation()
 
-  // Function to request location manually
-  const requestLocation = () => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          console.log("Location enabled:", position)
-
-          // Show success message and move to the next step
-          Swal.fire({
-            title: t("Location Enabled!"),
-            text: t("Thank you! Now you can access location-based campaigns."),
-            icon: "success",
-            confirmButtonText: t("Continue")
-          }).then(() => {
-            setStepNumber(5) // Move to the next step
-          })
-        },
-        error => {
-          console.error("Location access denied:", error)
-          Swal.fire({
-            title: t("Location Access Denied"),
-            text: t("Please enable location access in your settings."),
-            icon: "error",
-            confirmButtonText: t("OK")
-          })
-        }
-      )
-    } else {
+  const requestLocation = async () => {
+    if (!navigator.permissions || !navigator.geolocation) {
       Swal.fire({
-        title: t("Geolocation Not Supported"),
-        text: t("Your browser does not support geolocation."),
+        title: "Geolocation Not Supported",
+        text: "Your browser does not support geolocation.",
         icon: "warning",
-        confirmButtonText: t("OK")
+        confirmButtonText: "OK"
       })
+      return
     }
+
+    const permission = await navigator.permissions.query({
+      name: "geolocation"
+    })
+
+    if (permission.state === "denied") {
+      Swal.fire({
+        title: "Location Access Denied",
+        text: "You have denied location access. Please enable it in your settings.",
+        icon: "error",
+        confirmButtonText: "OK"
+      })
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        console.log("Location enabled:", position)
+        Swal.fire({
+          title: "Location Enabled!",
+          text: "Thank you! Now you can access location-based campaigns.",
+          icon: "success",
+          confirmButtonText: "Continue"
+        }).then(() => setStepNumber(5))
+      },
+      error => {
+        console.error("Location access denied:", error)
+        Swal.fire({
+          title: "Location Access Denied",
+          text: "Please enable location access in your settings.",
+          icon: "error",
+          confirmButtonText: "OK"
+        })
+      }
+    )
   }
 
   return (

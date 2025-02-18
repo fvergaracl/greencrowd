@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"node src/ws/server.js\" \"next dev\"",
+    "devAndroid": "concurrently \"node src/ws/server.js\" \"next dev -H 0.0.0.0 -p 3001\"",
     "build": "next build",
     "start": "concurrently \"node src/ws/server.js\" \"next start\"",
     "lint": "next lint",
