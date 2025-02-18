@@ -17,8 +17,18 @@
     "theme_color": "#ffffff",
     "background_color": "#ffffff",
     "display": "standalone",
-    "start_url": "/",
+    "display_override": [
+        "fullscreen",
+        "minimal-ui"
+    ],
+    "start_url": "/?source=pwa",
     "scope": "/",
+    "related_applications": [
+        {
+            "platform": "webapp",
+            "url": "https://auth1.demo.greengage-project.eu/manifest.json"
+        }
+    ],
     "permissions": {
         "geolocation": {
             "description": "Access to location services to enhance user experience, including background geolocation."
