@@ -82,8 +82,9 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     navigator.geolocation.getCurrentPosition(
       async location => {
         let finalHeading = location.coords.heading
-
-        if (finalHeading === null) {
+        console.log(">>>>>>>>>>< ANTES finalHeading")
+        console.log(finalHeading)
+        if (!finalHeading) {
           window.addEventListener(
             "deviceorientationabsolute",
             event => {
@@ -96,6 +97,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           )
         }
 
+        console.log(">>>>>>>>>>< DESPUES finalHeading")
+        console.log(finalHeading)
         const newPosition = {
           lat: location.coords.latitude,
           lng: location.coords.longitude,
@@ -106,7 +109,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           speed: location.coords.speed
         }
         console.log("----------------location")
-        console.log(location)
+        console.log(newPosition)
         setPositionFullDetails(newPosition)
         setPosition(newPosition)
 

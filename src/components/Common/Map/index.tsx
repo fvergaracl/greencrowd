@@ -212,8 +212,13 @@ export default function Map({
 
   const markerIcon = useMemo(() => {
     if (isTracking) {
+      console.log("----positionFullDetails ")
+      console.log(positionFullDetails)
+      console.log("*<<<<<<<<<<<<<<<<<<<<< position")
+      console.log(position)
       const heading = positionFullDetails?.heading || 0
-      console.log({ heading })
+      console.log("***********************heading ***************")
+      console.log(heading)
 
       return new DivIcon({
         className: "blinking-marker-container",
