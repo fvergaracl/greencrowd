@@ -9,25 +9,50 @@ import Swal from "sweetalert2"
 interface Step4Props {
   setStepNumber: (step: number) => void
 }
-
 function openLocationSettings() {
   const userAgent = navigator.userAgent.toLowerCase()
-  console.log({ userAgent })
-  if (
-    userAgent.includes("wv") ||
-    (userAgent.includes("version/") && userAgent.includes("chrome/"))
-  ) {
-    // 🚀 WebView (Android) - Open system location settings
+  console.log("UserAgent:", userAgent)
+
+  // 🔍 Detectar WebView en Android
+  const isWebView =
+    /wv/.test(userAgent) ||
+    /; wv/.test(userAgent) ||
+    /\bversion\/[\d.]+.*chrome\/[\d.]+/i.test(userAgent)
+
+  if (isWebView) {
+    // 🚀 WebView en Android: Abre la configuración del sistema para ubicación
     window.location.href =
       "intent://settings#Intent;action=android.settings.LOCATION_SOURCE_SETTINGS;end"
-  } else if (userAgent.includes("chrome")) {
-    // 🚀 Chrome Browser
-    window.open("chrome://settings/content/location", "_blank")
-  } else if (userAgent.includes("firefox")) {
-    // 🚀 Firefox Browser
+  } else if (/android/.test(userAgent)) {
+    // 🚀 Chrome en Android (Navegador Completo)
+    Swal.fire({
+      title: "Enable Location on Android",
+      text: "Go to: Settings > Apps > Your App > Permissions > Enable Location.",
+      icon: "info",
+      confirmButtonText: "Open Settings"
+    }).then(result => {
+      if (result.isConfirmed) {
+        window.location.href =
+          "intent://settings#Intent;action=android.settings.APPLICATION_DETAILS_SETTINGS;end"
+      }
+    })
+  } else if (/chrome/.test(userAgent)) {
+    // 🚀 Chrome en escritorio
+    Swal.fire({
+      title: "Enable Location",
+      text: "Go to Chrome settings and allow location access.",
+      icon: "info",
+      confirmButtonText: "Open Settings"
+    }).then(result => {
+      if (result.isConfirmed) {
+        window.open("https://myaccount.google.com/permissions", "_blank")
+      }
+    })
+  } else if (/firefox/.test(userAgent)) {
+    // 🚀 Firefox
     window.open("about:preferences#privacy", "_blank")
-  } else if (userAgent.includes("safari")) {
-    // 🚀 Safari (iOS)
+  } else if (/safari/.test(userAgent) && !/chrome/.test(userAgent)) {
+    // 🚀 Safari en iOS
     Swal.fire({
       title: "Enable Location on iOS",
       text: "Go to: Settings > Privacy > Location Services > Safari, and set it to 'While Using the App'.",
@@ -35,7 +60,7 @@ function openLocationSettings() {
       confirmButtonText: "OK"
     })
   } else {
-    // 🚀 Default case for other browsers
+    // 🚀 Caso por defecto para otros navegadores
     Swal.fire({
       title: "Enable Location",
       text: "Please open your browser settings and allow location access.",
