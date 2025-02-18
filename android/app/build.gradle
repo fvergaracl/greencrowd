@@ -203,7 +203,7 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    
+        implementation 'com.airbnb.android:lottie:5.2.0'
         implementation 'com.google.androidbrowserhelper:locationdelegation:1.1.1'
     
         implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
