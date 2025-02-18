@@ -7,8 +7,17 @@
             "namespace": "android_app",
             "package_name": "com.fvergaracl.greencrowd",
             "sha256_cert_fingerprints": [
-                "33:DD:BB:6C:C6:35:04:AA:9C:C9:A3:AA:1D:74:80:4E:D0:05:F4:09:2F:99:E4:58:49:54:33:80:17:31:6A:D9"
+                "F4:9C:8F:49:8D:A1:0F:C5:C8:BC:40:80:C3:B9:FA:43:D3:35:93:15:B6:CE:65:4D:19:C7:C8:67:6E:09:23:1D"
             ]
+        }
+    },
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "web",
+            "site": "https://auth1.demo.greengage-project.eu"
         }
     }
 ]
