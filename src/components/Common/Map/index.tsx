@@ -214,26 +214,17 @@ export default function Map({
     if (isTracking) {
       const heading = positionFullDetails?.heading || 0
       console.log({ heading })
+
       return new DivIcon({
-        className: "blinking-marker-icon",
+        className: "blinking-marker-container",
         html: `
-         <div class="blinking-marker" style="transform: rotate(${heading}deg);">
+          <div class="blinking-marker" style="transform: rotateX(45deg) rotateZ(${heading}deg);">
             <div class="inner-circle"></div>
-            <div class="arrow" style="
-              position: absolute;
-              bottom: -10px;
-              left: 50%;
-              transform: translateX(-50%);
-              width: 0;
-              height: 0;
-              border-left: 5px solid transparent;
-              border-right: 5px solid transparent;
-              border-top: 10px solid blue;
-            "></div>
+            <div class="arrow"></div>
           </div>
         `,
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
+        iconSize: [40, 40],
+        iconAnchor: [20, 20]
       })
     } else {
       removeRoute(false)
@@ -244,6 +235,7 @@ export default function Map({
       )
       setErrorPoi(null)
       setSelectedPoi(null)
+
       return new DivIcon({
         className: "static-marker-icon",
         html: `
@@ -255,7 +247,7 @@ export default function Map({
         iconAnchor: [10, 10]
       })
     }
-  }, [isTracking])
+  }, [isTracking, positionFullDetails?.heading])
 
   useEffect(() => {
     if (selectedPoi) {
