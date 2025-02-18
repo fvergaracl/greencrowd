@@ -10,6 +10,30 @@ interface Step4Props {
   setStepNumber: (step: number) => void
 }
 
+function openLocationSettings() {
+  const userAgent = navigator.userAgent.toLowerCase()
+
+  if (userAgent.includes("chrome")) {
+    window.open("chrome://settings/content/location", "_blank")
+  } else if (userAgent.includes("firefox")) {
+    window.open("about:preferences#privacy", "_blank")
+  } else if (userAgent.includes("safari")) {
+    Swal.fire({
+      title: "Enable Location on iOS",
+      text: "Go to: Settings > Privacy > Location Services > Safari, and set it to 'While Using the App'.",
+      icon: "info",
+      confirmButtonText: "OK"
+    })
+  } else {
+    Swal.fire({
+      title: "Enable Location",
+      text: "Please open your browser settings and allow location access.",
+      icon: "info",
+      confirmButtonText: "OK"
+    })
+  }
+}
+
 export const Step4 = ({ setStepNumber }: Step4Props) => {
   const { t } = useTranslation()
 
@@ -38,6 +62,7 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
             icon: "error",
             confirmButtonText: t("OK")
           })
+          openLocationSettings()
         }
       )
     } else {
