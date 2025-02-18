@@ -79,26 +79,33 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
       timeout: 10000
     }
 
+    const getDeviceHeading = () =>
+      new Promise<number | null>(resolve => {
+        const handleOrientation = (event: DeviceOrientationEvent) => {
+          if (event.alpha !== null) {
+            console.log(`📍 Brújula Heading Capturado: ${event.alpha}°`)
+            resolve(event.alpha)
+            window.removeEventListener(
+              "deviceorientationabsolute",
+              handleOrientation
+            )
+          }
+        }
+        window.addEventListener(
+          "deviceorientationabsolute",
+          handleOrientation,
+          { once: true }
+        )
+      })
+
     navigator.geolocation.getCurrentPosition(
       async location => {
-        let finalHeading = location.coords.heading
-        console.log(">>>>>>>>>>< ANTES finalHeading")
-        console.log(finalHeading)
-        if (!finalHeading) {
-          window.addEventListener(
-            "deviceorientationabsolute",
-            event => {
-              if (event.alpha !== null) {
-                finalHeading = event.alpha // Brújula
-                console.log(`📍 Brújula Heading: ${finalHeading}°`)
-              }
-            },
-            { once: true }
-          )
-        }
+        console.log(">>>>>>>>>>< ANTES de obtener heading")
 
-        console.log(">>>>>>>>>>< DESPUES finalHeading")
-        console.log(finalHeading)
+        let finalHeading = location.coords.heading ?? (await getDeviceHeading())
+
+        console.log(">>>>>>>>>>< DESPUÉS de obtener heading", finalHeading)
+
         const newPosition = {
           lat: location.coords.latitude,
           lng: location.coords.longitude,
@@ -108,8 +115,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           heading: finalHeading,
           speed: location.coords.speed
         }
-        console.log("----------------location")
-        console.log(newPosition)
+
+        console.log("----------------location", newPosition)
         setPositionFullDetails(newPosition)
         setPosition(newPosition)
 
@@ -126,6 +133,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         let text = "An unknown error occurred."
         let confirmButtonText = "OK"
         let errorEventName = "GEOLOCATION_UNKNOWN_ERROR_IN_UPDATE_POSITION"
+
         switch (error.code) {
           case error.PERMISSION_DENIED: {
             title = "Permission Denied"
@@ -133,29 +141,17 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
               "You denied the request for Geolocation. Please allow access to use this feature."
             confirmButtonText = "Grant Permission"
             errorEventName = "GEOLOCATION_PERMISSION_DENIED_IN_UPDATE_POSITION"
-
             break
           }
           case error.POSITION_UNAVAILABLE: {
             text = "Location information is unavailable."
-            console.error("Location information is unavailable.")
             errorEventName =
               "GEOLOCATION_POSITION_UNAVAILABLE_IN_UPDATE_POSITION"
-
             break
           }
           case error.TIMEOUT: {
             text = "The request to get user location timed out."
-            console.error("The request to get user location timed out.")
             errorEventName = "GEOLOCATION_TIMEOUT_IN_UPDATE_POSITION"
-            break
-          }
-
-          default: {
-            console.error("An unknown error occurred.")
-            text = "An unknown error occurred."
-            errorEventName = "GEOLOCATION_UNKNOWN_ERROR_IN_UPDATE_POSITION"
-
             break
           }
         }
@@ -172,7 +168,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         }).then(result => {
           if (result.isConfirmed && error.code === error.PERMISSION_DENIED) {
             const userAgent = navigator.userAgent.toLowerCase()
-
             if (userAgent.includes("android")) {
               window.location.href =
                 "intent://#Intent;action=android.settings.APPLICATION_DETAILS_SETTINGS;scheme=package;end"
@@ -187,7 +182,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
                 confirmButtonText: "OK"
               })
             } else {
-              // Instrucciones para navegadores de escritorio
               Swal.fire({
                 title: "Enable Location",
                 text: "Please go to your browser settings and allow location access.",
