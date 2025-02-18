@@ -5,7 +5,7 @@
         ],
         "target": {
             "namespace": "android_app",
-            "package_name": "com.fvergaracl.greencrowd",
+            "package_name": "io.fvergaracl.greencrowd",
             "sha256_cert_fingerprints": [
                 "F4:9C:8F:49:8D:A1:0F:C5:C8:BC:40:80:C3:B9:FA:43:D3:35:93:15:B6:CE:65:4D:19:C7:C8:67:6E:09:23:1D"
             ]
