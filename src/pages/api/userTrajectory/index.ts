@@ -10,7 +10,15 @@ export default async function handler(
   try {
     switch (req.method) {
       case "POST": {
-        const { lat, lng } = req.body
+        const {
+          lat,
+          lng,
+          accuracy,
+          altitude,
+          altitudeAccuracy,
+          heading,
+          speed
+        } = req.body
         const { userId } = await validateKeycloakToken(req)
         if (!userId) {
           return res.status(401).json({ error: "Unauthorized" })
@@ -19,7 +27,12 @@ export default async function handler(
         const trajectory = {
           userId: user.id,
           latitude: lat,
-          longitude: lng
+          longitude: lng,
+          accuracy,
+          altitude,
+          altitudeAccuracy,
+          heading,
+          speed
         }
         const createdCampaign =
           await UserTrajectoryController.createNewTrajectory(trajectory)
