@@ -11,6 +11,8 @@ import axios from "axios"
 import "survey-core/defaultV2.min.css"
 import Swal from "sweetalert2"
 import { getApiBaseUrl } from "@/config/api"
+import { logEvent } from "@/utils/logger"
+import { log } from "console"
 
 const TaskWrapperComponent = ({
   taskData,
@@ -105,20 +107,10 @@ export default function Task() {
     survey: SurveyModel,
     setIsSubmitted: (value: boolean) => void
   ) => {
-    if (!isInside) {
-      setIsSubmitted(false)
-      // "ACA VUELVE A MOSTRAR EL SURVEY"
-      survey.isCompleted = false
-      survey.render()
-      Swal.fire({
-        title: t("You are not inside the point of interest"),
-        text: t(
-          "You must be inside the point of interest to complete the task"
-        ),
-        icon: "error"
-      })
-      return
-    }
+    logEvent("TASK_COMPLETED_BUTTON", "Task is being completed", {
+      taskId: id,
+      position
+    })
 
     Swal.fire({
       title: t("Are you sure?"),
@@ -129,6 +121,10 @@ export default function Task() {
       cancelButtonText: t("No")
     }).then(async result => {
       if (result.isConfirmed) {
+        logEvent("TASK_COMPLETED_SUBMITTED", "Task completed", {
+          taskId: id,
+          position
+        })
         try {
           await axios.post(`${getApiBaseUrl()}/task/${id}/response`, {
             taskResponse: survey.data,
