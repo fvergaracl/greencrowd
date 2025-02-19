@@ -212,35 +212,25 @@ export default function Map({
 
   const markerIcon = useMemo(() => {
     if (isTracking) {
-      console.log("----positionFullDetails ")
-      console.log(positionFullDetails)
-      console.log("*<<<<<<<<<<<<<<<<<<<<< position")
-      console.log(position)
-      const heading = positionFullDetails?.heading || 0
-      console.log("***********************heading ***************")
-      console.log(heading)
+      const heading =
+        typeof positionFullDetails?.heading === "number"
+          ? positionFullDetails.heading
+          : 0
 
       return new DivIcon({
         className: "blinking-marker-container",
         html: `
-          <div class="blinking-marker" style="transform: rotateX(45deg) rotateZ(${heading}deg);">
-            <div class="inner-circle"></div>
-            <div class="arrow"></div>
+          <div class="rotating-wrapper" style="transform: rotate(${heading}deg); transform-origin: center;">
+            <div class="blinking-marker">
+              <div class="inner-circle"></div>
+              <div class="arrow"></div>
+            </div>
           </div>
         `,
         iconSize: [40, 40],
         iconAnchor: [20, 20]
       })
     } else {
-      removeRoute(false)
-      logEvent(
-        "USER_SELECTED_POI_REMOVE_BY_TRACKING",
-        "User removed the selected POI because the tracking was stopped",
-        { poi: selectedPoi }
-      )
-      setErrorPoi(null)
-      setSelectedPoi(null)
-
       return new DivIcon({
         className: "static-marker-icon",
         html: `
@@ -252,7 +242,7 @@ export default function Map({
         iconAnchor: [10, 10]
       })
     }
-  }, [isTracking, positionFullDetails?.heading])
+  }, [isTracking, positionFullDetails])
 
   useEffect(() => {
     if (selectedPoi) {

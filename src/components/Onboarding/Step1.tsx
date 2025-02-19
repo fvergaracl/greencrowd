@@ -11,7 +11,12 @@ export const Step1 = ({ setStepNumber }: Step1Props) => {
 
   return (
     <div className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'>
-      <HeaderOnboarding setStepNumber={setStepNumber} />
+      <HeaderOnboarding
+        stepNumber={1}
+        setStepNumber={setStepNumber}
+        eventNameSkip='ONBOARDING_SKIP_ON_STEP1'
+        eventNameLanguage='ONBOARDING_LANGUAGE_CHANGED_ON_STEP1'
+      />
       <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>
         {/* Logo at the top */}
 

@@ -79,24 +79,45 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
       timeout: 10000
     }
 
-    const getDeviceHeading = () =>
-      new Promise<number | null>(resolve => {
+    const getDeviceHeading = () => {
+      return new Promise<number | null>(resolve => {
+        let timeoutId: NodeJS.Timeout | null = null
+
         const handleOrientation = (event: DeviceOrientationEvent) => {
           if (event.alpha !== null) {
-            console.log(`📍 Brújula Heading Capturado: ${event.alpha}°`)
+            console.log(`📍 Compass Heading Captured: ${event.alpha}°`)
+            if (timeoutId) clearTimeout(timeoutId) // Clear timeout if resolved early
             resolve(event.alpha)
             window.removeEventListener(
               "deviceorientationabsolute",
               handleOrientation
             )
+            window.removeEventListener("deviceorientation", handleOrientation)
           }
         }
+
+        // Try both 'deviceorientationabsolute' and 'deviceorientation'
         window.addEventListener(
           "deviceorientationabsolute",
           handleOrientation,
           { once: true }
         )
+        window.addEventListener("deviceorientation", handleOrientation, {
+          once: true
+        })
+
+        // Timeout to avoid hanging
+        timeoutId = setTimeout(() => {
+          console.warn("⚠️ Heading detection timed out.")
+          resolve(null)
+          window.removeEventListener(
+            "deviceorientationabsolute",
+            handleOrientation
+          )
+          window.removeEventListener("deviceorientation", handleOrientation)
+        }, 3000) // Adjust timeout as needed (3s here)
       })
+    }
 
     navigator.geolocation.getCurrentPosition(
       async location => {

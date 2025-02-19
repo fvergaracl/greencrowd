@@ -57,17 +57,19 @@ export default function Dashboard() {
     )
   }
 
+  console.log("---------positionposition")
+  console.log(position)
   return (
     <DashboardLayout>
       {!position ? (
         <Modal isVisible={isModalVisible}>
-          <h2>{
-            t("We need your location to continue. Please enable location")
-            }
-            </h2>
+          <h2>
+            {t("We need your location to continue. Please enable location")}
+          </h2>
           <p>
-            {t("If you are using a desktop computer, please use a mobile device")}
-            
+            {t(
+              "If you are using a desktop computer, please use a mobile device"
+            )}
           </p>
         </Modal>
       ) : (

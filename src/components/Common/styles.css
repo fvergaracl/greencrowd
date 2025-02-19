@@ -1,3 +1,13 @@
+.rotating-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  transform-origin: center;
+  will-change: transform;
+}
+
 .blinking-marker {
   position: relative;
   width: 20px;
@@ -45,7 +55,7 @@
   }
 }
 
-/* Ícono estático */
+/* Static marker */
 .static-marker {
   position: relative;
   width: 20px;

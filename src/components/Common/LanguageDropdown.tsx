@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useTranslation } from "@/hooks/useTranslation"
+import { logEvent } from "@/utils/logger"
 
 type LocaleKey = "en" | "dk" | "es" | "nl" | "it"
 
@@ -12,11 +13,13 @@ const locales: Record<LocaleKey, { label: string; flag: string }> = {
 }
 
 interface LanguageDropdownProps {
-  showLabel?: boolean // Optional prop to toggle label visibility
+  showLabel?: boolean
+  eventNameLanguage?: string
 }
 
 const LanguageDropdown: React.FC<LanguageDropdownProps> = ({
-  showLabel = true
+  showLabel = true,
+  eventNameLanguage
 }) => {
   const { t, setLocale } = useTranslation()
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -31,6 +34,11 @@ const LanguageDropdown: React.FC<LanguageDropdownProps> = ({
   }, [])
 
   const handleLocaleChange = (locale: LocaleKey) => {
+    logEvent(
+      eventNameLanguage || "SETTINGS_USER_LOCALE_CHANGED",
+      `User changed language to ${locale} from ${currentLocale}`,
+      { locale, currentLocale }
+    )
     setLocale(locale)
     setCurrentLocale(locale)
     localStorage.setItem("locale", locale)
