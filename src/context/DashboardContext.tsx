@@ -10,6 +10,7 @@ import axios from "axios"
 import { getApiBaseUrl } from "@/config/api"
 import { logEvent } from "@/utils/logger"
 import Swal from "sweetalert2"
+import { getDeviceHeading } from "@/utils/getDeviceHeading"
 export interface IPosition {
   lat: number
   lng: number
@@ -79,54 +80,9 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
       timeout: 10000
     }
 
-    const getDeviceHeading = () => {
-      return new Promise<number | null>(resolve => {
-        let timeoutId: NodeJS.Timeout | null = null
-
-        const handleOrientation = (event: DeviceOrientationEvent) => {
-          if (event.alpha !== null) {
-            console.log(`📍 Compass Heading Captured: ${event.alpha}°`)
-            if (timeoutId) clearTimeout(timeoutId) // Clear timeout if resolved early
-            resolve(event.alpha)
-            window.removeEventListener(
-              "deviceorientationabsolute",
-              handleOrientation
-            )
-            window.removeEventListener("deviceorientation", handleOrientation)
-          }
-        }
-
-        // Try both 'deviceorientationabsolute' and 'deviceorientation'
-        window.addEventListener(
-          "deviceorientationabsolute",
-          handleOrientation,
-          { once: true }
-        )
-        window.addEventListener("deviceorientation", handleOrientation, {
-          once: true
-        })
-
-        // Timeout to avoid hanging
-        timeoutId = setTimeout(() => {
-          console.warn("⚠️ Heading detection timed out.")
-          resolve(null)
-          window.removeEventListener(
-            "deviceorientationabsolute",
-            handleOrientation
-          )
-          window.removeEventListener("deviceorientation", handleOrientation)
-        }, 3000) // Adjust timeout as needed (3s here)
-      })
-    }
-
     navigator.geolocation.getCurrentPosition(
       async location => {
-        console.log(">>>>>>>>>>< ANTES de obtener heading")
-
         let finalHeading = location.coords.heading ?? (await getDeviceHeading())
-
-        console.log(">>>>>>>>>>< DESPUÉS de obtener heading", finalHeading)
-
         const newPosition = {
           lat: location.coords.latitude,
           lng: location.coords.longitude,
@@ -137,7 +93,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           speed: location.coords.speed
         }
 
-        console.log("----------------location", newPosition)
         setPositionFullDetails(newPosition)
         setPosition(newPosition)
 

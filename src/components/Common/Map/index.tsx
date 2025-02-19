@@ -24,6 +24,8 @@ import FitBounds from "./FitBounds"
 import "../styles.css"
 import { logEvent } from "@/utils/logger"
 import { getApiBaseUrl } from "@/config/api"
+import { getDeviceHeading } from "@/utils/getDeviceHeading"
+
 import {
   Point,
   Task,
@@ -144,11 +146,30 @@ export default function Map({
   const [campaignData, setCampaignData] = useState<any>(null)
   const [selectedPoi, setSelectedPoi] = useState<PointOfInterest | null>(null)
   const [errorPoi, setErrorPoi] = useState<any>(null)
-
+  const [heading, setHeading] = useState<number | null>(null)
   const routingControlRef = useRef<L.Routing.Control | null>(null)
   const [selectedPolygon, setSelectedPolygon] = useState<PolygonData | null>(
     null
   )
+
+  useEffect(() => {
+    if (!isTracking) return
+
+    let isMounted = true
+    const interval = setInterval(async () => {
+      try {
+        const heading = await getDeviceHeading()
+        if (isMounted) setHeading(heading)
+      } catch (error) {
+        console.error("Error getting device heading:", error)
+      }
+    }, 300)
+
+    return () => {
+      isMounted = false
+      clearInterval(interval)
+    }
+  }, [isTracking, positionFullDetails])
 
   const removeRoute = (logEventShouldBeLogged = true) => {
     if (logEventShouldBeLogged) {
@@ -212,11 +233,6 @@ export default function Map({
 
   const markerIcon = useMemo(() => {
     if (isTracking) {
-      const heading =
-        typeof positionFullDetails?.heading === "number"
-          ? positionFullDetails.heading
-          : 0
-
       return new DivIcon({
         className: "blinking-marker-container",
         html: `
