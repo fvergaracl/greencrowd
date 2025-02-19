@@ -100,12 +100,17 @@ model Task {
 }
 
 model UserTrajectory {
-  id        String   @id @default(uuid())
-  userId    String
-  latitude  Float
-  longitude Float
-  user      User     @relation(fields: [userId], references: [id])
-  timestamp DateTime @default(now())
+  id               String   @id @default(uuid())
+  userId           String
+  latitude         Float
+  longitude        Float
+  accuracy         Float?
+  altitude         Float?
+  altitudeAccuracy Float?
+  heading          Float?
+  speed            Float?
+  user             User     @relation(fields: [userId], references: [id])
+  timestamp        DateTime @default(now())
 }
 
 model UserCampaignAccess {

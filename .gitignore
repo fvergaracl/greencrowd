@@ -88,8 +88,6 @@ android/app/src/main/res/xml*
 *.aab
 *.keystore
 
-# Prisma
-/prisma/migrations/
 
 # related with Next.js and React.js
 /.next/
