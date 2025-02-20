@@ -3,6 +3,7 @@ import { motion } from "framer-motion"
 import Lottie from "lottie-react"
 import { HeaderOnboarding } from "@/components/Onboarding/HeaderOnboarding"
 import onboardingCompletingTask from "@/lotties/onboarding_task_completing.json"
+import { useState } from "react"
 
 // Step6: Completing the assigned task
 interface Step6Props {
@@ -11,14 +12,19 @@ interface Step6Props {
 
 export const Step6 = ({ setStepNumber }: Step6Props) => {
   const { t } = useTranslation()
+  const [key, setKey] = useState(0)
 
   return (
-    <div className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'>
-        <HeaderOnboarding
+    <div
+      key={key}
+      className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'
+    >
+      <HeaderOnboarding
         stepNumber={6}
         setStepNumber={setStepNumber}
         eventNameSkip='ONBOARDING_SKIP_ON_STEP6'
         eventNameLanguage='ONBOARDING_LANGUAGE_CHANGED_ON_STEP6'
+        onLanguageChange={() => setKey(prev => prev + 1)}
       />
 
       <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>

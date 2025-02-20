@@ -4,6 +4,8 @@ import Lottie from "lottie-react"
 import { HeaderOnboarding } from "@/components/Onboarding/HeaderOnboarding"
 import onboardingLocation from "@/lotties/onboarding_location.json"
 import Swal from "sweetalert2"
+import { useState } from "react"
+
 // Step4: Enable location
 
 interface Step4Props {
@@ -12,6 +14,7 @@ interface Step4Props {
 
 export const Step4 = ({ setStepNumber }: Step4Props) => {
   const { t } = useTranslation()
+  const [key, setKey] = useState(0)
 
   const requestLocation = async () => {
     if (!navigator.permissions || !navigator.geolocation) {
@@ -61,12 +64,16 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
   }
 
   return (
-    <div className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'>
+    <div
+      key={key}
+      className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'
+    >
       <HeaderOnboarding
         stepNumber={4}
         setStepNumber={setStepNumber}
         eventNameSkip='ONBOARDING_SKIP_ON_STEP4'
         eventNameLanguage='ONBOARDING_LANGUAGE_CHANGED_ON_STEP4'
+        onLanguageChange={() => setKey(prev => prev + 1)}
       />
       <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>
         <div className='flex justify-center mt-2'>

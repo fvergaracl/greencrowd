@@ -15,11 +15,13 @@ const locales: Record<LocaleKey, { label: string; flag: string }> = {
 interface LanguageDropdownProps {
   showLabel?: boolean
   eventNameLanguage?: string
+  onLanguageChange?: () => void
 }
 
 const LanguageDropdown: React.FC<LanguageDropdownProps> = ({
   showLabel = true,
-  eventNameLanguage
+  eventNameLanguage,
+  onLanguageChange
 }) => {
   const { t, setLocale } = useTranslation()
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -43,6 +45,9 @@ const LanguageDropdown: React.FC<LanguageDropdownProps> = ({
     setCurrentLocale(locale)
     localStorage.setItem("locale", locale)
     setIsOpen(false)
+    if (onLanguageChange) {
+      onLanguageChange()
+    }
   }
 
   return (

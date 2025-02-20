@@ -4,6 +4,8 @@ import { HeaderOnboarding } from "@/components/Onboarding/HeaderOnboarding"
 import Lottie from "lottie-react"
 import onboardingLanguagesAnimation from "@/lotties/onboarding_languages.json"
 import onboardingRightArrowUp from "@/lotties/onboarding_right_arrow_up.json"
+import { useState } from "react"
+
 // Step2: Select Language
 interface Step2Props {
   setStepNumber: (step: number) => void
@@ -11,15 +13,20 @@ interface Step2Props {
 
 export const Step2 = ({ setStepNumber }: Step2Props) => {
   const { t } = useTranslation()
+  const [key, setKey] = useState(0)
 
   return (
-    <div className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'>
+    <div
+      key={key}
+      className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'
+    >
       <HeaderOnboarding
         stepNumber={2}
         setStepNumber={setStepNumber}
         showArrow={true}
         eventNameSkip='ONBOARDING_SKIP_ON_STEP2'
         eventNameLanguage='ONBOARDING_LANGUAGE_CHANGED_ON_STEP2'
+        onLanguageChange={() => setKey(prev => prev + 1)}
       />
 
       <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>

@@ -10,6 +10,7 @@ interface HeaderOnboardingProps {
   showSkip?: boolean
   eventNameSkip?: string
   eventNameLanguage?: string
+  onLanguageChange?: () => void
 }
 
 export const HeaderOnboarding = ({
@@ -18,7 +19,8 @@ export const HeaderOnboarding = ({
   showArrow = false,
   showSkip = true,
   eventNameSkip,
-  eventNameLanguage
+  eventNameLanguage,
+  onLanguageChange
 }: HeaderOnboardingProps) => {
   const { t } = useTranslation()
 
@@ -52,6 +54,7 @@ export const HeaderOnboarding = ({
         <LanguageDropdown
           showLabel={false}
           eventNameLanguage={eventNameLanguage}
+          onLanguageChange={onLanguageChange}
         />
       </div>
       {showArrow && (

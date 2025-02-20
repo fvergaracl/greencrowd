@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import Lottie from "lottie-react"
 import { HeaderOnboarding } from "@/components/Onboarding/HeaderOnboarding"
 import onboardingRewards from "@/lotties/onboarding_rewards.json"
+import { useState } from "react"
 
 interface Step7Props {
   setStepNumber: (step: number) => void
@@ -12,18 +13,23 @@ interface Step7Props {
 export const Step7 = ({ setStepNumber }: Step7Props) => {
   const { t } = useTranslation()
   const router = useRouter()
+  const [key, setKey] = useState(0)
 
   const handleLogin = () => {
     router.push("/api/auth/login")
   }
 
   return (
-    <div className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'>
+    <div
+      key={key}
+      className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'
+    >
       <HeaderOnboarding
         stepNumber={7}
         setStepNumber={setStepNumber}
         showSkip={false}
         eventNameLanguage='ONBOARDING_LANGUAGE_CHANGED_ON_STEP7'
+        onLanguageChange={() => setKey(prev => prev + 1)}
       />
 
       <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>

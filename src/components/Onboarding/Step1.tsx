@@ -1,6 +1,7 @@
 import { useTranslation } from "@/hooks/useTranslation"
 import { motion } from "framer-motion"
 import { HeaderOnboarding } from "@/components/Onboarding/HeaderOnboarding"
+import { useState } from "react"
 // Step1: Welcome Screen
 interface Step1Props {
   setStepNumber: (step: number) => void
@@ -8,18 +9,21 @@ interface Step1Props {
 
 export const Step1 = ({ setStepNumber }: Step1Props) => {
   const { t } = useTranslation()
+  const [key, setKey] = useState(0)
 
   return (
-    <div className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'>
+    <div
+      key={key}
+      className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'
+    >
       <HeaderOnboarding
         stepNumber={1}
         setStepNumber={setStepNumber}
         eventNameSkip='ONBOARDING_SKIP_ON_STEP1'
         eventNameLanguage='ONBOARDING_LANGUAGE_CHANGED_ON_STEP1'
+        onLanguageChange={() => setKey(prev => prev + 1)}
       />
       <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>
-        {/* Logo at the top */}
-
         <div className='flex justify-center mt-4'>
           <img
             src='/icons/icon-512x512.png'
