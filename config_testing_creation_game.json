@@ -1,0 +1,78 @@
+{
+  "token_bearer": "xxxxxxxxxxxxxxxxxxxxxxxx.yyyyyyyyyyyyyyyyyyyyyyyyyyyyy.zzzzzzzzzzzzzzzzzzzzzzzzzzz-s30QtCbi8pdgDAEz7GO8m52asy1GA346SpqfsMCjNHuCLJ6SGl-ZxiXaSgVEmJZez-z_etXRDAiojkoVM9fkVpG1CRaqEzjGrDoNLAeOU-aGxyQlngu-bHLLN5gAsuLP4_LSpO4mjn_zZh7r9VeK7tfXiXG04NxCz_iACNBfFhQLXWEfNJlIVJK7Bw8QOZamGl_FqiJiVi926V7_9jhTreL_U5TwLoP9_ClcJ0u6p5SLiz2B2BVaO2q3XbjCTMjyjHzJunFfKOoxm7yxbeFgAKNs5StepSp_bnIFCa9heSwsUnh8Xf0M4zD4e9ZLw1g",
+  "game_name": "greencrowdgreencrowdGAME4",
+  "variable_basic_points": 10,
+  "poi_and_task": [
+    {
+      "POI": "6623df1a-2486-40af-90f7-96b6bccde472",
+      "latitude": 43.2720341666,
+      "longitude": -2.9396796227,
+      "TASKS": [
+        "20fcb063-5e3d-48c5-9532-259aaba7d03a"
+      ]
+    },
+    {
+      "POI": "d8fd6554-a140-42ff-8d73-fa314c0358bd",
+      "latitude": 43.2710694084,
+      "longitude": -2.9413050413,
+      "TASKS": [
+        "30fcb063-5e3d-48c5-9532-259aaba7d03a"
+      ]
+    },
+    {
+      "POI": "3e134cfc-75a2-4e21-85e9-89983d98a819",
+      "latitude": 43.2703429003,
+      "longitude": -2.9391807318,
+      "TASKS": [
+        "40fcb063-5e3d-48c5-9532-259aaba7d03a"
+      ]
+    },
+    {
+      "POI": "a908261b-2a21-41ef-a1f1-eb4e3eccde15",
+      "latitude": 43.2707061554,
+      "longitude": -2.9383331537,
+      "TASKS": [
+        "50fcb063-5e3d-48c5-9532-259aaba7d03a"
+      ]
+    },
+    {
+      "POI": "867a3095-e40c-4fdd-93f1-99f94596e9ab",
+      "latitude": 43.2708389578,
+      "longitude": -2.9375445843,
+      "TASKS": [
+        "60fcb063-5e3d-48c5-9532-259aaba7d03a"
+      ]
+    },
+    {
+      "POI": "db490f8d-961e-4781-a201-44ad1e844bfa",
+      "latitude": 43.2702608746,
+      "longitude": -2.9367291927,
+      "TASKS": [
+        "70fcb063-5e3d-48c5-9532-259aaba7d03a"
+      ]
+    },
+    {
+      "POI": "239b1cd2-4d6b-4e3e-980c-3f1c98b2838d",
+      "latitude": 43.2684484699,
+      "longitude": -2.9370188713,
+      "TASKS": [
+        "80fcb063-5e3d-48c5-9532-259aaba7d03a"
+      ]
+    },
+    {
+      "POI": "a5bca879-3b11-4fc6-880b-b3d8b8aba839",
+      "latitude": 43.2686906478,
+      "longitude": -2.9366755486,
+      "TASKS": [
+        "90fcb063-5e3d-48c5-9532-259aaba7d03a"
+      ]
+    },
+    {
+      "POI": "6623df1a-2486-40af-90f7-96b6bccde472",
+      "latitude": 43.2717998138,
+      "longitude": -2.9407954216,
+      "TASKS": []
+    }
+  ],
+  "api_url": "http://localhost:8000/api/v1"
+}

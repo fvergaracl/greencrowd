@@ -2,6 +2,8 @@ import { useTranslation } from "@/hooks/useTranslation"
 import { motion } from "framer-motion"
 import { HeaderOnboarding } from "@/components/Onboarding/HeaderOnboarding"
 import { useState } from "react"
+import Lottie from "lottie-react"
+import onboardingSelectCampaign from "@/lotties/onboarding_select_campaign.json"
 // Step2: Select Campaign
 
 interface Step3Props {
@@ -27,11 +29,7 @@ export const Step3 = ({ setStepNumber }: Step3Props) => {
 
       <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>
         <div className='flex justify-center mt-2'>
-          <img
-            src='/images/campaign_screen.png'
-            alt='GreenCrowd Campaign'
-            className='mx-auto w-3/5 sm:w-1/2 md:w-2/5 max-w-lg h-auto object-contain max-h-110'
-          />
+          <Lottie animationData={onboardingSelectCampaign} loop={true} />
         </div>
 
         <div className='flex-1 flex flex-col justify-center'>
