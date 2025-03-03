@@ -1,24 +1,47 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import {
-  FiTrash2,
-  FiLink,
-  FiZoomIn,
-  FiShare2,
-  FiLayers,
-  FiGrid
-} from "react-icons/fi"
+  FaMapMarkerAlt,
+  FaClock,
+  FaAward,
+  FaChartLine,
+  FaFire
+} from "react-icons/fa"
 
 export default function SphereMenu() {
   const [isOpen, setIsOpen] = useState(false)
 
   const menuItems = [
-    { key: "layers", icon: <FiLayers size={24} />, color: "text-green-400" },
-    { key: "grid", icon: <FiGrid size={24} />, color: "text-green-400" },
-    { key: "share", icon: <FiShare2 size={24} />, color: "text-green-400" },
-    { key: "zoom", icon: <FiZoomIn size={24} />, color: "text-blue-400" },
-    { key: "link", icon: <FiLink size={24} />, color: "text-blue-400" },
-    { key: "trash", icon: <FiTrash2 size={24} />, color: "text-red-400" }
+    {
+      key: "DIM_BP",
+      icon: <FaAward size={24} />,
+      color: "text-yellow-400",
+      label: "Base Points"
+    },
+    {
+      key: "DIM_LBE",
+      icon: <FaMapMarkerAlt size={24} />,
+      color: "text-green-400",
+      label: "Location Equity"
+    },
+    {
+      key: "DIM_TD",
+      icon: <FaClock size={24} />,
+      color: "text-blue-400",
+      label: "Time Diversity"
+    },
+    {
+      key: "DIM_PP",
+      icon: <FaChartLine size={24} />,
+      color: "text-purple-400",
+      label: "Personal Performance"
+    },
+    {
+      key: "DIM_S",
+      icon: <FaFire size={24} />,
+      color: "text-red-400",
+      label: "Streak Bonus"
+    }
   ]
 
   return (

@@ -28,6 +28,7 @@ import { getDeviceHeading } from "@/utils/getDeviceHeading"
 import Lottie from "lottie-react"
 import MapLocationNeeded from "@/lotties/map_location_needed.json"
 import GamificationCircle from "./GamificationCircle"
+import TaskList from "./TaskList"
 
 import {
   Point,
@@ -508,130 +509,16 @@ export default function Map({
           </LeafletMapContainer>
         </div>
         {isTracking && selectedPoi && (
-          <div className='h-[30%] overflow-y-auto bg-white dark:bg-gray-900 shadow-lg rounded-t-lg p-3'>
-            <span className='justify-between flex items-center'>
-              {" "}
-              <h4
-                className='text-lg font-bold text-gray-900 dark:text-slate-100'
-                data-cy='poi-name'
-              >
-                {selectedPoi.name}{" "}
-              </h4>
-            </span>
-
+          <div className='h-[30%] overflow-y-auto'>
+           
             {selectedPoi.tasks.length > 0 && (
-              <div className='mt-2'>
-                <h4
-                  data-cy='poi-tasks-title'
-                  className='text-md font-semibold text-gray-900 dark:text-slate-100'
-                >
-                  {t("Tasks")}
-                </h4>
-
-                <div className='relative'>
-                  <button
-                    className='absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow focus:outline-none'
-                    onClick={() => {
-                      logEvent(
-                        "USER_CLICKED_LEFT_ARROW_TASKS",
-                        "User clicked on the left arrow to see more tasks",
-                        { poi: selectedPoi }
-                      )
-
-                      const container =
-                        document.getElementById("tasks-container")
-                      container?.scrollBy({ left: -300, behavior: "smooth" })
-                    }}
-                  >
-                    ←
-                  </button>
-
-                  <div
-                    id='tasks-container'
-                    className='flex overflow-x-auto gap-4 scrollbar-hide scroll-smooth snap-x'
-                  >
-                    {selectedPoi.tasks.map((task: Task) => (
-                      <div
-                        key={task.id}
-                        className={`min-w-[300px] snap-start flex-shrink-0 p-4 border rounded-lg shadow ${
-                          errorPoi
-                            ? "bg-gray-200 dark:bg-gray-700 dark:border-gray-600 opacity-50 cursor-not-allowed"
-                            : "bg-white dark:bg-gray-800 dark:border-gray-700"
-                        }`}
-                      >
-                        <h5
-                          className='text-md font-semibold text-gray-900 dark:text-slate-100 truncate'
-                          data-cy={`task-title-${task.id}`}
-                        >
-                          {task.title}
-                        </h5>
-
-                        <p
-                          className='text-sm text-gray-600 dark:text-gray-400 mt-1 truncate'
-                          data-cy={`task-description-${task.id}`}
-                        >
-                          {task.description || t("No description available")}
-                        </p>
-
-                        {errorPoi && (
-                          <div className='relative'>
-                            <p
-                              className='absolute top-0 left-0 w-full bg-red-600 text-white text-sm font-bold p-2 rounded-lg shadow-lg animate-bounce z-1000'
-                              style={{ pointerEvents: "auto" }}
-                            >
-                              {t("You cannot access this task:")} {t(errorPoi)}
-                            </p>
-                          </div>
-                        )}
-
-                        <button
-                          onClick={() => {
-                            if (errorPoi) {
-                              logEvent(
-                                "USER_CLICKED_ENTER_TASK_ERROR",
-                                "User clicked on the enter task button but there was an error",
-                                { poi: selectedPoi, task, location }
-                              )
-                            } else {
-                              logEvent(
-                                "USER_CLICKED_ENTER_TASK",
-                                "User clicked on the enter task button",
-                                { poi: selectedPoi, task }
-                              )
-
-                              window.location.href = `/dashboard/task/${task.id}`
-                            }
-                          }}
-                          className={`mt-1 px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none text-center transition ${
-                            errorPoi
-                              ? "bg-gray-500 cursor-not-allowed"
-                              : "bg-blue-600 hover:bg-blue-700 focus:ring focus:ring-blue-400"
-                          }`}
-                          data-cy={`enter-task-${task.id}`}
-                        >
-                          {t("Enter Task")}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button
-                    className='absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow focus:outline-none'
-                    onClick={() => {
-                      logEvent(
-                        "USER_CLICKED_RIGHT_ARROW_TASKS",
-                        "User clicked on the right arrow to see more tasks",
-                        { poi: selectedPoi }
-                      )
-                      const container =
-                        document.getElementById("tasks-container")
-                      container?.scrollBy({ left: 300, behavior: "smooth" })
-                    }}
-                  >
-                    →
-                  </button>
-                </div>
-              </div>
+              <TaskList
+                isTracking={isTracking}
+                selectedPoi={selectedPoi}
+                errorPoi={errorPoi}
+                logEvent={logEvent}
+                t={t}
+              />
             )}
           </div>
         )}
