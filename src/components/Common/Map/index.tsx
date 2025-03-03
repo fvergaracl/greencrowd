@@ -25,6 +25,9 @@ import "../styles.css"
 import { logEvent } from "@/utils/logger"
 import { getApiBaseUrl } from "@/config/api"
 import { getDeviceHeading } from "@/utils/getDeviceHeading"
+import Lottie from "lottie-react"
+import MapLocationNeeded from "@/lotties/map_location_needed.json"
+import GamificationCircle from "./GamificationCircle"
 
 import {
   Point,
@@ -151,6 +154,9 @@ export default function Map({
   const [selectedPolygon, setSelectedPolygon] = useState<PolygonData | null>(
     null
   )
+  const [gamificationData, setGamificationData] = useState<any>(null)
+  const [lastGamificationRefresh, setLastGamificationRefresh] =
+    useState<number>(-1)
 
   useEffect(() => {
     if (!isTracking) return
@@ -292,11 +298,32 @@ export default function Map({
       setErrorPoi("You are not close enough to this point of interest")
     }
   }
-
+  if (!isTracking) {
+    return (
+      <div
+        className='min-h-screen flex flex-col justify-center items-center'
+        data-cy='map-container-for-dashboard'
+      >
+        <div className='flex justify-center'>
+          <Lottie
+            animationData={MapLocationNeeded}
+            loop={true}
+            className='max-w-[300px] w-full'
+          />
+        </div>
+        <h2 className='text-center text-2xl'>
+          {t("Please enable location services to see the map")}
+        </h2>
+      </div>
+    )
+  }
   return (
     <>
       <div className={firstDivClassName} data-cy='map-container-for-dashboard'>
         <div className={secondDivClassName}>
+          <div className='absolute top-4 right-4 z-99999'>
+            <GamificationCircle />
+          </div>
           <LeafletMapContainer
             center={mapCenter || [0, 0]}
             zoom={mapCenter ? 16 : 13}

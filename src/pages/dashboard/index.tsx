@@ -26,29 +26,6 @@ export default function Dashboard() {
     }
   }, [campaignId])
 
-  // useEffect(() => {
-  //   const socket = new WebSocket("ws://localhost:8080")
-
-  //   socket.onopen = () => {
-  //     console.log("Connected to WebSocket server")
-  //   }
-
-  //   socket.onmessage = event => {
-  //     const data = JSON.parse(event.data)
-
-  //     if (data.puntos) setPuntos(data.puntos)
-  //     if (data.poligonos) setPoligonos(data.poligonos)
-  //   }
-
-  //   socket.onclose = () => {
-  //     console.log("WebSocket connection closed")
-  //   }
-
-  //   return () => {
-  //     socket.close()
-  //   }
-  // }, [])
-
   if (!selectedCampaign) {
     return (
       <DashboardLayout>
@@ -57,8 +34,6 @@ export default function Dashboard() {
     )
   }
 
-  console.log("---------positionposition")
-  console.log(position)
   return (
     <DashboardLayout>
       {!position ? (

@@ -68,7 +68,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [isTracking, setIsTracking] = useState<boolean>(true)
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-
+  console.log({ selectedCampaign })
   const toggleTracking = () => setIsTracking(prev => !prev)
 
   const updatePosition = async () => {
@@ -105,17 +105,13 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         if (!mapCenter) setMapCenter(newPosition)
       },
       error => {
-        let title = "Geolocation Error"
         let text = "An unknown error occurred."
-        let confirmButtonText = "OK"
         let errorEventName = "GEOLOCATION_UNKNOWN_ERROR_IN_UPDATE_POSITION"
 
         switch (error.code) {
           case error.PERMISSION_DENIED: {
-            title = "Permission Denied"
             text =
               "You denied the request for Geolocation. Please allow access to use this feature."
-            confirmButtonText = "Grant Permission"
             errorEventName = "GEOLOCATION_PERMISSION_DENIED_IN_UPDATE_POSITION"
             break
           }
@@ -131,42 +127,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
             break
           }
         }
-
         logEvent(errorEventName, text, { error })
-        Swal.fire({
-          title,
-          text,
-          icon: "error",
-          showCancelButton: error.code === error.PERMISSION_DENIED,
-          confirmButtonText,
-          cancelButtonText: "Cancel",
-          allowOutsideClick: false
-        }).then(result => {
-          if (result.isConfirmed && error.code === error.PERMISSION_DENIED) {
-            const userAgent = navigator.userAgent.toLowerCase()
-            if (userAgent.includes("android")) {
-              window.location.href =
-                "intent://#Intent;action=android.settings.APPLICATION_DETAILS_SETTINGS;scheme=package;end"
-            } else if (
-              userAgent.includes("iphone") ||
-              userAgent.includes("ipad")
-            ) {
-              Swal.fire({
-                title: "Enable Location on iOS",
-                text: "Go to: Settings > Privacy > Location Services > Your Browser, and set it to 'While Using the App'.",
-                icon: "info",
-                confirmButtonText: "OK"
-              })
-            } else {
-              Swal.fire({
-                title: "Enable Location",
-                text: "Please go to your browser settings and allow location access.",
-                icon: "info",
-                confirmButtonText: "OK"
-              })
-            }
-          }
-        })
       },
       geoOptions
     )

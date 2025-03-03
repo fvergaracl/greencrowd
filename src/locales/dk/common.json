@@ -313,5 +313,8 @@
   "Every completed task earns you points! Your contributions help improve the platform and support citizen science initiatives.": "Hver gennemført opgave giver dig point! Dine bidrag er med til at forbedre platformen og støtte borgervidenskabelige initiativer.",
   "Stay engaged, level up, and unlock new opportunities.": "Bliv ved med at være engageret, gå op i niveau og åbn op for nye muligheder.",
   "Log In and Start Earning": "Log ind og begynd at tjene",
-  "Skip": "Spring over"
+  "Skip": "Spring over",
+  "Start": "Start",
+  "Stop": "Stop",
+  "Please enable location services to see the map": "Aktivér placeringstjenester for at se kortet"
 }
