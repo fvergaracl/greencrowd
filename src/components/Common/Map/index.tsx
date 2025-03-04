@@ -24,7 +24,6 @@ import FitBounds from "./FitBounds";
 import "../styles.css";
 import { logEvent } from "@/utils/logger";
 import { getApiBaseUrl, getApiGameBaseUrl } from "@/config/api";
-import Cookies from "js-cookie";
 import { getDeviceHeading } from "@/utils/getDeviceHeading";
 import Lottie from "lottie-react";
 import MapLocationNeeded from "@/lotties/map_location_needed.json";
@@ -123,7 +122,7 @@ const processTasks = (
     }
   });
 
-  return JSON.stringify(poiList, null, 2);
+  return poiList;
 };
 
 const decodeToken = (token: string): { roles?: string[] } | null => {
@@ -239,1383 +238,21 @@ export default function Map({
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [lastFetchToken, setLastFetchToken] = useState<Date | null>(null);
   const [gamificationData, setGamificationData] = useState<any>(null);
-  const [gamificationDataNormalized, setGamificationDataNormalized] =
-    useState<any>(null);
+
   const [lastFetchGamificationData, setLastFetchGamificationData] =
     useState<Date | null>(null);
 
   const [gamificationFilter, setGamificationFilter] = useState<string>("all");
 
-  /*
-  campaignData = {
-    "id": "2f41f86e-2a1c-4583-b076-048dabb8e5e9",
-    "name": "test",
-    "description": "",
-    "isOpen": true,
-    "location": "",
-    "startDatetime": null,
-    "endDatetime": null,
-    "category": "asdasdsa",
-    "gameId": "8e9ebc36-2e17-4794-8a1b-1111dd44680a",
-    "isDisabled": false,
-    "createdAt": "2025-02-18T11:38:24.906Z",
-    "updatedAt": "2025-02-25T10:24:40.599Z",
-    "areas": [
-        {
-            "id": "4adf38d8-db10-4380-bb2c-a2bd4122be7f",
-            "name": "Left side",
-            "description": "",
-            "campaignId": "2f41f86e-2a1c-4583-b076-048dabb8e5e9",
-            "polygon": [
-                [
-                    43.2728465826415,
-                    -2.942441131757652
-                ],
-                [
-                    43.2734402644482,
-                    -2.941669292692671
-                ],
-                [
-                    43.27415892414971,
-                    -2.939761135004233
-                ],
-                [
-                    43.27365898786447,
-                    -2.938174576926198
-                ],
-                [
-                    43.27011244693973,
-                    -2.938474736562585
-                ],
-                [
-                    43.26939373945454,
-                    -2.942333931887511
-                ],
-                [
-                    43.27022181472609,
-                    -2.942226732017371
-                ],
-                [
-                    43.2706592839063,
-                    -2.942140972121266
-                ],
-                [
-                    43.27100300748489,
-                    -2.94184081248488
-                ],
-                [
-                    43.27154983645013,
-                    -2.942162412095302
-                ],
-                [
-                    43.27161233087617,
-                    -2.942419691783636
-                ],
-                [
-                    43.27186230793865,
-                    -2.942912811186247
-                ]
-            ],
-            "isDisabled": false,
-            "createdAt": "2025-02-19T10:40:17.036Z",
-            "updatedAt": "2025-02-19T10:40:17.036Z",
-            "pointOfInterests": [
-                {
-                    "id": "e2f58b8e-a3d8-452a-a5b6-3d28172895c0",
-                    "name": "Behind Eside Building",
-                    "description": "",
-                    "radius": 20,
-                    "areaId": "4adf38d8-db10-4380-bb2c-a2bd4122be7f",
-                    "latitude": 43.27203416657349,
-                    "longitude": -2.939679622650147,
-                    "isDisabled": false,
-                    "createdAt": "2025-02-19T10:41:59.955Z",
-                    "updatedAt": "2025-02-19T10:41:59.955Z",
-                    "tasks": [
-                        {
-                            "id": "10fcb063-5e3d-48c5-9532-259aaba7d03a",
-                            "title": "knowing the environment",
-                            "description": "-",
-                            "type": "form",
-                            "taskData": {
-                                "pages": [
-                                    {
-                                        "name": "page1",
-                                        "title": "General Questions",
-                                        "elements": [
-                                            {
-                                                "name": "q1_environment_quality",
-                                                "type": "rating",
-                                                "title": "How would you describe the environment in this point?",
-                                                "isRequired": true,
-                                                "maxRateDescription": "🟢 Clean and well-maintained",
-                                                "minRateDescription": "🔴 Polluted and needs improvement"
-                                            },
-                                            {
-                                                "name": "q2_common_issues",
-                                                "type": "checkbox",
-                                                "title": "What are the most common environmental issues you notice? (Select all that apply)",
-                                                "choices": [
-                                                    {
-                                                        "text": "🗑️ Litter and waste",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "🚗 Air pollution",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "💧 Water pollution",
-                                                        "value": "Item 3"
-                                                    },
-                                                    {
-                                                        "text": "🌲 Deforestation",
-                                                        "value": "Item 4"
-                                                    },
-                                                    {
-                                                        "text": "🔊 Noise pollution",
-                                                        "value": "Item 5"
-                                                    }
-                                                ],
-                                                "isRequired": true,
-                                                "showNoneItem": true,
-                                                "showOtherItem": true,
-                                                "showSelectAllItem": true
-                                            },
-                                            {
-                                                "name": "q3_public_space_satisfaction",
-                                                "type": "rating",
-                                                "title": "On a scale of 1-5, how satisfied are you with the public spaces in your area?",
-                                                "rateType": "stars",
-                                                "isRequired": true,
-                                                "maxRateDescription": "Very satisfied",
-                                                "minRateDescription": "Very dissatisfied"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page2",
-                                        "title": "Upload a Photo",
-                                        "elements": [
-                                            {
-                                                "name": "q4_upload_photo",
-                                                "type": "file",
-                                                "title": "Please upload a photo that represents the current environmental condition in your area.",
-                                                "isRequired": true,
-                                                "sourceType": "file-camera",
-                                                "acceptedTypes": "image/*\t",
-                                                "waitForUpload": true,
-                                                "needConfirmRemoveFile": true
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page3",
-                                        "title": "Suggestions for Improvement",
-                                        "elements": [
-                                            {
-                                                "name": "q5_suggestions_for_improvement",
-                                                "type": "text",
-                                                "title": "What actions do you think would improve the environment in your area?"
-                                            },
-                                            {
-                                                "name": "question1",
-                                                "type": "dropdown",
-                                                "title": "Would you be willing to participate in community-driven environmental initiatives?",
-                                                "choices": [
-                                                    {
-                                                        "text": "✅ Yes",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "❌ No",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "🤔 Maybe, I need more information",
-                                                        "value": "Item 3"
-                                                    }
-                                                ],
-                                                "isRequired": true
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            "responseLimit": null,
-                            "responseLimitInterval": null,
-                            "availableFrom": null,
-                            "availableTo": null,
-                            "isDisabled": false,
-                            "pointOfInterestId": "e2f58b8e-a3d8-452a-a5b6-3d28172895c0",
-                            "createdAt": "2025-02-17T13:57:48.125Z",
-                            "updatedAt": "2025-02-17T13:57:48.125Z"
-                        }
-                    ]
-                },
-                {
-                    "id": "d8fd6554-a140-42ff-8d73-fa314c0358bd",
-                    "name": "bus stop",
-                    "description": "",
-                    "radius": 20,
-                    "areaId": "4adf38d8-db10-4380-bb2c-a2bd4122be7f",
-                    "latitude": 43.27106940840702,
-                    "longitude": -2.941305041313172,
-                    "isDisabled": false,
-                    "createdAt": "2025-02-19T10:44:14.655Z",
-                    "updatedAt": "2025-02-19T10:44:14.655Z",
-                    "tasks": [
-                        {
-                            "id": "30fcb063-5e3d-48c5-9532-259aaba7d03a",
-                            "title": "knowing the environment",
-                            "description": "-",
-                            "type": "form",
-                            "taskData": {
-                                "pages": [
-                                    {
-                                        "name": "page1",
-                                        "title": "General Questions",
-                                        "elements": [
-                                            {
-                                                "name": "q1_environment_quality",
-                                                "type": "rating",
-                                                "title": "How would you describe the environment in this point?",
-                                                "isRequired": true,
-                                                "maxRateDescription": "🟢 Clean and well-maintained",
-                                                "minRateDescription": "🔴 Polluted and needs improvement"
-                                            },
-                                            {
-                                                "name": "q2_common_issues",
-                                                "type": "checkbox",
-                                                "title": "What are the most common environmental issues you notice? (Select all that apply)",
-                                                "choices": [
-                                                    {
-                                                        "text": "🗑️ Litter and waste",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "🚗 Air pollution",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "💧 Water pollution",
-                                                        "value": "Item 3"
-                                                    },
-                                                    {
-                                                        "text": "🌲 Deforestation",
-                                                        "value": "Item 4"
-                                                    },
-                                                    {
-                                                        "text": "🔊 Noise pollution",
-                                                        "value": "Item 5"
-                                                    }
-                                                ],
-                                                "isRequired": true,
-                                                "showNoneItem": true,
-                                                "showOtherItem": true,
-                                                "showSelectAllItem": true
-                                            },
-                                            {
-                                                "name": "q3_public_space_satisfaction",
-                                                "type": "rating",
-                                                "title": "On a scale of 1-5, how satisfied are you with the public spaces in your area?",
-                                                "rateType": "stars",
-                                                "isRequired": true,
-                                                "maxRateDescription": "Very satisfied",
-                                                "minRateDescription": "Very dissatisfied"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page2",
-                                        "title": "Upload a Photo",
-                                        "elements": [
-                                            {
-                                                "name": "q4_upload_photo",
-                                                "type": "file",
-                                                "title": "Please upload a photo that represents the current environmental condition in your area.",
-                                                "isRequired": true,
-                                                "sourceType": "file-camera",
-                                                "acceptedTypes": "image/*\t",
-                                                "waitForUpload": true,
-                                                "needConfirmRemoveFile": true
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page3",
-                                        "title": "Suggestions for Improvement",
-                                        "elements": [
-                                            {
-                                                "name": "q5_suggestions_for_improvement",
-                                                "type": "text",
-                                                "title": "What actions do you think would improve the environment in your area?"
-                                            },
-                                            {
-                                                "name": "question1",
-                                                "type": "dropdown",
-                                                "title": "Would you be willing to participate in community-driven environmental initiatives?",
-                                                "choices": [
-                                                    {
-                                                        "text": "✅ Yes",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "❌ No",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "🤔 Maybe, I need more information",
-                                                        "value": "Item 3"
-                                                    }
-                                                ],
-                                                "isRequired": true
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            "responseLimit": null,
-                            "responseLimitInterval": null,
-                            "availableFrom": null,
-                            "availableTo": null,
-                            "isDisabled": false,
-                            "pointOfInterestId": "d8fd6554-a140-42ff-8d73-fa314c0358bd",
-                            "createdAt": "2025-02-17T13:57:48.125Z",
-                            "updatedAt": "2025-02-17T13:57:48.125Z"
-                        }
-                    ]
-                },
-                {
-                    "id": "3e134cfc-75a2-4e21-85e9-89983d98a819",
-                    "name": "Rotonda",
-                    "description": "",
-                    "radius": 20,
-                    "areaId": "4adf38d8-db10-4380-bb2c-a2bd4122be7f",
-                    "latitude": 43.27034290026031,
-                    "longitude": -2.939180731773377,
-                    "isDisabled": false,
-                    "createdAt": "2025-02-19T10:44:35.240Z",
-                    "updatedAt": "2025-02-19T10:44:35.240Z",
-                    "tasks": [
-                        {
-                            "id": "40fcb063-5e3d-48c5-9532-259aaba7d03a",
-                            "title": "knowing the environment",
-                            "description": "-",
-                            "type": "form",
-                            "taskData": {
-                                "pages": [
-                                    {
-                                        "name": "page1",
-                                        "title": "General Questions",
-                                        "elements": [
-                                            {
-                                                "name": "q1_environment_quality",
-                                                "type": "rating",
-                                                "title": "How would you describe the environment in this point?",
-                                                "isRequired": true,
-                                                "maxRateDescription": "🟢 Clean and well-maintained",
-                                                "minRateDescription": "🔴 Polluted and needs improvement"
-                                            },
-                                            {
-                                                "name": "q2_common_issues",
-                                                "type": "checkbox",
-                                                "title": "What are the most common environmental issues you notice? (Select all that apply)",
-                                                "choices": [
-                                                    {
-                                                        "text": "🗑️ Litter and waste",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "🚗 Air pollution",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "💧 Water pollution",
-                                                        "value": "Item 3"
-                                                    },
-                                                    {
-                                                        "text": "🌲 Deforestation",
-                                                        "value": "Item 4"
-                                                    },
-                                                    {
-                                                        "text": "🔊 Noise pollution",
-                                                        "value": "Item 5"
-                                                    }
-                                                ],
-                                                "isRequired": true,
-                                                "showNoneItem": true,
-                                                "showOtherItem": true,
-                                                "showSelectAllItem": true
-                                            },
-                                            {
-                                                "name": "q3_public_space_satisfaction",
-                                                "type": "rating",
-                                                "title": "On a scale of 1-5, how satisfied are you with the public spaces in your area?",
-                                                "rateType": "stars",
-                                                "isRequired": true,
-                                                "maxRateDescription": "Very satisfied",
-                                                "minRateDescription": "Very dissatisfied"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page2",
-                                        "title": "Upload a Photo",
-                                        "elements": [
-                                            {
-                                                "name": "q4_upload_photo",
-                                                "type": "file",
-                                                "title": "Please upload a photo that represents the current environmental condition in your area.",
-                                                "isRequired": true,
-                                                "sourceType": "file-camera",
-                                                "acceptedTypes": "image/*\t",
-                                                "waitForUpload": true,
-                                                "needConfirmRemoveFile": true
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page3",
-                                        "title": "Suggestions for Improvement",
-                                        "elements": [
-                                            {
-                                                "name": "q5_suggestions_for_improvement",
-                                                "type": "text",
-                                                "title": "What actions do you think would improve the environment in your area?"
-                                            },
-                                            {
-                                                "name": "question1",
-                                                "type": "dropdown",
-                                                "title": "Would you be willing to participate in community-driven environmental initiatives?",
-                                                "choices": [
-                                                    {
-                                                        "text": "✅ Yes",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "❌ No",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "🤔 Maybe, I need more information",
-                                                        "value": "Item 3"
-                                                    }
-                                                ],
-                                                "isRequired": true
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            "responseLimit": null,
-                            "responseLimitInterval": null,
-                            "availableFrom": null,
-                            "availableTo": null,
-                            "isDisabled": false,
-                            "pointOfInterestId": "3e134cfc-75a2-4e21-85e9-89983d98a819",
-                            "createdAt": "2025-02-17T13:57:48.125Z",
-                            "updatedAt": "2025-02-17T13:57:48.125Z"
-                        }
-                    ]
-                },
-                {
-                    "id": "6623df1a-2486-40af-90f7-96b6bccde472",
-                    "name": "Sports fields",
-                    "description": "",
-                    "radius": 60,
-                    "areaId": "4adf38d8-db10-4380-bb2c-a2bd4122be7f",
-                    "latitude": 43.27179981376928,
-                    "longitude": -2.940795421600342,
-                    "isDisabled": false,
-                    "createdAt": "2025-02-19T10:43:35.420Z",
-                    "updatedAt": "2025-02-19T10:43:35.420Z",
-                    "tasks": [
-                        {
-                            "id": "20fcb063-5e3d-48c5-9532-259aaba7d03a",
-                            "title": "knowing the environment",
-                            "description": "-",
-                            "type": "form",
-                            "taskData": {
-                                "pages": [
-                                    {
-                                        "name": "page1",
-                                        "title": "General Questions",
-                                        "elements": [
-                                            {
-                                                "name": "q1_environment_quality",
-                                                "type": "rating",
-                                                "title": "How would you describe the environment in this point?",
-                                                "isRequired": true,
-                                                "maxRateDescription": "🟢 Clean and well-maintained",
-                                                "minRateDescription": "🔴 Polluted and needs improvement"
-                                            },
-                                            {
-                                                "name": "q2_common_issues",
-                                                "type": "checkbox",
-                                                "title": "What are the most common environmental issues you notice? (Select all that apply)",
-                                                "choices": [
-                                                    {
-                                                        "text": "🗑️ Litter and waste",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "🚗 Air pollution",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "💧 Water pollution",
-                                                        "value": "Item 3"
-                                                    },
-                                                    {
-                                                        "text": "🌲 Deforestation",
-                                                        "value": "Item 4"
-                                                    },
-                                                    {
-                                                        "text": "🔊 Noise pollution",
-                                                        "value": "Item 5"
-                                                    }
-                                                ],
-                                                "isRequired": true,
-                                                "showNoneItem": true,
-                                                "showOtherItem": true,
-                                                "showSelectAllItem": true
-                                            },
-                                            {
-                                                "name": "q3_public_space_satisfaction",
-                                                "type": "rating",
-                                                "title": "On a scale of 1-5, how satisfied are you with the public spaces in your area?",
-                                                "rateType": "stars",
-                                                "isRequired": true,
-                                                "maxRateDescription": "Very satisfied",
-                                                "minRateDescription": "Very dissatisfied"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page2",
-                                        "title": "Upload a Photo",
-                                        "elements": [
-                                            {
-                                                "name": "q4_upload_photo",
-                                                "type": "file",
-                                                "title": "Please upload a photo that represents the current environmental condition in your area.",
-                                                "isRequired": true,
-                                                "sourceType": "file-camera",
-                                                "acceptedTypes": "image/*\t",
-                                                "waitForUpload": true,
-                                                "needConfirmRemoveFile": true
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page3",
-                                        "title": "Suggestions for Improvement",
-                                        "elements": [
-                                            {
-                                                "name": "q5_suggestions_for_improvement",
-                                                "type": "text",
-                                                "title": "What actions do you think would improve the environment in your area?"
-                                            },
-                                            {
-                                                "name": "question1",
-                                                "type": "dropdown",
-                                                "title": "Would you be willing to participate in community-driven environmental initiatives?",
-                                                "choices": [
-                                                    {
-                                                        "text": "✅ Yes",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "❌ No",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "🤔 Maybe, I need more information",
-                                                        "value": "Item 3"
-                                                    }
-                                                ],
-                                                "isRequired": true
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            "responseLimit": null,
-                            "responseLimitInterval": null,
-                            "availableFrom": null,
-                            "availableTo": null,
-                            "isDisabled": false,
-                            "pointOfInterestId": "6623df1a-2486-40af-90f7-96b6bccde472",
-                            "createdAt": "2025-02-17T13:57:48.125Z",
-                            "updatedAt": "2025-02-17T13:57:48.125Z"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": "f73df3de-a352-4b7f-af8e-d6d04cd51fbd",
-            "name": "Right side",
-            "description": "",
-            "campaignId": "2f41f86e-2a1c-4583-b076-048dabb8e5e9",
-            "polygon": [
-                [
-                    43.27369023400261,
-                    -2.938131696978146
-                ],
-                [
-                    43.27017494284171,
-                    -2.93838897666648
-                ],
-                [
-                    43.27023743867951,
-                    -2.937038258302763
-                ],
-                [
-                    43.26926874598212,
-                    -2.937295537991076
-                ],
-                [
-                    43.26894063689573,
-                    -2.937295537991076
-                ],
-                [
-                    43.26801879714021,
-                    -2.937445617809269
-                ],
-                [
-                    43.26798754809029,
-                    -2.936395059081938
-                ],
-                [
-                    43.26864377476972,
-                    -2.936373619107902
-                ],
-                [
-                    43.26950310853235,
-                    -2.936673778744288
-                ],
-                [
-                    43.27025306262895,
-                    -2.936416499055954
-                ],
-                [
-                    43.26990933481506,
-                    -2.932900343315466
-                ],
-                [
-                    43.27050304527434,
-                    -2.932643063627152
-                ],
-                [
-                    43.27095613620211,
-                    -2.935408820276675
-                ],
-                [
-                    43.27375272623079,
-                    -2.935280180432518
-                ]
-            ],
-            "isDisabled": false,
-            "createdAt": "2025-02-19T10:41:16.423Z",
-            "updatedAt": "2025-02-19T10:41:16.423Z",
-            "pointOfInterests": [
-                {
-                    "id": "a908261b-2a21-41ef-a1f1-eb4e3eccde15",
-                    "name": "Parking",
-                    "description": "",
-                    "radius": 20,
-                    "areaId": "f73df3de-a352-4b7f-af8e-d6d04cd51fbd",
-                    "latitude": 43.2707061554177,
-                    "longitude": -2.938333153724671,
-                    "isDisabled": false,
-                    "createdAt": "2025-02-19T10:44:57.983Z",
-                    "updatedAt": "2025-02-19T10:44:57.983Z",
-                    "tasks": [
-                        {
-                            "id": "50fcb063-5e3d-48c5-9532-259aaba7d03a",
-                            "title": "knowing the environment",
-                            "description": "-",
-                            "type": "form",
-                            "taskData": {
-                                "pages": [
-                                    {
-                                        "name": "page1",
-                                        "title": "General Questions",
-                                        "elements": [
-                                            {
-                                                "name": "q1_environment_quality",
-                                                "type": "rating",
-                                                "title": "How would you describe the environment in this point?",
-                                                "isRequired": true,
-                                                "maxRateDescription": "🟢 Clean and well-maintained",
-                                                "minRateDescription": "🔴 Polluted and needs improvement"
-                                            },
-                                            {
-                                                "name": "q2_common_issues",
-                                                "type": "checkbox",
-                                                "title": "What are the most common environmental issues you notice? (Select all that apply)",
-                                                "choices": [
-                                                    {
-                                                        "text": "🗑️ Litter and waste",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "🚗 Air pollution",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "💧 Water pollution",
-                                                        "value": "Item 3"
-                                                    },
-                                                    {
-                                                        "text": "🌲 Deforestation",
-                                                        "value": "Item 4"
-                                                    },
-                                                    {
-                                                        "text": "🔊 Noise pollution",
-                                                        "value": "Item 5"
-                                                    }
-                                                ],
-                                                "isRequired": true,
-                                                "showNoneItem": true,
-                                                "showOtherItem": true,
-                                                "showSelectAllItem": true
-                                            },
-                                            {
-                                                "name": "q3_public_space_satisfaction",
-                                                "type": "rating",
-                                                "title": "On a scale of 1-5, how satisfied are you with the public spaces in your area?",
-                                                "rateType": "stars",
-                                                "isRequired": true,
-                                                "maxRateDescription": "Very satisfied",
-                                                "minRateDescription": "Very dissatisfied"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page2",
-                                        "title": "Upload a Photo",
-                                        "elements": [
-                                            {
-                                                "name": "q4_upload_photo",
-                                                "type": "file",
-                                                "title": "Please upload a photo that represents the current environmental condition in your area.",
-                                                "isRequired": true,
-                                                "sourceType": "file-camera",
-                                                "acceptedTypes": "image/*\t",
-                                                "waitForUpload": true,
-                                                "needConfirmRemoveFile": true
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page3",
-                                        "title": "Suggestions for Improvement",
-                                        "elements": [
-                                            {
-                                                "name": "q5_suggestions_for_improvement",
-                                                "type": "text",
-                                                "title": "What actions do you think would improve the environment in your area?"
-                                            },
-                                            {
-                                                "name": "question1",
-                                                "type": "dropdown",
-                                                "title": "Would you be willing to participate in community-driven environmental initiatives?",
-                                                "choices": [
-                                                    {
-                                                        "text": "✅ Yes",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "❌ No",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "🤔 Maybe, I need more information",
-                                                        "value": "Item 3"
-                                                    }
-                                                ],
-                                                "isRequired": true
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            "responseLimit": null,
-                            "responseLimitInterval": null,
-                            "availableFrom": null,
-                            "availableTo": null,
-                            "isDisabled": false,
-                            "pointOfInterestId": "a908261b-2a21-41ef-a1f1-eb4e3eccde15",
-                            "createdAt": "2025-02-17T13:57:48.125Z",
-                            "updatedAt": "2025-02-17T13:57:48.125Z"
-                        }
-                    ]
-                },
-                {
-                    "id": "867a3095-e40c-4fdd-93f1-99f94596e9ab",
-                    "name": "Inside Main building",
-                    "description": "",
-                    "radius": 50,
-                    "areaId": "f73df3de-a352-4b7f-af8e-d6d04cd51fbd",
-                    "latitude": 43.27083895783726,
-                    "longitude": -2.937544584274292,
-                    "isDisabled": false,
-                    "createdAt": "2025-02-19T10:45:54.452Z",
-                    "updatedAt": "2025-02-19T10:45:54.452Z",
-                    "tasks": [
-                        {
-                            "id": "60fcb063-5e3d-48c5-9532-259aaba7d03a",
-                            "title": "knowing the environment",
-                            "description": "-",
-                            "type": "form",
-                            "taskData": {
-                                "pages": [
-                                    {
-                                        "name": "page1",
-                                        "title": "General Questions",
-                                        "elements": [
-                                            {
-                                                "name": "q1_environment_quality",
-                                                "type": "rating",
-                                                "title": "How would you describe the environment in this point?",
-                                                "isRequired": true,
-                                                "maxRateDescription": "🟢 Clean and well-maintained",
-                                                "minRateDescription": "🔴 Polluted and needs improvement"
-                                            },
-                                            {
-                                                "name": "q2_common_issues",
-                                                "type": "checkbox",
-                                                "title": "What are the most common environmental issues you notice? (Select all that apply)",
-                                                "choices": [
-                                                    {
-                                                        "text": "🗑️ Litter and waste",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "🚗 Air pollution",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "💧 Water pollution",
-                                                        "value": "Item 3"
-                                                    },
-                                                    {
-                                                        "text": "🌲 Deforestation",
-                                                        "value": "Item 4"
-                                                    },
-                                                    {
-                                                        "text": "🔊 Noise pollution",
-                                                        "value": "Item 5"
-                                                    }
-                                                ],
-                                                "isRequired": true,
-                                                "showNoneItem": true,
-                                                "showOtherItem": true,
-                                                "showSelectAllItem": true
-                                            },
-                                            {
-                                                "name": "q3_public_space_satisfaction",
-                                                "type": "rating",
-                                                "title": "On a scale of 1-5, how satisfied are you with the public spaces in your area?",
-                                                "rateType": "stars",
-                                                "isRequired": true,
-                                                "maxRateDescription": "Very satisfied",
-                                                "minRateDescription": "Very dissatisfied"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page2",
-                                        "title": "Upload a Photo",
-                                        "elements": [
-                                            {
-                                                "name": "q4_upload_photo",
-                                                "type": "file",
-                                                "title": "Please upload a photo that represents the current environmental condition in your area.",
-                                                "isRequired": true,
-                                                "sourceType": "file-camera",
-                                                "acceptedTypes": "image/*\t",
-                                                "waitForUpload": true,
-                                                "needConfirmRemoveFile": true
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page3",
-                                        "title": "Suggestions for Improvement",
-                                        "elements": [
-                                            {
-                                                "name": "q5_suggestions_for_improvement",
-                                                "type": "text",
-                                                "title": "What actions do you think would improve the environment in your area?"
-                                            },
-                                            {
-                                                "name": "question1",
-                                                "type": "dropdown",
-                                                "title": "Would you be willing to participate in community-driven environmental initiatives?",
-                                                "choices": [
-                                                    {
-                                                        "text": "✅ Yes",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "❌ No",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "🤔 Maybe, I need more information",
-                                                        "value": "Item 3"
-                                                    }
-                                                ],
-                                                "isRequired": true
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            "responseLimit": null,
-                            "responseLimitInterval": null,
-                            "availableFrom": null,
-                            "availableTo": null,
-                            "isDisabled": false,
-                            "pointOfInterestId": "867a3095-e40c-4fdd-93f1-99f94596e9ab",
-                            "createdAt": "2025-02-17T13:57:48.125Z",
-                            "updatedAt": "2025-02-17T13:57:48.125Z"
-                        }
-                    ]
-                },
-                {
-                    "id": "db490f8d-961e-4781-a201-44ad1e844bfa",
-                    "name": "Bridge Pedro Arrupe",
-                    "description": "",
-                    "radius": 20,
-                    "areaId": "f73df3de-a352-4b7f-af8e-d6d04cd51fbd",
-                    "latitude": 43.27026087460217,
-                    "longitude": -2.936729192733765,
-                    "isDisabled": false,
-                    "createdAt": "2025-02-19T10:46:27.296Z",
-                    "updatedAt": "2025-02-19T10:46:27.296Z",
-                    "tasks": [
-                        {
-                            "id": "70fcb063-5e3d-48c5-9532-259aaba7d03a",
-                            "title": "knowing the environment",
-                            "description": "-",
-                            "type": "form",
-                            "taskData": {
-                                "pages": [
-                                    {
-                                        "name": "page1",
-                                        "title": "General Questions",
-                                        "elements": [
-                                            {
-                                                "name": "q1_environment_quality",
-                                                "type": "rating",
-                                                "title": "How would you describe the environment in this point?",
-                                                "isRequired": true,
-                                                "maxRateDescription": "🟢 Clean and well-maintained",
-                                                "minRateDescription": "🔴 Polluted and needs improvement"
-                                            },
-                                            {
-                                                "name": "q2_common_issues",
-                                                "type": "checkbox",
-                                                "title": "What are the most common environmental issues you notice? (Select all that apply)",
-                                                "choices": [
-                                                    {
-                                                        "text": "🗑️ Litter and waste",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "🚗 Air pollution",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "💧 Water pollution",
-                                                        "value": "Item 3"
-                                                    },
-                                                    {
-                                                        "text": "🌲 Deforestation",
-                                                        "value": "Item 4"
-                                                    },
-                                                    {
-                                                        "text": "🔊 Noise pollution",
-                                                        "value": "Item 5"
-                                                    }
-                                                ],
-                                                "isRequired": true,
-                                                "showNoneItem": true,
-                                                "showOtherItem": true,
-                                                "showSelectAllItem": true
-                                            },
-                                            {
-                                                "name": "q3_public_space_satisfaction",
-                                                "type": "rating",
-                                                "title": "On a scale of 1-5, how satisfied are you with the public spaces in your area?",
-                                                "rateType": "stars",
-                                                "isRequired": true,
-                                                "maxRateDescription": "Very satisfied",
-                                                "minRateDescription": "Very dissatisfied"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page2",
-                                        "title": "Upload a Photo",
-                                        "elements": [
-                                            {
-                                                "name": "q4_upload_photo",
-                                                "type": "file",
-                                                "title": "Please upload a photo that represents the current environmental condition in your area.",
-                                                "isRequired": true,
-                                                "sourceType": "file-camera",
-                                                "acceptedTypes": "image/*\t",
-                                                "waitForUpload": true,
-                                                "needConfirmRemoveFile": true
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page3",
-                                        "title": "Suggestions for Improvement",
-                                        "elements": [
-                                            {
-                                                "name": "q5_suggestions_for_improvement",
-                                                "type": "text",
-                                                "title": "What actions do you think would improve the environment in your area?"
-                                            },
-                                            {
-                                                "name": "question1",
-                                                "type": "dropdown",
-                                                "title": "Would you be willing to participate in community-driven environmental initiatives?",
-                                                "choices": [
-                                                    {
-                                                        "text": "✅ Yes",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "❌ No",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "🤔 Maybe, I need more information",
-                                                        "value": "Item 3"
-                                                    }
-                                                ],
-                                                "isRequired": true
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            "responseLimit": null,
-                            "responseLimitInterval": null,
-                            "availableFrom": null,
-                            "availableTo": null,
-                            "isDisabled": false,
-                            "pointOfInterestId": "db490f8d-961e-4781-a201-44ad1e844bfa",
-                            "createdAt": "2025-02-17T13:57:48.125Z",
-                            "updatedAt": "2025-02-17T13:57:48.125Z"
-                        }
-                    ]
-                },
-                {
-                    "id": "239b1cd2-4d6b-4e3e-980c-3f1c98b2838d",
-                    "name": "Deusto Library",
-                    "description": "",
-                    "radius": 20,
-                    "areaId": "f73df3de-a352-4b7f-af8e-d6d04cd51fbd",
-                    "latitude": 43.26844846994983,
-                    "longitude": -2.937018871307373,
-                    "isDisabled": false,
-                    "createdAt": "2025-02-19T10:46:54.665Z",
-                    "updatedAt": "2025-02-19T10:46:54.665Z",
-                    "tasks": [
-                        {
-                            "id": "80fcb063-5e3d-48c5-9532-259aaba7d03a",
-                            "title": "knowing the environment",
-                            "description": "-",
-                            "type": "form",
-                            "taskData": {
-                                "pages": [
-                                    {
-                                        "name": "page1",
-                                        "title": "General Questions",
-                                        "elements": [
-                                            {
-                                                "name": "q1_environment_quality",
-                                                "type": "rating",
-                                                "title": "How would you describe the environment in this point?",
-                                                "isRequired": true,
-                                                "maxRateDescription": "🟢 Clean and well-maintained",
-                                                "minRateDescription": "🔴 Polluted and needs improvement"
-                                            },
-                                            {
-                                                "name": "q2_common_issues",
-                                                "type": "checkbox",
-                                                "title": "What are the most common environmental issues you notice? (Select all that apply)",
-                                                "choices": [
-                                                    {
-                                                        "text": "🗑️ Litter and waste",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "🚗 Air pollution",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "💧 Water pollution",
-                                                        "value": "Item 3"
-                                                    },
-                                                    {
-                                                        "text": "🌲 Deforestation",
-                                                        "value": "Item 4"
-                                                    },
-                                                    {
-                                                        "text": "🔊 Noise pollution",
-                                                        "value": "Item 5"
-                                                    }
-                                                ],
-                                                "isRequired": true,
-                                                "showNoneItem": true,
-                                                "showOtherItem": true,
-                                                "showSelectAllItem": true
-                                            },
-                                            {
-                                                "name": "q3_public_space_satisfaction",
-                                                "type": "rating",
-                                                "title": "On a scale of 1-5, how satisfied are you with the public spaces in your area?",
-                                                "rateType": "stars",
-                                                "isRequired": true,
-                                                "maxRateDescription": "Very satisfied",
-                                                "minRateDescription": "Very dissatisfied"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page2",
-                                        "title": "Upload a Photo",
-                                        "elements": [
-                                            {
-                                                "name": "q4_upload_photo",
-                                                "type": "file",
-                                                "title": "Please upload a photo that represents the current environmental condition in your area.",
-                                                "isRequired": true,
-                                                "sourceType": "file-camera",
-                                                "acceptedTypes": "image/*\t",
-                                                "waitForUpload": true,
-                                                "needConfirmRemoveFile": true
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page3",
-                                        "title": "Suggestions for Improvement",
-                                        "elements": [
-                                            {
-                                                "name": "q5_suggestions_for_improvement",
-                                                "type": "text",
-                                                "title": "What actions do you think would improve the environment in your area?"
-                                            },
-                                            {
-                                                "name": "question1",
-                                                "type": "dropdown",
-                                                "title": "Would you be willing to participate in community-driven environmental initiatives?",
-                                                "choices": [
-                                                    {
-                                                        "text": "✅ Yes",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "❌ No",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "🤔 Maybe, I need more information",
-                                                        "value": "Item 3"
-                                                    }
-                                                ],
-                                                "isRequired": true
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            "responseLimit": null,
-                            "responseLimitInterval": null,
-                            "availableFrom": null,
-                            "availableTo": null,
-                            "isDisabled": false,
-                            "pointOfInterestId": "239b1cd2-4d6b-4e3e-980c-3f1c98b2838d",
-                            "createdAt": "2025-02-17T13:57:48.125Z",
-                            "updatedAt": "2025-02-17T13:57:48.125Z"
-                        }
-                    ]
-                },
-                {
-                    "id": "a5bca879-3b11-4fc6-880b-b3d8b8aba839",
-                    "name": "Tranvia Stop",
-                    "description": "",
-                    "radius": 20,
-                    "areaId": "f73df3de-a352-4b7f-af8e-d6d04cd51fbd",
-                    "latitude": 43.26869064783323,
-                    "longitude": -2.936675548553467,
-                    "isDisabled": false,
-                    "createdAt": "2025-02-19T10:47:13.467Z",
-                    "updatedAt": "2025-02-19T10:47:13.467Z",
-                    "tasks": [
-                        {
-                            "id": "90fcb063-5e3d-48c5-9532-259aaba7d03a",
-                            "title": "knowing the environment",
-                            "description": "-",
-                            "type": "form",
-                            "taskData": {
-                                "pages": [
-                                    {
-                                        "name": "page1",
-                                        "title": "General Questions",
-                                        "elements": [
-                                            {
-                                                "name": "q1_environment_quality",
-                                                "type": "rating",
-                                                "title": "How would you describe the environment in this point?",
-                                                "isRequired": true,
-                                                "maxRateDescription": "🟢 Clean and well-maintained",
-                                                "minRateDescription": "🔴 Polluted and needs improvement"
-                                            },
-                                            {
-                                                "name": "q2_common_issues",
-                                                "type": "checkbox",
-                                                "title": "What are the most common environmental issues you notice? (Select all that apply)",
-                                                "choices": [
-                                                    {
-                                                        "text": "🗑️ Litter and waste",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "🚗 Air pollution",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "💧 Water pollution",
-                                                        "value": "Item 3"
-                                                    },
-                                                    {
-                                                        "text": "🌲 Deforestation",
-                                                        "value": "Item 4"
-                                                    },
-                                                    {
-                                                        "text": "🔊 Noise pollution",
-                                                        "value": "Item 5"
-                                                    }
-                                                ],
-                                                "isRequired": true,
-                                                "showNoneItem": true,
-                                                "showOtherItem": true,
-                                                "showSelectAllItem": true
-                                            },
-                                            {
-                                                "name": "q3_public_space_satisfaction",
-                                                "type": "rating",
-                                                "title": "On a scale of 1-5, how satisfied are you with the public spaces in your area?",
-                                                "rateType": "stars",
-                                                "isRequired": true,
-                                                "maxRateDescription": "Very satisfied",
-                                                "minRateDescription": "Very dissatisfied"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page2",
-                                        "title": "Upload a Photo",
-                                        "elements": [
-                                            {
-                                                "name": "q4_upload_photo",
-                                                "type": "file",
-                                                "title": "Please upload a photo that represents the current environmental condition in your area.",
-                                                "isRequired": true,
-                                                "sourceType": "file-camera",
-                                                "acceptedTypes": "image/*\t",
-                                                "waitForUpload": true,
-                                                "needConfirmRemoveFile": true
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "name": "page3",
-                                        "title": "Suggestions for Improvement",
-                                        "elements": [
-                                            {
-                                                "name": "q5_suggestions_for_improvement",
-                                                "type": "text",
-                                                "title": "What actions do you think would improve the environment in your area?"
-                                            },
-                                            {
-                                                "name": "question1",
-                                                "type": "dropdown",
-                                                "title": "Would you be willing to participate in community-driven environmental initiatives?",
-                                                "choices": [
-                                                    {
-                                                        "text": "✅ Yes",
-                                                        "value": "Item 1"
-                                                    },
-                                                    {
-                                                        "text": "❌ No",
-                                                        "value": "Item 2"
-                                                    },
-                                                    {
-                                                        "text": "🤔 Maybe, I need more information",
-                                                        "value": "Item 3"
-                                                    }
-                                                ],
-                                                "isRequired": true
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            "responseLimit": null,
-                            "responseLimitInterval": null,
-                            "availableFrom": null,
-                            "availableTo": null,
-                            "isDisabled": false,
-                            "pointOfInterestId": "a5bca879-3b11-4fc6-880b-b3d8b8aba839",
-                            "createdAt": "2025-02-17T13:57:48.125Z",
-                            "updatedAt": "2025-02-17T13:57:48.125Z"
-                        }
-                    ]
-                }
-            ]
-        }
-    ],
-    "allowedUsers": [
-        {
-            "id": "1c6997d8-10f7-40c4-a531-3f9663cd973b",
-            "userId": "9d541c5c-807f-4aac-abb0-05fcc78de808",
-            "campaignId": "2f41f86e-2a1c-4583-b076-048dabb8e5e9",
-            "accessType": "contributor",
-            "createdAt": "2025-03-04T15:26:18.155Z",
-            "updatedAt": "2025-03-04T15:26:18.155Z"
-        }
-    ]
-}
-  */
+  const handlesetGamificationFilter = (filter: string) => {
+    logEvent(
+      "USER_SELECTED_GAMIFICATION_FILTER",
+      `User selected the gamification filter: ${filter}`,
+      { filter }
+    );
 
-  /*
-useEffect(() => {
-    const fetchCampaignData = async () => {
-      if (!selectedCampaign) return;
-      const res = await fetch(
-        `${getApiBaseUrl()}/campaigns/${selectedCampaign?.id}`
-      );
-      const resJson = await res.json();
-      setCampaignData(resJson);
-    };
-
-    fetchCampaignData();
-  }, [selectedCampaign]);
-    */
+    setGamificationFilter(filter);
+  };
   const cookies = document.cookie.split("; ");
   const tokenCookie = cookies.find((cookie) =>
     cookie.startsWith("access_token=")
@@ -1639,6 +276,8 @@ useEffect(() => {
       console.error("No access token for gamification data");
       return;
     }
+
+    
     const fetchGamificationData = async () => {
       const decodedToken = decodeToken(accessToken);
       console.log("Decoded Token:", decodedToken);
@@ -1652,17 +291,13 @@ useEffect(() => {
       );
       const resJson = await res.json();
       setGamificationData(resJson);
-      console.log("-------------------------");
-      console.log("-------------*------------");
-      console.log("-------------------------");
-      console.log("-------------*------------");
-      console.log("-------------------------");
-      console.log("-------------*------------");
-      console.log("Gamification Data:", resJson);
-      const normalized = processTasks(resJson);
-      console.log("Normalized Gamification Data:", normalized);
-
-      setGamificationDataNormalized(normalized);
+      logEvent(
+        "USER_FETCHED_GAMIFICATION_DATA",
+        `User fetched gamification data for campaign: ${selectedCampaign?.id}`,
+        { gamificationData: resJson }
+      );
+      localStorage.setItem("gamificationData", JSON.stringify(resJson));
+      localStorage.setItem("lastFetchGamificationData", new Date().toString());
       setLastFetchGamificationData(new Date());
     };
 
@@ -1699,6 +334,7 @@ useEffect(() => {
         const { access_token } = await response.json();
         setLastFetchToken(new Date()); // Update last fetch time
         setAccessToken(access_token);
+        localStorage.setItem("accessToken", access_token);
       } catch (error) {
         console.error("Error fetching token:", error);
       }
@@ -1881,12 +517,23 @@ useEffect(() => {
       </div>
     );
   }
+
+  let gamificationDataNormalized = null;
+  if (gamificationData) {
+    gamificationDataNormalized = processTasks(
+      gamificationData,
+      gamificationFilter
+    );
+  }
   return (
     <>
       <div className={firstDivClassName} data-cy="map-container-for-dashboard">
         <div className={secondDivClassName}>
           <div className="absolute top-4 right-4 z-99999">
-            <GamificationCircle />
+            <GamificationCircle
+              gamificationFilter={gamificationFilter}
+              setGamificationFilter={handlesetGamificationFilter}
+            />
           </div>
           <LeafletMapContainer
             center={mapCenter || [0, 0]}
@@ -2010,47 +657,88 @@ useEffect(() => {
             {isTracking &&
               campaignData?.areas
                 ?.flatMap(
-                  (area: { pointOfInterests: any }) => area?.pointOfInterests
+                  (area: { pointOfInterests: any }) =>
+                    area?.pointOfInterests || []
                 )
-                .map((poi: PointOfInterest) => (
-                  <>
-                    <Circle
-                      key={`${poi.id}-circle`}
-                      center={[poi.latitude, poi.longitude]}
-                      radius={poi.radius}
-                      pathOptions={{ color: "green", fillOpacity: 0.2 }}
-                      eventHandlers={{
-                        click: () => {
-                          if (selectedPoi?.id === poi?.id) {
-                            handleSelectPoi(null);
-                          } else {
-                            handleSelectPoi(poi);
-                          }
-                        },
-                      }}
-                    />
-                    <Marker
-                      key={poi.id}
-                      position={[poi.latitude, poi.longitude]}
-                      icon={createCustomIcon("green", 36)}
-                      eventHandlers={{
-                        click: () => {
-                          if (selectedPoi) {
-                            logEvent(
-                              "USER_SELECTED_POI_IN_MAP_BY_MARKER",
-                              `User selected a point of interest in the map with id: ${selectedPoi.id}`,
-                              { poi: selectedPoi }
-                            );
+                .map((poi: PointOfInterest) => {
+                  console.log(1);
+                  if (!Array.isArray(gamificationDataNormalized)) return null;
+                  console.log(2);
+                  // Extraemos el poiId del externalTaskId
+                  console.log("poooooooooooooooi", poi);
+                  const poiId = poi.id;
+                  console.log({ poiId });
 
-                            setSelectedPoi(null);
-                            return;
-                          }
-                          handleSelectPoi(poi);
-                        },
-                      }}
-                    ></Marker>
-                  </>
-                ))}
+                  console.log(3);
+                  if (!poiId) return null; // Si no se puede extraer el ID, no renderizar
+                  console.log(4);
+                  console.log({
+                    poiId,
+                    gamificationDataNormalized,
+                  });
+                  const normalizedData = gamificationDataNormalized.find(
+                    (item) => item.poiId === poiId
+                  );
+                  console.log(5);
+                  if (!normalizedData) return null;
+                  console.log(6);
+                  const { averagePoints, normalizedScore } = normalizedData;
+
+                  // Definir el color del círculo basado en el normalizedScore
+                  const getColorByScore = (score: number) => {
+                    if (score >= 8) return "green"; // Alto impacto
+                    if (score >= 5) return "orange"; // Medio impacto
+                    return "red"; // Bajo impacto
+                  };
+                  console.log(7);
+                  const color = getColorByScore(normalizedScore);
+                  const iconSize = 24 + normalizedScore * 2; // Ajusta el tamaño del icono dinámicamente
+
+                  return (
+                    <>
+                      <Circle
+                        key={`${poi.id}-circle`}
+                        center={[poi.latitude, poi.longitude]}
+                        radius={poi.radius}
+                        pathOptions={{ color, fillOpacity: 0.4 }}
+                        eventHandlers={{
+                          click: () => {
+                            if (selectedPoi?.id === poi?.id) {
+                              handleSelectPoi(null);
+                            } else {
+                              handleSelectPoi(poi);
+                            }
+                          },
+                        }}
+                      />
+                      <Marker
+                        key={poi.id}
+                        position={[poi.latitude, poi.longitude]}
+                        icon={createCustomIcon(color, iconSize)}
+                        eventHandlers={{
+                          click: () => {
+                            if (selectedPoi) {
+                              logEvent(
+                                "USER_SELECTED_POI_IN_MAP_BY_MARKER",
+                                `User selected a point of interest in the map with id: ${selectedPoi.id}`,
+                                { poi: selectedPoi }
+                              );
+
+                              setSelectedPoi(null);
+                              return;
+                            }
+                            handleSelectPoi(poi);
+                          },
+                        }}
+                      >
+                        <Tooltip direction="top" offset={[0, -10]} permanent>
+                          <span>⭐ {averagePoints.toFixed(1)}</span>
+                        </Tooltip>
+                      </Marker>
+                    </>
+                  );
+                })}
+
             {showMyLocation && position && (
               <Marker position={[position.lat, position.lng]} icon={markerIcon}>
                 <Popup>

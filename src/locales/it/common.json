@@ -316,5 +316,9 @@
   "Skip": "Salto",
   "Stop": "Fermata",
   "Start": "Inizio",
-  "Please enable location services to see the map": "Si prega di attivare i servizi di localizzazione per vedere la mappa"
+  "Please enable location services to see the map": "Si prega di attivare i servizi di localizzazione per vedere la mappa",
+  "Sending response...": "Invio della risposta...",
+  "Loading task...": "Caricamento dell'attività...",
+  "You have earned": "Hai guadagnato",
+  "points": "punti"
 }

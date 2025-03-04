@@ -316,5 +316,9 @@
   "Skip": "Spring over",
   "Start": "Start",
   "Stop": "Stop",
-  "Please enable location services to see the map": "Aktivér placeringstjenester for at se kortet"
+  "Please enable location services to see the map": "Aktivér placeringstjenester for at se kortet",
+  "Sending response...": "Sender svar...",
+  "Loading task...": "Indlæser opgave...",
+  "You have earned": "Du har tjent",
+  "points": "point"
 }

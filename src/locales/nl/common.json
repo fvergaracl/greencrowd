@@ -316,5 +316,9 @@
   "Skip": "Sla  over",
   "Stop": "Stop",
   "Start": "Start",
-  "Please enable location services to see the map": "Schakel locatieservices in om de kaart te zien"
+  "Please enable location services to see the map": "Schakel locatieservices in om de kaart te zien",
+  "Sending response...": "Reactie verzenden...",
+  "Loading task...": "Taak laden...",
+  "You have earned": "Je hebt verdiend",
+  "points": "punten"
 }

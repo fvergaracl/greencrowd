@@ -316,5 +316,9 @@
   "Skip": "Skip",
   "Stop": "Stop",
   "Start": "Start",
-  "Please enable location services to see the map": "Please enable location services to see the map"
+  "Please enable location services to see the map": "Please enable location services to see the map",
+  "Sending response...": "Sending response...",
+  "Loading task...": "Loading task...",
+  "You have earned": "You have earned",
+  "points": "points"
 }
