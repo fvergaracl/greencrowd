@@ -58,59 +58,68 @@ type ContextType = {
   isTracking: boolean;
 };
 
-type Task = {
+type Dimension = { [key: string]: number };
+type TaskPreProccess = {
   externalTaskId: string;
   totalSimulatedPoints: number;
+  dimensions: Dimension[];
 };
 
 type ProcessedPOI = {
   poiId: string;
-  averageTotalSimulatedPoints: number;
+  averagePoints: number;
   normalizedScore: number;
 };
 
-const processTasks = (data: { tasks: Task[] }) => {
-  // Step 1: Group by POI ID and calculate the average totalSimulatedPoints
+const processTasks = (
+  data: { tasks: TaskPreProccess[] },
+  mode: string = "all"
+) => {
   const poiMap: Record<string, { total: number; count: number }> = {};
 
   data.tasks.forEach((task) => {
     const match = task.externalTaskId.match(/POI_([^_]+)_Task/);
     if (match) {
       const poiId = match[1];
+
+      let pointsToCount = 0;
+      if (mode === "all") {
+        pointsToCount = task.totalSimulatedPoints;
+      } else {
+        const dimension = task.dimensions.find(
+          (dim) => dim[mode] !== undefined
+        );
+        if (dimension) {
+          pointsToCount = dimension[mode];
+        }
+      }
+
       if (!poiMap[poiId]) {
         poiMap[poiId] = { total: 0, count: 0 };
       }
-      poiMap[poiId].total += task.totalSimulatedPoints;
+      poiMap[poiId].total += pointsToCount;
       poiMap[poiId].count += 1;
     }
   });
 
-  // Calculate the average totalSimulatedPoints per POI
   const poiList: ProcessedPOI[] = Object.entries(poiMap).map(
     ([poiId, values]) => ({
       poiId,
-      averageTotalSimulatedPoints: values.total / values.count,
-      normalizedScore: 0, // Placeholder for normalization
+      averagePoints: values.total / values.count,
+      normalizedScore: 0,
     })
   );
 
-  // Step 2: Normalize to a scale of 1-10
-  const minPoints = Math.min(
-    ...poiList.map((poi) => poi.averageTotalSimulatedPoints)
-  );
-  const maxPoints = Math.max(
-    ...poiList.map((poi) => poi.averageTotalSimulatedPoints)
-  );
+  const minPoints = Math.min(...poiList.map((poi) => poi.averagePoints));
+  const maxPoints = Math.max(...poiList.map((poi) => poi.averagePoints));
 
   poiList.forEach((poi) => {
     if (maxPoints !== minPoints) {
       poi.normalizedScore = Math.round(
-        1 +
-          (poi.averageTotalSimulatedPoints - minPoints) *
-            (9 / (maxPoints - minPoints))
+        1 + (poi.averagePoints - minPoints) * (9 / (maxPoints - minPoints))
       );
     } else {
-      poi.normalizedScore = 1; // If all values are the same, assign minimum score
+      poi.normalizedScore = 1;
     }
   });
 
@@ -1631,14 +1640,6 @@ useEffect(() => {
       return;
     }
     const fetchGamificationData = async () => {
-      // get token from cookie
-      /*
-      curl -X 'GET' \
-  'https://game.16.171.94.204.nip.io/api/v1/games/9c4765fd-c937-4ecd-975d-f2ee21356054/users/e21b65cd-d534-4dd8-84a4-4729f6bb6c57/points/simulated' \
-  -H 'accept: application/json' \
-  -H 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJjZGtWdlVJZWd4TWFYWHRmZk51WkhtcVFfUkNnVlBkaG5mQlU3MHRwN1NrIn0.eyJleHAiOjE3NDExODEwMzgsImlhdCI6MTc0MTA5NTU4NSwiYXV0aF90aW1lIjoxNzQxMDk1NTg1LCJqdGkiOiJlNGIyNjg0MC1lZDFhLTQ5ZjgtOTY2YS1kNWU1OTc2YzAzNDkiLCJpc3MiOiJodHRwczovL2F1dGgxLmRlbW8uZ3JlZW5nYWdlLXByb2plY3QuZXUvYXV0aC9yZWFsbXMvZ3JlZW5nYWdlIiwiYXVkIjpbInJlYWxtLW1hbmFnZW1lbnQiLCJzdXBlcnNldFZSVmlzIiwic3VwZXJzZXQiLCJncmVlbkNyb3dkIiwibXlBY2NvdW50IiwiYnJva2VyIiwiYWNjb3VudCJdLCJzdWIiOiJlMjFiNjVjZC1kNTM0LTRkZDgtODRhNC00NzI5ZjZiYjZjNTciLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJnYW1lQVBJIiwic2Vzc2lvbl9zdGF0ZSI6IjFjNzU1NGIwLWQ0OTItNDdlMC04N2M5LWRlNGRjNTQyOTNjMCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsic3VwZXJzZXQtYWRtaW4tZ3JlZW5nYWdlIiwiZGVmYXVsdC1yb2xlcy1ncmVlbmdhZ2UiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsicmVhbG0tbWFuYWdlbWVudCI6eyJyb2xlcyI6WyJ2aWV3LXVzZXJzIiwicXVlcnktZ3JvdXBzIiwicXVlcnktdXNlcnMiXX0sInN1cGVyc2V0VlJWaXMiOnsicm9sZXMiOlsiR2FtbWEiLCJzcWxfbGFiIiwidW1hX3Byb3RlY3Rpb24iLCJBbHBoYSIsIlB1YmxpYyIsIkFkbWluIl19LCJzdXBlcnNldCI6eyJyb2xlcyI6WyJBZG1pbiJdfSwiZ3JlZW5Dcm93ZCI6eyJyb2xlcyI6WyJhZG1pbiJdfSwibXlBY2NvdW50Ijp7InJvbGVzIjpbImFkbWluIl19LCJicm9rZXIiOnsicm9sZXMiOlsicmVhZC10b2tlbiJdfSwiZ2FtZUFQSSI6eyJyb2xlcyI6WyJBZG1pbmlzdHJhdG9yR0FNRSJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIkFkbWluaXN0cmF0b3JHQU1FIiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJzaWQiOiIxYzc1NTRiMC1kNDkyLTQ3ZTAtODdjOS1kZTRkYzU0MjkzYzAiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IkZlbGlwZSBWZXJnYXJhIEJvcmdlIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZmVsaXBlLnZlcmdhcmFAZGV1c3RvLmVzIiwiZ2l2ZW5fbmFtZSI6IkZlbGlwZSIsImxvY2FsZSI6ImVuIiwiZmFtaWx5X25hbWUiOiJWZXJnYXJhIEJvcmdlIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hLS9BTFYtVWpVZHRwZGQtYnFYOGVIMjBpODJwelpzTzR5cW55bGFxZ2pMSmhUazc5NGZzVHpvSjJTM1FVSVlCVXQzb213UlZXS1RnaDNDTk1vYmpxTVY5Vkx2RWMzLWI0enlYbU4zdE43VDBZbzJuX3lIVmFHaGcteGhWaFl4MUVLelpINWdtOEZheFdvR1JfTkZPMnNHZnpPUTJ0clI2aTR5VG95QkMzUG1NWEh0VlZ0YmJWUXBRcDFpVGlsY0QxZE90ZTRJNzQtazVtbFQyclBpS0g1bU1JQTBUZS1UQWdCNWN6Y2NTaEdNY1NnQkpVVVVkeFpWWHRmeGtqYTdjRHhLWDRCWTgxY000Uy1nTEl1NXpHVDdMR2RrYWVvNUdUdHhpc0FzOHVORjJLaTZQbGhaUjJXQ1dIZUZtQ0VwQWZLYUs1Qi0zeEJzMElLUTgzZWlwOGJlVkJHU0Q3WS05Vmc1ckw4QnpZWmZ4UlFLclhvVW9fb2RxbjRtdlJoY3BLc1FfaDlnQVItSkNOZVBlOU9oSy16eFBzQ3l3V0tBZnJXVjhoNFNTMUNILTZRTFducVVXekF5U09PcjE4MW92MElLOE53WFppR29VYmUxdHlPSlZRSjh6WVVaVmdKUXVuZ0NSS3ZzMnR1U3NJcWRtZ0tqVHRIS3BzOVBrVDNGalBRZENfMXpRbTlfdWtzc2p0akh6RTVSdXNFN3BESjhmNld2NXN0LXVGbmEtb2UzS2M3N3p2TWxxZVV4U1JtS0NsdFVTMVF3cXdLbUlYSjZXWGVkSVdzSXNiZG5LMk1pTkFlVERTZlhJZDY2S3lsbms1QXMtV0RoVy05ZFVOQVJxck5jU2NMeFBYVWFiQUZ3WTNjSFE0VFNfaE8zeWpGMl9lSDdqdjY2a2pJN3hmLTZ1ZXNfNGd4OWZHRV9McEJxdTl6b0tfbVNHLWpJNUtjMW5fRFpRY1BPLTJicUI5U2ZUV0plbXJxeFVIS1p6eG5PXzJOU190c0xaWTB3aTFLOVpJb2pMN0tMdEltMVFnLWFGdllyNFJoWWtJaV9rOXM1TTdHaURSdHJJMmZaV2traFg0bUNFalpMb0tqOHJkWUwxQWd3aldTVGd1VnNmcG95VXVuU0pKZHk3QVJzZ3dYYmpud0tOZk40OHhReGZVU2pvbF93bzZtdHVZQmhZQVFZbmNVdGstVjBOQWNGM3dmWUNER0lVZmpMeV9lckVnTkFxNmpQbUsySFY3UW9qazdVbExBakhyeTNRU1FPMW9OSzRFZzI3dkxpUHdIYUFleUR2bm0xbDN4dm9QaExSZG1WVWc9czk2LWMiLCJlbWFpbCI6ImZlbGlwZS52ZXJnYXJhQGRldXN0by5lcyJ9.iPS2xDeKIOoiK4fB1sRnWA5T7OZD8zdr-cXoetpvmeIzyLmswzMTwaBYC-kN-_Ptg9-kMHeTA3kD9v_bLaoyDnXw2n9OvNFjdu1i8liOvg4TRitjfId9fGUjMEVNGpEceg072oHbJMKiyJr_Kq0V9t0aprrYXpPsYPIccd0Bn_qYBeoEH8vYqKQKCIXd-2GPx-B_eZDaolS9c-OQVd_saMbKcSaISkbkf6M5dNLW2zfIVnleHCXSJFAITPyL_1YGg1ChZyBwdIVV3CvY5RGXQeNiGE839Kqzbxx-H_p4ImtkKeCg82kKu-Bcpm-DYgf5e01lUBHHPSto8fp8GZn_wA'
-      */
-
       const decodedToken = decodeToken(accessToken);
       console.log("Decoded Token:", decodedToken);
       const res = await fetch(
