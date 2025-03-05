@@ -31,7 +31,7 @@ interface NavItem {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { t } = useTranslation()
   const router = useRouter()
-  const { isTracking, toggleTracking } = useDashboard()
+  const { isTracking, toggleTracking, selectedCampaign } = useDashboard()
   const [isAdministrator, setIsAdministrator] = useState<boolean>(false)
 
   const handleNavigation = (path: string, eventName: string) => {
@@ -77,6 +77,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     fetchToken()
   }, [])
 
+  console.log({ selectedCampaign })
+
   const navItems: NavItem[] = [
     {
       label: t("Home"),
@@ -92,13 +94,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       dataCy: "campaigns-button",
       eventName: "CLICK_ON_CAMPAIGNS_BUTTON_IN_NAVIGATION"
     },
-    // {
-    //   label: t("Leaderboard"),
-    //   icon: <MdEmojiEvents className='h-6 w-6' />,
-    //   path: "/dashboard/leaderboard",
-    //   dataCy: "leaderboard-button"
-    //   eventName:"CLICK_ON_LEADERBOARD_BUTTON_IN_NAVIGATION"
-    // },
+    ...(selectedCampaign?.gameId
+      ? [
+          {
+            label: t("Leaderboard"),
+            icon: <MdEmojiEvents className='h-6 w-6' />,
+            path: "/dashboard/leaderboard",
+            dataCy: "leaderboard-button",
+            eventName: "CLICK_ON_LEADERBOARD_BUTTON_IN_NAVIGATION"
+          }
+        ]
+      : []),
     {
       label: isTracking ? t("Stop") : t("Start"),
       icon: (

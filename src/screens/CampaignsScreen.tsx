@@ -28,7 +28,7 @@ export default function CampaignsScreen() {
       ])
 
       const allCampaigns = await allCampaignsRes.json()
-
+      console.log({ allCampaigns })
       const mineCampaigns = await mineCampaignsRes.json()
       const campaignsWithJoinStatus = allCampaigns?.map(campaign => ({
         ...campaign,
@@ -170,6 +170,8 @@ export default function CampaignsScreen() {
 
       <div className='w-full max-w-xxl space-y-4'>
         {campaigns.map(campaign => {
+          console.log("00000000000")
+          console.log(campaign)
           const isExpired = campaign.deadline
             ? new Date(campaign.deadline) < new Date()
             : false

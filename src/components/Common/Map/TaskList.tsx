@@ -42,7 +42,7 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
             </button>
           )}
 
-          <div className='relative w-full h-[80%] flex flex-col items-center overflow-y-hidden px-1'>
+          <div className='relative w-full flex flex-col items-center overflow-y-hidden px-1'>
             <motion.div
               ref={tasksRef}
               className='w-full h-full flex flex-col items-center transition-transform'
@@ -94,40 +94,6 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
                     >
                       {t("Enter Task")}
                     </button>
-                  </div>
-
-                  {/* Lado Derecho: PieChart */}
-                  <div className='w-24 h-64'>
-                    <Pie
-                      data={{
-                        labels: [
-                          "Complete 1",
-                          "Pending 2 ",
-                          "Complete 3",
-                          "Pending 4 ",
-                          "Complete5"
-                        ],
-                        datasets: [
-                          {
-                            data: [
-                              Math.random() * 100,
-                              Math.random() * 100,
-                              Math.random() * 100,
-                              Math.random() * 100,
-                              Math.random() * 100
-                            ],
-                            backgroundColor: [
-                              "#4CAF50",
-                              "#FF9800",
-                              "#4CAFC0",
-                              "#CC9FF0",
-                              "#444F50"
-                            ]
-                          }
-                        ]
-                      }}
-                      options={{ responsive: true, maintainAspectRatio: false }}
-                    />
                   </div>
                 </motion.div>
               ))}

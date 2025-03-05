@@ -1,6 +1,6 @@
-import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useState, useRef, use } from "react";
-import ReactDOMServer from "react-dom/server";
+import { useRouter } from "next/router"
+import React, { useEffect, useMemo, useState, useRef, use } from "react"
+import ReactDOMServer from "react-dom/server"
 import {
   MapContainer as LeafletMapContainer,
   Circle,
@@ -8,178 +8,176 @@ import {
   TileLayer,
   Marker,
   Polygon,
-  Popup,
-} from "react-leaflet";
-import L, { DivIcon } from "leaflet";
-import "leaflet-routing-machine";
-import LeafletRoutingMachine from "leaflet-routing-machine";
-import CustomMarker from "../Mapmarker";
-import DistanceIndicator from "./DistanceIndicator";
-import "leaflet/dist/leaflet.css";
-import { useDashboard, DashboardContextType } from "@/context/DashboardContext";
-import { useAdmin, AdminContextType } from "@/context/AdminContext";
-import MapControls from "./MapControls";
-import { useTranslation } from "@/hooks/useTranslation";
-import FitBounds from "./FitBounds";
-import "../styles.css";
-import { logEvent } from "@/utils/logger";
-import { getApiBaseUrl, getApiGameBaseUrl } from "@/config/api";
-import { getDeviceHeading } from "@/utils/getDeviceHeading";
-import Lottie from "lottie-react";
-import MapLocationNeeded from "@/lotties/map_location_needed.json";
-import GamificationCircle from "./GamificationCircle";
-import TaskList from "./TaskList";
+  Popup
+} from "react-leaflet"
+import L, { DivIcon } from "leaflet"
+import "leaflet-routing-machine"
+import LeafletRoutingMachine from "leaflet-routing-machine"
+import CustomMarker from "../Mapmarker"
+import DistanceIndicator from "./DistanceIndicator"
+import "leaflet/dist/leaflet.css"
+import { useDashboard, DashboardContextType } from "@/context/DashboardContext"
+import { useAdmin, AdminContextType } from "@/context/AdminContext"
+import MapControls from "./MapControls"
+import { useTranslation } from "@/hooks/useTranslation"
+import FitBounds from "./FitBounds"
+import "../styles.css"
+import { logEvent } from "@/utils/logger"
+import { getApiBaseUrl, getApiGameBaseUrl } from "@/config/api"
+import { getDeviceHeading } from "@/utils/getDeviceHeading"
+import Lottie from "lottie-react"
+import MapLocationNeeded from "@/lotties/map_location_needed.json"
+import GamificationCircle from "./GamificationCircle"
+import TaskList from "./TaskList"
 
 import {
   Point,
   Task,
   PolygonData,
   CampaignData,
-  PointOfInterest,
-} from "./types";
+  PointOfInterest
+} from "./types"
 
 interface MapProps {
-  showMyLocation?: boolean;
-  points: Point[];
-  polygons: PolygonData[];
-  polygonsMultiColors?: boolean;
-  polygonsTitle?: boolean;
-  polygonsFitBounds?: boolean;
-  clickOnPolygon?: (polygon: PolygonData) => void;
-  selectedCampaign: CampaignData | null;
-  modeView?: "contribuitor-view" | "admin-view";
-  showMapControl?: boolean;
+  showMyLocation?: boolean
+  points: Point[]
+  polygons: PolygonData[]
+  polygonsMultiColors?: boolean
+  polygonsTitle?: boolean
+  polygonsFitBounds?: boolean
+  clickOnPolygon?: (polygon: PolygonData) => void
+  selectedCampaign: CampaignData | null
+  modeView?: "contribuitor-view" | "admin-view"
+  showMapControl?: boolean
 }
 
 type ContextType = {
-  mapCenter: [number, number];
-  position: { lat: number; lng: number } | null;
-  isTracking: boolean;
-};
+  mapCenter: [number, number]
+  position: { lat: number; lng: number } | null
+  isTracking: boolean
+}
 
-type Dimension = { [key: string]: number };
+type Dimension = { [key: string]: number }
 type TaskPreProccess = {
-  externalTaskId: string;
-  totalSimulatedPoints: number;
-  dimensions: Dimension[];
-};
+  externalTaskId: string
+  totalSimulatedPoints: number
+  dimensions: Dimension[]
+}
 
 type ProcessedPOI = {
-  poiId: string;
-  averagePoints: number;
-  normalizedScore: number;
-};
+  poiId: string
+  averagePoints: number
+  normalizedScore: number
+}
 
 const processTasks = (
   data: { tasks: TaskPreProccess[] },
   mode: string = "all"
 ) => {
-  const poiMap: Record<string, { total: number; count: number }> = {};
+  const poiMap: Record<string, { total: number; count: number }> = {}
 
-  data.tasks.forEach((task) => {
-    const match = task.externalTaskId.match(/POI_([^_]+)_Task/);
+  data?.tasks?.forEach(task => {
+    const match = task.externalTaskId.match(/POI_([^_]+)_Task/)
     if (match) {
-      const poiId = match[1];
+      const poiId = match[1]
 
-      let pointsToCount = 0;
+      let pointsToCount = 0
       if (mode === "all") {
-        pointsToCount = task.totalSimulatedPoints;
+        pointsToCount = task.totalSimulatedPoints
       } else {
-        const dimension = task.dimensions.find(
-          (dim) => dim[mode] !== undefined
-        );
+        const dimension = task.dimensions.find(dim => dim[mode] !== undefined)
         if (dimension) {
-          pointsToCount = dimension[mode];
+          pointsToCount = dimension[mode]
         }
       }
 
       if (!poiMap[poiId]) {
-        poiMap[poiId] = { total: 0, count: 0 };
+        poiMap[poiId] = { total: 0, count: 0 }
       }
-      poiMap[poiId].total += pointsToCount;
-      poiMap[poiId].count += 1;
+      poiMap[poiId].total += pointsToCount
+      poiMap[poiId].count += 1
     }
-  });
+  })
 
-  const poiList: ProcessedPOI[] = Object.entries(poiMap).map(
+  const poiList: ProcessedPOI[] = Object.entries(poiMap)?.map(
     ([poiId, values]) => ({
       poiId,
       averagePoints: values.total / values.count,
-      normalizedScore: 0,
+      normalizedScore: 0
     })
-  );
+  )
 
-  const minPoints = Math.min(...poiList.map((poi) => poi.averagePoints));
-  const maxPoints = Math.max(...poiList.map((poi) => poi.averagePoints));
+  const minPoints = Math.min(...poiList?.map(poi => poi.averagePoints))
+  const maxPoints = Math.max(...poiList?.map(poi => poi.averagePoints))
 
-  poiList.forEach((poi) => {
+  poiList?.forEach(poi => {
     if (maxPoints !== minPoints) {
       poi.normalizedScore = Math.round(
         1 + (poi.averagePoints - minPoints) * (9 / (maxPoints - minPoints))
-      );
+      )
     } else {
-      poi.normalizedScore = 1;
+      poi.normalizedScore = 1
     }
-  });
+  })
 
-  return poiList;
-};
+  return poiList
+}
 
 const decodeToken = (token: string): { roles?: string[] } | null => {
   try {
     const payload = JSON.parse(
       Buffer.from(token.split(".")[1], "base64").toString()
-    );
-    return payload;
+    )
+    return payload
   } catch {
-    console.error("Invalid token format");
-    return null;
+    console.error("Invalid token format")
+    return null
   }
-};
+}
 
 export const useContextMapping = ():
   | DashboardContextType
   | AdminContextType
   | ContextType => {
-  const router = useRouter();
+  const router = useRouter()
 
-  const isDashboard = router.pathname.startsWith("/dashboard");
-  const isAdmin = router.pathname.startsWith("/admin");
+  const isDashboard = router.pathname.startsWith("/dashboard")
+  const isAdmin = router.pathname.startsWith("/admin")
 
   if (isAdmin) {
-    return useAdmin();
+    return useAdmin()
   }
 
   if (isDashboard) {
-    return useDashboard();
+    return useDashboard()
   }
 
   return {
     mapCenter: [0, 0],
     position: null,
-    isTracking: false,
-  };
-};
+    isTracking: false
+  }
+}
 
 const colors = [
   { border: "blue", fill: "lightblue" },
   { border: "red", fill: "pink" },
   { border: "green", fill: "lightgreen" },
   { border: "purple", fill: "plum" },
-  { border: "orange", fill: "peachpuff" },
-];
+  { border: "orange", fill: "peachpuff" }
+]
 const Routing = ({ map, start, end, routingControlRef }) => {
   useEffect(() => {
-    if (!map || !start || !end) return;
+    if (!map || !start || !end) return
 
     if (routingControlRef.current) {
       routingControlRef.current
         .getPlan()
         .setWaypoints([
           L.latLng(start.lat, start.lng),
-          L.latLng(end.lat, end.lng),
-        ]);
-      return;
+          L.latLng(end.lat, end.lng)
+        ])
+      return
     }
 
     try {
@@ -187,27 +185,27 @@ const Routing = ({ map, start, end, routingControlRef }) => {
         waypoints: [L.latLng(start.lat, start.lng), L.latLng(end.lat, end.lng)],
         router: new L.Routing.OSRMv1({
           serviceUrl: "https://routing.openstreetmap.de/routed-foot/route/v1",
-          profile: "driving",
+          profile: "driving"
         }),
         routeWhileDragging: true,
         lineOptions: {
-          styles: [{ color: "#FF0000", opacity: 1, weight: 5 }],
+          styles: [{ color: "#FF0000", opacity: 1, weight: 5 }]
         },
         addWaypoints: false,
         draggableWaypoints: false,
         fitSelectedRoutes: true,
         showAlternatives: false,
-        createMarker: () => null,
-      }).addTo(map);
+        createMarker: () => null
+      }).addTo(map)
     } catch (error) {
-      console.error("Error al inicializar la ruta:", error);
+      console.error("Error al inicializar la ruta:", error)
     }
 
-    return () => {};
-  }, [map, start, end]);
+    return () => {}
+  }, [map, start, end])
 
-  return null;
-};
+  return null
+}
 
 export default function Map({
   showMyLocation = false,
@@ -219,163 +217,159 @@ export default function Map({
   clickOnPolygon = undefined,
   selectedCampaign,
   modeView = "contribuitor-view",
-  showMapControl = false,
+  showMapControl = false
 }: MapProps) {
-  const { t } = useTranslation();
-  const router = useRouter();
+  const { t } = useTranslation()
+  const router = useRouter()
 
   const { mapCenter, position, isTracking, positionFullDetails } =
-    useContextMapping();
-  const mapRef = useRef<L.Map | null>(null);
-  const [campaignData, setCampaignData] = useState<any>(null);
-  const [selectedPoi, setSelectedPoi] = useState<PointOfInterest | null>(null);
-  const [errorPoi, setErrorPoi] = useState<any>(null);
-  const [heading, setHeading] = useState<number | null>(null);
-  const routingControlRef = useRef<L.Routing.Control | null>(null);
+    useContextMapping()
+  const mapRef = useRef<L.Map | null>(null)
+  const [campaignData, setCampaignData] = useState<any>(null)
+  const [selectedPoi, setSelectedPoi] = useState<PointOfInterest | null>(null)
+  const [errorPoi, setErrorPoi] = useState<any>(null)
+  const [heading, setHeading] = useState<number | null>(null)
+  const routingControlRef = useRef<L.Routing.Control | null>(null)
   const [selectedPolygon, setSelectedPolygon] = useState<PolygonData | null>(
     null
-  );
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [lastFetchToken, setLastFetchToken] = useState<Date | null>(null);
-  const [gamificationData, setGamificationData] = useState<any>(null);
+  )
+  const [accessToken, setAccessToken] = useState<string | null>(null)
+  const [lastFetchToken, setLastFetchToken] = useState<Date | null>(null)
+  const [gamificationData, setGamificationData] = useState<any>(null)
 
   const [lastFetchGamificationData, setLastFetchGamificationData] =
-    useState<Date | null>(null);
+    useState<Date | null>(null)
 
-  const [gamificationFilter, setGamificationFilter] = useState<string>("all");
+  const [gamificationFilter, setGamificationFilter] = useState<string>("all")
 
   const handlesetGamificationFilter = (filter: string) => {
     logEvent(
       "USER_SELECTED_GAMIFICATION_FILTER",
       `User selected the gamification filter: ${filter}`,
       { filter }
-    );
+    )
 
-    setGamificationFilter(filter);
-  };
-  const cookies = document.cookie.split("; ");
-  const tokenCookie = cookies.find((cookie) =>
-    cookie.startsWith("access_token=")
-  );
-  tokenCookie ? tokenCookie.split("=")[1] : null;
+    setGamificationFilter(filter)
+  }
+  const cookies = document.cookie.split("; ")
+  const tokenCookie = cookies.find(cookie => cookie.startsWith("access_token="))
+  tokenCookie ? tokenCookie.split("=")[1] : null
 
   useEffect(() => {
     if (!isTracking) {
-      console.log("No gamification data for non-tracking users");
-      return;
+      console.error("No gamification data for non-tracking users")
+      return
     }
     if (!selectedCampaign) {
-      console.error("No gamification data for doesn't selected campaign");
-      return;
+      console.error("No gamification data for doesn't selected campaign")
+      return
     }
     if (!campaignData) {
-      console.error("No gamification data for doesn't selected campaign...");
-      return;
+      console.error("No gamification data for doesn't selected campaign...")
+      return
     }
     if (!accessToken) {
-      console.error("No access token for gamification data");
-      return;
+      console.error("No access token for gamification data")
+      return
     }
 
-    
     const fetchGamificationData = async () => {
-      const decodedToken = decodeToken(accessToken);
-      console.log("Decoded Token:", decodedToken);
+      const decodedToken = decodeToken(accessToken)
       const res = await fetch(
         `${getApiGameBaseUrl()}/games/${campaignData?.gameId}/users/${decodedToken?.sub}/points/simulated`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+            Authorization: `Bearer ${accessToken}`
+          }
         }
-      );
-      const resJson = await res.json();
-      setGamificationData(resJson);
+      )
+      const resJson = await res.json()
+      setGamificationData(resJson)
       logEvent(
         "USER_FETCHED_GAMIFICATION_DATA",
         `User fetched gamification data for campaign: ${selectedCampaign?.id}`,
         { gamificationData: resJson }
-      );
-      localStorage.setItem("gamificationData", JSON.stringify(resJson));
-      localStorage.setItem("lastFetchGamificationData", new Date().toString());
-      setLastFetchGamificationData(new Date());
-    };
+      )
+      localStorage.setItem("gamificationData", JSON.stringify(resJson))
+      localStorage.setItem("lastFetchGamificationData", new Date().toString())
+      setLastFetchGamificationData(new Date())
+    }
 
-    const fetchGamificationDataInterval = 5 * 60 * 1000; // 5 minute in milliseconds
+    const fetchGamificationDataInterval = 5 * 60 * 1000 // 5 minute in milliseconds
 
     if (
       !lastFetchGamificationData ||
       new Date().getTime() - lastFetchGamificationData.getTime() >
         fetchGamificationDataInterval
     ) {
-      fetchGamificationData();
+      fetchGamificationData()
     }
 
     // Set up interval to refresh gamification data every 5 minutes
     const interval = setInterval(() => {
-      fetchGamificationData();
-    }, fetchGamificationDataInterval);
+      fetchGamificationData()
+    }, fetchGamificationDataInterval)
 
     // Cleanup interval on unmount
-    return () => clearInterval(interval);
-  }, [accessToken, campaignData, lastFetchGamificationData, isTracking]);
+    return () => clearInterval(interval)
+  }, [accessToken, campaignData, lastFetchGamificationData, isTracking])
 
   useEffect(() => {
-    if (!router.isReady) return;
+    if (!router.isReady) return
 
     const fetchToken = async () => {
       try {
         const response = await fetch("/api/auth/token", {
           method: "GET",
-          credentials: "include",
-        });
-        if (!response.ok) throw new Error("Failed to fetch token");
+          credentials: "include"
+        })
+        if (!response.ok) throw new Error("Failed to fetch token")
 
-        const { access_token } = await response.json();
-        setLastFetchToken(new Date()); // Update last fetch time
-        setAccessToken(access_token);
-        localStorage.setItem("accessToken", access_token);
+        const { access_token } = await response.json()
+        setLastFetchToken(new Date()) // Update last fetch time
+        setAccessToken(access_token)
+        localStorage.setItem("accessToken", access_token)
       } catch (error) {
-        console.error("Error fetching token:", error);
+        console.error("Error fetching token:", error)
       }
-    };
+    }
 
-    const fetchTokenInterval = 15 * 60 * 1000; // 15 minutes in milliseconds
+    const fetchTokenInterval = 15 * 60 * 1000 // 15 minutes in milliseconds
 
     if (
       !lastFetchToken ||
       new Date().getTime() - lastFetchToken.getTime() > fetchTokenInterval
     ) {
-      fetchToken();
+      fetchToken()
     }
 
     // Set up interval to refresh token every 15 minutes
     const interval = setInterval(() => {
-      fetchToken();
-    }, fetchTokenInterval);
+      fetchToken()
+    }, fetchTokenInterval)
 
     // Cleanup interval on unmount
-    return () => clearInterval(interval);
-  }, [router.isReady, lastFetchToken]);
+    return () => clearInterval(interval)
+  }, [router.isReady, lastFetchToken])
 
   useEffect(() => {
-    if (!isTracking) return;
+    if (!isTracking) return
 
-    let isMounted = true;
+    let isMounted = true
     const interval = setInterval(async () => {
       try {
-        const heading = await getDeviceHeading();
-        if (isMounted) setHeading(heading);
+        const heading = await getDeviceHeading()
+        if (isMounted) setHeading(heading)
       } catch (error) {
-        console.error("Error getting device heading:", error);
+        console.error("Error getting device heading:", error)
       }
-    }, 300);
+    }, 300)
 
     return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
-  }, [isTracking, positionFullDetails]);
+      isMounted = false
+      clearInterval(interval)
+    }
+  }, [isTracking, positionFullDetails])
 
   const removeRoute = (logEventShouldBeLogged = true) => {
     if (logEventShouldBeLogged) {
@@ -383,59 +377,57 @@ export default function Map({
         "USER_SELECTED_POI_REMOVED_ROUTE_MAP",
         `User removed the route in the map`,
         {
-          poi: selectedPoi,
+          poi: selectedPoi
         }
-      );
+      )
     }
-    setSelectedPoi(null);
+    setSelectedPoi(null)
 
     if (routingControlRef.current) {
       try {
         if (routingControlRef.current) {
-          routingControlRef.current.getPlan().setWaypoints([]);
+          routingControlRef.current.getPlan().setWaypoints([])
         }
       } catch (error) {
-        console.error("Error al limpiar la ruta:", error);
+        console.error("Error al limpiar la ruta:", error)
       }
     }
-  };
+  }
 
   const createCustomIcon = (color: string, size: number) => {
     const markerHtml = ReactDOMServer.renderToString(
       <CustomMarker markerColor={color} size={size} />
-    );
+    )
 
     return L.divIcon({
       html: markerHtml,
       className: "custom-marker",
       iconSize: [size, size],
-      iconAnchor: [size / 2, size],
-    });
-  };
+      iconAnchor: [size / 2, size]
+    })
+  }
 
   const handleSelectPoi = (poi: PointOfInterest | null) => {
-    console.log({ poi });
-
     logEvent(
       poi ? "USER_SELECTED_POI_IN_MAP" : "USER_UNSELECTED_POI_IN_MAP",
       `User selected a point of interest in the map with id: ${poi?.id}`,
       { poi }
-    );
-    setSelectedPoi(poi);
-  };
+    )
+    setSelectedPoi(poi)
+  }
 
   useEffect(() => {
     const fetchCampaignData = async () => {
-      if (!selectedCampaign) return;
+      if (!selectedCampaign) return
       const res = await fetch(
         `${getApiBaseUrl()}/campaigns/${selectedCampaign?.id}`
-      );
-      const resJson = await res.json();
-      setCampaignData(resJson);
-    };
+      )
+      const resJson = await res.json()
+      setCampaignData(resJson)
+    }
 
-    fetchCampaignData();
-  }, [selectedCampaign]);
+    fetchCampaignData()
+  }, [selectedCampaign])
 
   const markerIcon = useMemo(() => {
     if (isTracking) {
@@ -450,8 +442,8 @@ export default function Map({
           </div>
         `,
         iconSize: [40, 40],
-        iconAnchor: [20, 20],
-      });
+        iconAnchor: [20, 20]
+      })
     } else {
       return new DivIcon({
         className: "static-marker-icon",
@@ -461,102 +453,226 @@ export default function Map({
           </div>
         `,
         iconSize: [20, 20],
-        iconAnchor: [10, 10],
-      });
+        iconAnchor: [10, 10]
+      })
     }
-  }, [isTracking, positionFullDetails]);
+  }, [isTracking, positionFullDetails])
 
   useEffect(() => {
     if (selectedPoi) {
-      checkTaskAndPoi(selectedPoi);
+      checkTaskAndPoi(selectedPoi)
     }
-  }, [selectedPoi]);
+  }, [selectedPoi])
 
   const firstDivClassName =
-    modeView === "contribuitor-view" ? "h-[calc(100vh-4rem)]" : "h-96";
+    modeView === "contribuitor-view" ? "h-[calc(100vh-4rem)]" : "h-96"
 
   const secondDivClassName =
     modeView === "contribuitor-view"
       ? `${selectedPoi ? "h-[70%]" : "h-full"} transition-all duration-300`
-      : "h-full";
+      : "h-full"
 
   const checkTaskAndPoi = (poi: PointOfInterest) => {
-    const destination = L.latLng(poi.latitude, poi.longitude);
+    const destination = L.latLng(poi.latitude, poi.longitude)
 
     const distance = mapRef.current?.distance(
       L.latLng(position.lat, position.lng),
       destination
-    );
+    )
 
     if (distance && distance <= poi.radius) {
       if (poi.tasks.length > 0) {
-        handleSelectPoi(poi);
+        handleSelectPoi(poi)
       } else {
-        setErrorPoi("This point of interest has no tasks");
+        setErrorPoi("This point of interest has no tasks")
       }
     } else {
-      setErrorPoi("You are not close enough to this point of interest");
+      setErrorPoi("You are not close enough to this point of interest")
     }
-  };
+  }
   if (!isTracking) {
     return (
       <div
-        className="min-h-screen flex flex-col justify-center items-center"
-        data-cy="map-container-for-dashboard"
+        className='min-h-screen flex flex-col justify-center items-center'
+        data-cy='map-container-for-dashboard'
       >
-        <div className="flex justify-center">
+        <div className='flex justify-center'>
           <Lottie
             animationData={MapLocationNeeded}
             loop={true}
-            className="max-w-[300px] w-full"
+            className='max-w-[300px] w-full'
           />
         </div>
-        <h2 className="text-center text-2xl">
+        <h2 className='text-center text-2xl'>
           {t("Please enable location services to see the map")}
         </h2>
       </div>
-    );
+    )
   }
 
-  let gamificationDataNormalized = null;
-  if (gamificationData) {
+  let gamificationDataNormalized = null
+  if (gamificationData && campaignData?.gameId) {
     gamificationDataNormalized = processTasks(
       gamificationData,
       gamificationFilter
-    );
+    )
   }
+
+  const RenderMarkers = () => {
+    if (isTracking && !campaignData?.gameId) {
+      return campaignData?.areas
+        ?.flatMap((area: { pointOfInterests: any }) => area?.pointOfInterests)
+        .map((poi: PointOfInterest) => (
+          <>
+            <Circle
+              key={`${poi.id}-circle`}
+              center={[poi.latitude, poi.longitude]}
+              radius={poi.radius}
+              pathOptions={{ color: "green", fillOpacity: 0.2 }}
+              eventHandlers={{
+                click: () => {
+                  if (selectedPoi?.id === poi?.id) {
+                    handleSelectPoi(null)
+                  } else {
+                    handleSelectPoi(poi)
+                  }
+                }
+              }}
+            />
+            <Marker
+              key={poi.id}
+              position={[poi.latitude, poi.longitude]}
+              icon={createCustomIcon("green", 36)}
+              eventHandlers={{
+                click: () => {
+                  if (selectedPoi) {
+                    logEvent(
+                      "USER_SELECTED_POI_IN_MAP_BY_MARKER",
+                      `User selected a point of interest in the map with id: ${selectedPoi.id}`,
+                      { poi: selectedPoi }
+                    )
+
+                    setSelectedPoi(null)
+                    return
+                  }
+                  handleSelectPoi(poi)
+                }
+              }}
+            ></Marker>
+          </>
+        ))
+    }
+    if (isTracking && campaignData?.areas) {
+      return campaignData?.areas
+        ?.flatMap(
+          (area: { pointOfInterests: any }) => area?.pointOfInterests || []
+        )
+        .map((poi: PointOfInterest) => {
+          if (!Array.isArray(gamificationDataNormalized)) return null
+          const poiId = poi.id
+
+          if (!poiId) return null 
+
+          const normalizedData = gamificationDataNormalized.find(
+            item => item.poiId === poiId
+          )
+
+          if (!normalizedData) return null
+          const { averagePoints, normalizedScore } = normalizedData
+
+          const getColorByScore = (score: number) => {
+            if (score >= 8) return "green" 
+            if (score >= 5) return "orange" 
+            return "red"
+          }
+          const color = getColorByScore(normalizedScore)
+          const iconSize = 24 + normalizedScore * 2 
+
+          return (
+            <>
+              <Circle
+                key={`${poi.id}-circle`}
+                center={[poi.latitude, poi.longitude]}
+                radius={poi.radius}
+                pathOptions={{ color, fillOpacity: 0.4 }}
+                eventHandlers={{
+                  click: () => {
+                    if (selectedPoi?.id === poi?.id) {
+                      handleSelectPoi(null)
+                    } else {
+                      handleSelectPoi(poi)
+                    }
+                  }
+                }}
+              />
+              <Marker
+                key={poi.id}
+                position={[poi.latitude, poi.longitude]}
+                icon={createCustomIcon(color, iconSize)}
+                eventHandlers={{
+                  click: () => {
+                    if (selectedPoi) {
+                      logEvent(
+                        "USER_SELECTED_POI_IN_MAP_BY_MARKER",
+                        `User selected a point of interest in the map with id: ${selectedPoi.id}`,
+                        { poi: selectedPoi }
+                      )
+
+                      setSelectedPoi(null)
+                      return
+                    }
+                    handleSelectPoi(poi)
+                  }
+                }}
+              >
+                <Tooltip direction='top' offset={[0, -10]} permanent>
+                  <span>
+                     {averagePoints.toFixed(1).toString().replace(".", ",")} 🪙
+                  </span>
+                </Tooltip>
+              </Marker>
+            </>
+          )
+        })
+    }
+    return <></>
+  }
+
   return (
     <>
-      <div className={firstDivClassName} data-cy="map-container-for-dashboard">
+      <div className={firstDivClassName} data-cy='map-container-for-dashboard'>
         <div className={secondDivClassName}>
-          <div className="absolute top-4 right-4 z-99999">
-            <GamificationCircle
-              gamificationFilter={gamificationFilter}
-              setGamificationFilter={handlesetGamificationFilter}
-            />
-          </div>
+          {campaignData?.gameId && (
+            <div className='absolute top-4 right-4 z-99999'>
+              <GamificationCircle
+                gamificationFilter={gamificationFilter}
+                setGamificationFilter={handlesetGamificationFilter}
+              />
+            </div>
+          )}
+
           <LeafletMapContainer
             center={mapCenter || [0, 0]}
             zoom={mapCenter ? 16 : 13}
             style={{ height: "100%", width: "100%" }}
-            data-cy="map-container-for-dashboard"
-            whenReady={(event) => {
-              mapRef.current = event.target;
+            data-cy='map-container-for-dashboard'
+            whenReady={event => {
+              mapRef.current = event.target
             }}
           >
             {selectedPoi && position && (
               <DistanceIndicator
                 poi={selectedPoi}
                 position={position}
-                onRadiusChange={(isInside) => {
+                onRadiusChange={isInside => {
                   if (isInside) {
-                    setErrorPoi(null);
+                    setErrorPoi(null)
                   }
                 }}
               />
             )}
             <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
 
@@ -570,7 +686,7 @@ export default function Map({
             {isTracking &&
               polygons?.map((polygon, index) => {
                 if (polygonsMultiColors) {
-                  const color = colors[index % colors.length];
+                  const color = colors[index % colors.length]
                   return (
                     <Polygon
                       key={polygon.id}
@@ -578,13 +694,13 @@ export default function Map({
                       pathOptions={{
                         color: color.border,
                         fillColor: color.fill,
-                        fillOpacity: 0.5,
+                        fillOpacity: 0.5
                       }}
                       eventHandlers={{
                         click: () => {
-                          setSelectedPolygon(polygon);
-                          if (clickOnPolygon) clickOnPolygon(polygon);
-                        },
+                          setSelectedPolygon(polygon)
+                          if (clickOnPolygon) clickOnPolygon(polygon)
+                        }
                       }}
                     >
                       {polygonsTitle && <Tooltip>{polygon.name}</Tooltip>}
@@ -601,9 +717,9 @@ export default function Map({
                             </p>
                             <button
                               onClick={() => {
-                                router.push(`/admin/areas/${polygon.id}`);
+                                router.push(`/admin/areas/${polygon.id}`)
                               }}
-                              className="text-blue-600 underline"
+                              className='text-blue-600 underline'
                             >
                               {t("See more")}
                             </button>
@@ -611,7 +727,7 @@ export default function Map({
                         </Popup>
                       )}
                     </Polygon>
-                  );
+                  )
                 }
                 return (
                   <Polygon
@@ -619,7 +735,7 @@ export default function Map({
                     positions={polygon.coordinates}
                     pathOptions={{ color: "blue", weight: 2 }}
                   />
-                );
+                )
               })}
             {isTracking &&
               points?.map((point, index) => (
@@ -629,18 +745,18 @@ export default function Map({
                   icon={L.icon({
                     iconUrl: "/marker-icon.png",
                     iconSize: [25, 41],
-                    iconAnchor: [12, 41],
+                    iconAnchor: [12, 41]
                   })}
                 />
               ))}
             {isTracking &&
               campaignData?.areas?.map(
                 (area: {
-                  id: string;
-                  name: string;
-                  description: string;
-                  polygon: [number, number][];
-                  pointOfInterests: any[];
+                  id: string
+                  name: string
+                  description: string
+                  polygon: [number, number][]
+                  pointOfInterests: any[]
                 }) => (
                   <Polygon
                     key={area.id}
@@ -654,90 +770,7 @@ export default function Map({
                   </Polygon>
                 )
               )}
-            {isTracking &&
-              campaignData?.areas
-                ?.flatMap(
-                  (area: { pointOfInterests: any }) =>
-                    area?.pointOfInterests || []
-                )
-                .map((poi: PointOfInterest) => {
-                  console.log(1);
-                  if (!Array.isArray(gamificationDataNormalized)) return null;
-                  console.log(2);
-                  // Extraemos el poiId del externalTaskId
-                  console.log("poooooooooooooooi", poi);
-                  const poiId = poi.id;
-                  console.log({ poiId });
-
-                  console.log(3);
-                  if (!poiId) return null; // Si no se puede extraer el ID, no renderizar
-                  console.log(4);
-                  console.log({
-                    poiId,
-                    gamificationDataNormalized,
-                  });
-                  const normalizedData = gamificationDataNormalized.find(
-                    (item) => item.poiId === poiId
-                  );
-                  console.log(5);
-                  if (!normalizedData) return null;
-                  console.log(6);
-                  const { averagePoints, normalizedScore } = normalizedData;
-
-                  // Definir el color del círculo basado en el normalizedScore
-                  const getColorByScore = (score: number) => {
-                    if (score >= 8) return "green"; // Alto impacto
-                    if (score >= 5) return "orange"; // Medio impacto
-                    return "red"; // Bajo impacto
-                  };
-                  console.log(7);
-                  const color = getColorByScore(normalizedScore);
-                  const iconSize = 24 + normalizedScore * 2; // Ajusta el tamaño del icono dinámicamente
-
-                  return (
-                    <>
-                      <Circle
-                        key={`${poi.id}-circle`}
-                        center={[poi.latitude, poi.longitude]}
-                        radius={poi.radius}
-                        pathOptions={{ color, fillOpacity: 0.4 }}
-                        eventHandlers={{
-                          click: () => {
-                            if (selectedPoi?.id === poi?.id) {
-                              handleSelectPoi(null);
-                            } else {
-                              handleSelectPoi(poi);
-                            }
-                          },
-                        }}
-                      />
-                      <Marker
-                        key={poi.id}
-                        position={[poi.latitude, poi.longitude]}
-                        icon={createCustomIcon(color, iconSize)}
-                        eventHandlers={{
-                          click: () => {
-                            if (selectedPoi) {
-                              logEvent(
-                                "USER_SELECTED_POI_IN_MAP_BY_MARKER",
-                                `User selected a point of interest in the map with id: ${selectedPoi.id}`,
-                                { poi: selectedPoi }
-                              );
-
-                              setSelectedPoi(null);
-                              return;
-                            }
-                            handleSelectPoi(poi);
-                          },
-                        }}
-                      >
-                        <Tooltip direction="top" offset={[0, -10]} permanent>
-                          <span>⭐ {averagePoints.toFixed(1)}</span>
-                        </Tooltip>
-                      </Marker>
-                    </>
-                  );
-                })}
+            <RenderMarkers />
 
             {showMyLocation && position && (
               <Marker position={[position.lat, position.lng]} icon={markerIcon}>
@@ -760,7 +793,7 @@ export default function Map({
           </LeafletMapContainer>
         </div>
         {isTracking && selectedPoi && (
-          <div className="h-[30%] overflow-y-auto">
+          <div className='h-[30%] overflow-y-auto'>
             {selectedPoi.tasks.length > 0 && (
               <TaskList
                 isTracking={isTracking}
@@ -774,5 +807,5 @@ export default function Map({
         )}
       </div>
     </>
-  );
+  )
 }

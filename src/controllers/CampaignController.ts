@@ -231,6 +231,7 @@ export default class CampaignControllerCommon {
         select: {
           id: true,
           name: true,
+          gameId: true,
           areas: {
             where: { isDisabled: false },
             select: {
