@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FaGamepad } from "react-icons/fa"
-import { useDashboard } from "../context/DashboardContext"
+import { useDashboard } from "@/context/DashboardContext"
 import Swal from "sweetalert2"
-import { getApiBaseUrl } from "../config/api" // Import API config
+import { getApiBaseUrl } from "@/config/api" // Import API config
 import { useRouter } from "next/router"
 import { SlEnvolopeLetter } from "react-icons/sl"
 import { useTranslation } from "@/hooks/useTranslation"
@@ -28,7 +28,6 @@ export default function CampaignsScreen() {
       ])
 
       const allCampaigns = await allCampaignsRes.json()
-      console.log({ allCampaigns })
       const mineCampaigns = await mineCampaignsRes.json()
       const campaignsWithJoinStatus = allCampaigns?.map(campaign => ({
         ...campaign,
@@ -70,6 +69,15 @@ export default function CampaignsScreen() {
 
         if (response.ok) {
           fetchCampaigns()
+          logEvent(
+            "JOIN_CAMPAIGN_SUCCESS",
+            `User joined campaign ${campaignId} from ${fromuser}`,
+            {
+              campaignId,
+              fromuser,
+              response
+            }
+          )
           Swal.fire(
             t("Success"),
             t("You have successfully joined the campaign!"),
@@ -136,7 +144,12 @@ export default function CampaignsScreen() {
           setCampaigns(prev =>
             prev.map(c => (c.id === campaign.id ? { ...c, isJoined: true } : c))
           )
-
+          
+          logEvent(
+            "JOIN_CAMPAIGN_SUCCESS_BUTTON",
+            `User joined campaign ${campaign.id}`,
+            { campaign }
+          )
           Swal.fire(
             t("Success"),
             t("You have successfully joined the campaign!"),
@@ -170,8 +183,6 @@ export default function CampaignsScreen() {
 
       <div className='w-full max-w-xxl space-y-4'>
         {campaigns.map(campaign => {
-          console.log("00000000000")
-          console.log(campaign)
           const isExpired = campaign.deadline
             ? new Date(campaign.deadline) < new Date()
             : false

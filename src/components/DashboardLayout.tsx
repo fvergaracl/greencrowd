@@ -77,8 +77,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     fetchToken()
   }, [])
 
-  console.log({ selectedCampaign })
-
   const navItems: NavItem[] = [
     {
       label: t("Home"),
