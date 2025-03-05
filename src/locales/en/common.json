@@ -324,5 +324,10 @@
   "Are you sure you want to leave?": "Are you sure you want to leave?",
   "You have not completed the task yet.": "You have not completed the task yet.",
   "Leave": "Leave",
-  "Stay": "Stay"
+  "Stay": "Stay",
+  "User Activity Over Time": "User Activity Over Time",
+  "Zoom in/out or pan to explore the data": "Zoom in/out or pan to explore the data",
+  "Points Earned": "Points Earned",
+  "Your Activity (Points Earned)": "Your Activity (Points Earned)",
+  "Average Points of Other Users": "Average Points of Other Users"
 }

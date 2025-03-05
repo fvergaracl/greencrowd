@@ -320,5 +320,10 @@
   "Sending response...": "Reactie verzenden...",
   "Loading task...": "Taak laden...",
   "You have earned": "Je hebt verdiend",
-  "points": "punten"
+  "points": "punten",
+  "User Activity Over Time": "Gebruikersactiviteit in de loop van de tijd",
+  "Zoom in/out or pan to explore the data": "Zoom in/uit of pan om de gegevens te verkennen",
+  "Points Earned": "Verdiende punten",
+  "Your Activity (Points Earned)": "Uw activiteit (verdiende punten)",
+  "Average Points of Other Users": "Gemiddelde punten van andere gebruikers"
 }

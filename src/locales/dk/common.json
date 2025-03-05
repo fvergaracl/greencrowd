@@ -320,5 +320,10 @@
   "Sending response...": "Sender svar...",
   "Loading task...": "Indlæser opgave...",
   "You have earned": "Du har tjent",
-  "points": "point"
+  "points": "point",
+  "User Activity Over Time": "Brugeraktivitet over tid",
+  "Zoom in/out or pan to explore the data": "Zoom ind/ud eller panorér for at udforske dataene",
+  "Points Earned": "Optjente point",
+  "Your Activity (Points Earned)": "Din aktivitet (optjente point)",
+  "Average Points of Other Users": "Gennemsnitlige point for andre brugere"
 }

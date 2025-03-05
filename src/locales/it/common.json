@@ -320,5 +320,7 @@
   "Sending response...": "Invio della risposta...",
   "Loading task...": "Caricamento dell'attività...",
   "You have earned": "Hai guadagnato",
-  "points": "punti"
+  "points": "punti",
+  "User Activity Over Time": "Attività dell'utente nel tempo",
+  "Zoom in/out or pan to explore the data": "Ingrandire/ridurre o spostare per esplorare i dati"
 }

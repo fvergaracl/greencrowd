@@ -320,5 +320,10 @@
   "Sending response...": "Enviando respuesta...",
   "Loading task...": "Cargando tarea...",
   "You have earned": "Has ganado",
-  "points": "puntos"
+  "points": "puntos",
+  "User Activity Over Time": "Actividad del usuario a lo largo del tiempo",
+  "Zoom in/out or pan to explore the data": "Haga zoom o desplácese para explorar los datos",
+  "Points Earned": "Puntos ganados",
+  "Your Activity (Points Earned)": "Tu actividad (Puntos ganados)",
+  "Average Points of Other Users": "Puntos medios de otros usuarios"
 }
