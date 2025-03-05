@@ -13,36 +13,36 @@ interface UserLeaderboardChartProps {
 
 const UserLeaderboardChart: React.FC<UserLeaderboardChartProps> = ({
   leaderboardData,
-  userId
+  userId,
 }) => {
   const { t } = useTranslation()
   const userActivity: { x: Date; y: number }[] = []
-  const otherUsersActivity: { [date: string]: number[] } = {}
+  const otherUsersActivity: { [hour: string]: number[] } = {}
 
   leaderboardData.task.forEach((task: any) => {
     task.points.forEach((entry: any) => {
       entry.pointsData.forEach((data: any) => {
-        const date = new Date(data.created_at).toISOString().split("T")[0]
+        const hour = new Date(data.created_at).toISOString().slice(0, 13)
 
         if (entry.externalUserId === userId) {
           userActivity.push({ x: new Date(data.created_at), y: data.points })
         } else {
-          if (!otherUsersActivity[date]) {
-            otherUsersActivity[date] = []
+          if (!otherUsersActivity[hour]) {
+            otherUsersActivity[hour] = []
           }
-          otherUsersActivity[date].push(data.points)
+          otherUsersActivity[hour].push(data.points)
         }
       })
     })
   })
 
   const averageOtherUsersActivity = Object.keys(otherUsersActivity).map(
-    date => {
+    hour => {
       return {
-        x: new Date(date),
+        x: new Date(hour + ":00:00"),
         y:
-          otherUsersActivity[date].reduce((a, b) => a + b, 0) /
-          otherUsersActivity[date].length
+          otherUsersActivity[hour].reduce((a, b) => a + b, 0) /
+          otherUsersActivity[hour].length
       }
     }
   )
@@ -103,9 +103,9 @@ const UserLeaderboardChart: React.FC<UserLeaderboardChartProps> = ({
       x: {
         type: "time" as const,
         time: {
-          unit: "day",
+          unit: "hour",
           displayFormats: {
-            day: "MMM dd"
+            hour: "MMM dd HH:mm"
           }
         },
         ticks: {

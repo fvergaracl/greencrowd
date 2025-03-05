@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import DashboardLayout from "@/components/DashboardLayout"
 import { useTranslation } from "@/hooks/useTranslation"
 import { useDashboard } from "@/context/DashboardContext"
@@ -9,6 +9,12 @@ const UserLeaderboardChart = dynamic(
   () => import("@/components/Chart/UserLeaderboardChart"),
   { ssr: false }
 )
+
+const UserContributionHeatmap = dynamic(
+  () => import("@/components/Chart/UserContributionHeatmap"),
+  { ssr: false }
+)
+
 const decodeToken = token => {
   try {
     const payload = JSON.parse(
@@ -25,7 +31,6 @@ export default function Leaderboard() {
   const [accessToken, setAccessToken] = useState(null)
   const [leaderboardData, setLeaderboardData] = useState([])
   const [leaderboardCompleteData, setLeaderboardCompleteData] = useState(null)
-  const [userActivity, setUserActivity] = useState([])
   const { selectedCampaign } = useDashboard()
   const { t } = useTranslation()
 
@@ -70,12 +75,6 @@ export default function Leaderboard() {
           const userPoints = leaderboard.task
             .flatMap(task => task.points)
             .filter(entry => entry.externalUserId === decodedToken?.sub)
-          setUserActivity(
-            userPoints.map(p => ({
-              x: new Date(p.pointsData[0].created_at),
-              y: p.points
-            }))
-          )
         } catch (error) {
           console.error("Error fetching leaderboard:", error)
         }
@@ -83,6 +82,25 @@ export default function Leaderboard() {
       fetchLeaderboard()
     }
   }, [accessToken, selectedCampaign])
+
+  const MemoizedCharts = useMemo(() => {
+    return (
+      <>
+        <div className='mt-6 bg-white shadow-lg rounded-lg p-2'>
+          <UserLeaderboardChart
+            leaderboardData={leaderboardCompleteData}
+            userId={decodedToken?.sub}
+          />
+        </div>
+        <div className='mt-6 bg-white shadow-lg rounded-lg p-2'>
+          <UserContributionHeatmap
+            leaderboardData={leaderboardCompleteData}
+            userId={decodedToken?.sub}
+          />
+        </div>
+      </>
+    )
+  }, [leaderboardCompleteData])
 
   return (
     <DashboardLayout>
@@ -127,14 +145,7 @@ export default function Leaderboard() {
               })}
           </ul>
         </div>
-        {leaderboardCompleteData && (
-          <div className='mt-6 bg-white shadow-lg rounded-lg p-2'>
-            <UserLeaderboardChart
-              leaderboardData={leaderboardCompleteData}
-              userId={decodedToken?.sub}
-            />
-          </div>
-        )}
+        {leaderboardCompleteData && MemoizedCharts}
       </div>
     </DashboardLayout>
   )
