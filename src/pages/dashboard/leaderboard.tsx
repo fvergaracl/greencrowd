@@ -1,10 +1,14 @@
+import dynamic from "next/dynamic"
 import { useEffect, useState } from "react"
 import DashboardLayout from "@/components/DashboardLayout"
 import { useTranslation } from "@/hooks/useTranslation"
 import { useDashboard } from "@/context/DashboardContext"
 import { getApiGameBaseUrl } from "@/config/api"
-// import UserLeaderboardChart from "@/components/Chart/UserLeaderboardChart"
 
+const UserLeaderboardChart = dynamic(
+  () => import("@/components/Chart/UserLeaderboardChart"),
+  { ssr: false }
+)
 const decodeToken = token => {
   try {
     const payload = JSON.parse(
@@ -80,41 +84,17 @@ export default function Leaderboard() {
     }
   }, [accessToken, selectedCampaign])
 
-  const chartData = {
-    datasets: [
-      {
-        label: t("Your Activity"),
-        data: userActivity,
-        borderColor: "blue",
-        backgroundColor: "rgba(0, 0, 255, 0.2)",
-        fill: true
-      },
-      {
-        label: t("Other Users"),
-        data: leaderboardData
-          .filter(entry => entry.externalUserId !== decodedToken?.sub)
-          .map(p => ({
-            x: new Date(p.pointsData[0]?.created_at),
-            y: p.points
-          })),
-        borderColor: "gray",
-        backgroundColor: "rgba(128, 128, 128, 0.2)",
-        fill: true
-      }
-    ]
-  }
-
   return (
     <DashboardLayout>
       <div className='p-6'>
-        <div className='bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-lg shadow-lg text-center'>
+        <div className='bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-2 rounded-lg shadow-lg text-center'>
           <h1 className='text-3xl font-extrabold'>{t("Leaderboard")}</h1>
           <p className='mt-2 text-lg'>
             {t("Check the ranking and compete to reach the top!")}
           </p>
         </div>
 
-        <div className='mt-6 bg-white shadow-lg rounded-lg p-6'>
+        <div className='mt-6 bg-white shadow-lg rounded-lg p-2'>
           <ul className='divide-y divide-gray-300'>
             {Array.isArray(leaderboardData) &&
               leaderboardData.map((entry, index) => {
@@ -147,14 +127,14 @@ export default function Leaderboard() {
               })}
           </ul>
         </div>
-        {/* {leaderboardCompleteData && (
-          <div className='mt-6 bg-white shadow-lg rounded-lg p-6'>
+        {leaderboardCompleteData && (
+          <div className='mt-6 bg-white shadow-lg rounded-lg p-2'>
             <UserLeaderboardChart
               leaderboardData={leaderboardCompleteData}
               userId={decodedToken?.sub}
             />
           </div>
-        )} */}
+        )}
       </div>
     </DashboardLayout>
   )

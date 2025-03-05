@@ -1,18 +1,10 @@
-import { useEffect, useState } from "react"
-import dynamic from "next/dynamic"
 import { Line } from "react-chartjs-2"
 import { Chart, registerables } from "chart.js"
 import "chartjs-adapter-date-fns"
 import { useTranslation } from "@/hooks/useTranslation"
+import zoomPlugin from "chartjs-plugin-zoom"
 
 Chart.register(...registerables, zoomPlugin)
-
-const loadZoomPlugin = async () => {
-  if (typeof window !== "undefined") {
-    const zoomPlugin = await import("chartjs-plugin-zoom")
-    Chart.register(zoomPlugin.default)
-  }
-}
 
 interface UserLeaderboardChartProps {
   leaderboardData: any
@@ -26,11 +18,6 @@ const UserLeaderboardChart: React.FC<UserLeaderboardChartProps> = ({
   const { t } = useTranslation()
   const userActivity: { x: Date; y: number }[] = []
   const otherUsersActivity: { [date: string]: number[] } = {}
-  const [zoomLoaded, setZoomLoaded] = useState(false)
-
-  useEffect(() => {
-    loadZoomPlugin().then(() => setZoomLoaded(true))
-  }, [])
 
   leaderboardData.task.forEach((task: any) => {
     task.points.forEach((entry: any) => {
@@ -153,6 +140,4 @@ const UserLeaderboardChart: React.FC<UserLeaderboardChartProps> = ({
   )
 }
 
-export default dynamic(() => Promise.resolve(UserLeaderboardChart), {
-  ssr: false
-})
+export default UserLeaderboardChart
