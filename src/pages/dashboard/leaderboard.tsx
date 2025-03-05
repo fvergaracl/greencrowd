@@ -3,7 +3,7 @@ import DashboardLayout from "@/components/DashboardLayout"
 import { useTranslation } from "@/hooks/useTranslation"
 import { useDashboard } from "@/context/DashboardContext"
 import { getApiGameBaseUrl } from "@/config/api"
-import UserLeaderboardChart from "@/components/Chart/UserLeaderboardChart"
+// import UserLeaderboardChart from "@/components/Chart/UserLeaderboardChart"
 
 const decodeToken = token => {
   try {
@@ -147,14 +147,14 @@ export default function Leaderboard() {
               })}
           </ul>
         </div>
-        {leaderboardCompleteData && (
+        {/* {leaderboardCompleteData && (
           <div className='mt-6 bg-white shadow-lg rounded-lg p-6'>
             <UserLeaderboardChart
               leaderboardData={leaderboardCompleteData}
               userId={decodedToken?.sub}
             />
           </div>
-        )}
+        )} */}
       </div>
     </DashboardLayout>
   )
