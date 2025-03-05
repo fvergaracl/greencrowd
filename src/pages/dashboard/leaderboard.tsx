@@ -66,15 +66,10 @@ export default function Leaderboard() {
           )
           if (!response.ok) throw new Error("Failed to fetch leaderboard")
           const leaderboard = await response.json()
-          console.log(leaderboard)
           setLeaderboardCompleteData(leaderboard)
 
-          setLeaderboardData(leaderboard.task.flatMap(task => task.points))
-
-          // Extract user activity
-          const userPoints = leaderboard.task
-            .flatMap(task => task.points)
-            .filter(entry => entry.externalUserId === decodedToken?.sub)
+          const allPoints = leaderboard.task.flatMap(task => task.points)
+          setLeaderboardData(allPoints)
         } catch (error) {
           console.error("Error fetching leaderboard:", error)
         }
@@ -82,6 +77,25 @@ export default function Leaderboard() {
       fetchLeaderboard()
     }
   }, [accessToken, selectedCampaign])
+
+  const filteredLeaderboard = useMemo(() => {
+    if (!leaderboardData.length) return []
+
+    leaderboardData.sort((a, b) => b.points - a.points)
+
+    const userIndex = leaderboardData.findIndex(
+      entry => entry.externalUserId === decodedToken?.sub
+    )
+
+    const topThree = leaderboardData.slice(0, 3)
+    const userAndNextThree =
+      userIndex !== -1 ? leaderboardData.slice(userIndex, userIndex + 4) : []
+
+    return [...topThree, ...userAndNextThree].filter(
+      (entry, index, self) =>
+        self.findIndex(e => e.externalUserId === entry.externalUserId) === index
+    )
+  }, [leaderboardData, decodedToken])
 
   const MemoizedCharts = useMemo(() => {
     return (
@@ -102,6 +116,7 @@ export default function Leaderboard() {
     )
   }, [leaderboardCompleteData])
 
+
   return (
     <DashboardLayout>
       <div className='p-6'>
@@ -111,38 +126,38 @@ export default function Leaderboard() {
             {t("Check the ranking and compete to reach the top!")}
           </p>
         </div>
-
         <div className='mt-6 bg-white shadow-lg rounded-lg p-2'>
           <ul className='divide-y divide-gray-300'>
-            {Array.isArray(leaderboardData) &&
-              leaderboardData.map((entry, index) => {
-                const isUser = entry.externalUserId === decodedToken?.sub
-                return (
-                  <li
-                    key={index}
-                    className={`py-4 px-6 flex justify-between items-center text-lg rounded-md transition duration-200 ${
-                      isUser ? "bg-blue-100 font-bold" : "hover:bg-gray-100"
-                    }`}
+            {filteredLeaderboard.map(entry => {
+              const isUser = entry.externalUserId === decodedToken?.sub
+              const rank =
+                leaderboardData.findIndex(
+                  e => e.externalUserId === entry.externalUserId
+                ) + 1
+              return (
+                <li
+                  key={entry.externalUserId}
+                  className={`py-4 px-6 flex justify-between items-center text-lg rounded-md transition duration-200 ${
+                    isUser ? "bg-blue-100 font-bold" : "hover:bg-gray-100"
+                  }`}
+                >
+                  <span className='font-medium'>
+                    {isUser ? (
+                      <span className='text-blue-700'>
+                        {t("You")} (#{rank})
+                      </span>
+                    ) : (
+                      <span className='text-gray-500'>#{rank}. ****</span>
+                    )}
+                  </span>
+                  <span
+                    className={`font-semibold ${isUser ? "text-blue-700" : "text-gray-500"}`}
                   >
-                    <span className='font-medium'>
-                      {isUser ? (
-                        <span className='text-blue-700'>
-                          {t("You")} (#{index + 1})
-                        </span>
-                      ) : (
-                        <span className='text-gray-500'>
-                          #{index + 1}. ****
-                        </span>
-                      )}
-                    </span>
-                    <span
-                      className={`font-semibold ${isUser ? "text-blue-700" : "text-gray-500"}`}
-                    >
-                      {entry.points} {t("points")}
-                    </span>
-                  </li>
-                )
-              })}
+                    {entry.points} {t("points")}
+                  </span>
+                </li>
+              )
+            })}
           </ul>
         </div>
         {leaderboardCompleteData && MemoizedCharts}
