@@ -1,78 +1,80 @@
 {
-  "token_bearer": "xxxxxxxxxxxxxxxxxxxxxxxx.yyyyyyyyyyyyyyyyyyyyyyyyyyyyy.zzzzzzzzzzzzzzzzzzzzzzzzzzz-s30QtCbi8pdgDAEz7GO8m52asy1GA346SpqfsMCjNHuCLJ6SGl-ZxiXaSgVEmJZez-z_etXRDAiojkoVM9fkVpG1CRaqEzjGrDoNLAeOU-aGxyQlngu-bHLLN5gAsuLP4_LSpO4mjn_zZh7r9VeK7tfXiXG04NxCz_iACNBfFhQLXWEfNJlIVJK7Bw8QOZamGl_FqiJiVi926V7_9jhTreL_U5TwLoP9_ClcJ0u6p5SLiz2B2BVaO2q3XbjCTMjyjHzJunFfKOoxm7yxbeFgAKNs5StepSp_bnIFCa9heSwsUnh8Xf0M4zD4e9ZLw1g",
-  "game_name": "greencrowdgreencrowdGAME4",
+  "token_bearer": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJjZGtWdlVJZWd4TWFYWHRmZk51WkhtcVFfUkNnVlBkaG5mQlU3MHRwN1NrIn0.eyJleHAiOjE3NDIzOTE0MDMsImlhdCI6MTc0MTA5NTQwMywiYXV0aF90aW1lIjoxNzQxMDk0NjM4LCJqdGkiOiIwNDU0MWY5MS05NzM0LTQxOGItYjcxOS02MWFjODJhZDFlNDEiLCJpc3MiOiJodHRwczovL2F1dGgxLmRlbW8uZ3JlZW5nYWdlLXByb2plY3QuZXUvYXV0aC9yZWFsbXMvZ3JlZW5nYWdlIiwic3ViIjoiZTIxYjY1Y2QtZDUzNC00ZGQ4LTg0YTQtNDcyOWY2YmI2YzU3IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiZ3JlZW5Dcm93ZCIsInNlc3Npb25fc3RhdGUiOiIxYzc1NTRiMC1kNDkyLTQ3ZTAtODdjOS1kZTRkYzU0MjkzYzAiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHBzOi8vaW50ZXJyYWxpbmsuMTYuMTcxLjk0LjIwNC5uaXAuaW8iLCIqIiwiaHR0cDovL2xvY2FsaG9zdDozMDAwIl0sInNjb3BlIjoib3BlbmlkIGVtYWlsIG9mZmxpbmVfYWNjZXNzIHByb2ZpbGUgZ3JlZW5Dcm93ZFNjb3BlIiwic2lkIjoiMWM3NTU0YjAtZDQ5Mi00N2UwLTg3YzktZGU0ZGM1NDI5M2MwIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpY3R1cmVLZXljbG9hayI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTAwMC9ncmVlbmNyb3dkL2UyMWI2NWNkLWQ1MzQtNGRkOC04NGE0LTQ3MjlmNmJiNmM1Ny8xNzM0NjE0NDkxMzY3LmpwZyIsInJvbGVzIjpbImFkbWluIl0sIm5hbWUiOiJGZWxpcGUgVmVyZ2FyYSBCb3JnZSIsInByZWZlcnJlZF91c2VybmFtZSI6ImZlbGlwZS52ZXJnYXJhQGRldXN0by5lcyIsImdpdmVuX25hbWUiOiJGZWxpcGUiLCJsb2NhbGUiOiJlbiIsImZhbWlseV9uYW1lIjoiVmVyZ2FyYSBCb3JnZSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS0vQUxWLVVqVWR0cGRkLWJxWDhlSDIwaTgycHpac080eXFueWxhcWdqTEpoVGs3OTRmc1R6b0oyUzNRVUlZQlV0M29td1JWV0tUZ2gzQ05Nb2JqcU1WOVZMdkVjMy1iNHp5WG1OM3RON1QwWW8ybl95SFZhR2hnLXhoVmhZeDFFS3paSDVnbThGYXhXb0dSX05GTzJzR2Z6T1EydHJSNmk0eVRveUJDM1BtTVhIdFZWdGJiVlFwUXAxaVRpbGNEMWRPdGU0STc0LWs1bWxUMnJQaUtINW1NSUEwVGUtVEFnQjVjemNjU2hHTWNTZ0JKVVVVZHhaVlh0ZnhramE3Y0R4S1g0Qlk4MWNNNFMtZ0xJdTV6R1Q3TEdka2FlbzVHVHR4aXNBczh1TkYyS2k2UGxoWlIyV0NXSGVGbUNFcEFmS2FLNUItM3hCczBJS1E4M2VpcDhiZVZCR1NEN1ktOVZnNXJMOEJ6WVpmeFJRS3JYb1VvX29kcW40bXZSaGNwS3NRX2g5Z0FSLUpDTmVQZTlPaEstenhQc0N5d1dLQWZyV1Y4aDRTUzFDSC02UUxXbnFVV3pBeVNPT3IxODFvdjBJSzhOd1haaUdvVWJlMXR5T0pWUUo4ellVWlZnSlF1bmdDUkt2czJ0dVNzSXFkbWdLalR0SEtwczlQa1QzRmpQUWRDXzF6UW05X3Vrc3NqdGpIekU1UnVzRTdwREo4ZjZXdjVzdC11Rm5hLW9lM0tjNzd6dk1scWVVeFNSbUtDbHRVUzFRd3F3S21JWEo2V1hlZElXc0lzYmRuSzJNaU5BZVREU2ZYSWQ2Nkt5bG5rNUFzLVdEaFctOWRVTkFScXJOY1NjTHhQWFVhYkFGd1kzY0hRNFRTX2hPM3lqRjJfZUg3anY2NmtqSTd4Zi02dWVzXzRneDlmR0VfTHBCcXU5em9LX21TRy1qSTVLYzFuX0RaUWNQTy0yYnFCOVNmVFdKZW1ycXhVSEtaenhuT18yTlNfdHNMWlkwd2kxSzlaSW9qTDdLTHRJbTFRZy1hRnZZcjRSaFlrSWlfazlzNU03R2lEUnRySTJmWldra2hYNG1DRWpaTG9LajhyZFlMMUFnd2pXU1RndVZzZnBveVV1blNKSmR5N0FSc2d3WGJqbndLTmZONDh4UXhmVVNqb2xfd282bXR1WUJoWUFRWW5jVXRrLVYwTkFjRjN3ZllDREdJVWZqTHlfZXJFZ05BcTZqUG1LMkhWN1Fvams3VWxMQWpIcnkzUVNRTzFvTks0RWcyN3ZMaVB3SGFBZXlEdm5tMWwzeHZvUGhMUmRtVlVnPXM5Ni1jIiwiZW1haWwiOiJmZWxpcGUudmVyZ2FyYUBkZXVzdG8uZXMifQ.EVuj6oz5h1D6Hyhsfp24xdBYQae6OXzgKlZWrYyasZqLvlUDDv6HSzFd9hCm1zBiM7VdkzOzCgidBSLcpTQ6fRdQZokWFplPZ0zOE94i5MGiVur9cpsuizv_bRQYFksI0DkVVW4jOCkFry6f1pER6gYqVV4wQGxNrGsibWzXd8KA-eaSu4iqd0w5hWwf_tKYphCfLTiiEyZMMQFEr3j7QlTnNz15BmSrSCOsxMIXf19goILorn_h_EzIT3zSGTLKPhpWrULGRoAla7fk1_1pEOMsDG8iMjKhdEXXyaL80C7Rk_l2vsxnyDwAkmqr4ASpCziZXXQmVsLDmKxVzLai7A",
+  "game_name": "GREENCROWD_MARCH_EXPERIMENT",
   "variable_basic_points": 10,
   "poi_and_task": [
     {
-      "POI": "6623df1a-2486-40af-90f7-96b6bccde472",
-      "latitude": 43.2720341666,
-      "longitude": -2.9396796227,
+      "POI": "e2f58b8e-a3d8-452a-a5b6-3d28172895c0",
+      "latitude": 43.27203416657349,
+      "longitude": -2.939679622650147,
+      "TASKS": [
+        "10fcb063-5e3d-48c5-9532-259aaba7d03a"
+      ]
+    },
+    {
+      "POI": "d8fd6554-a140-42ff-8d73-fa314c0358bd",
+      "latitude": 43.27106940840702,
+      "longitude": -2.941305041313172,
       "TASKS": [
         "20fcb063-5e3d-48c5-9532-259aaba7d03a"
       ]
     },
     {
-      "POI": "d8fd6554-a140-42ff-8d73-fa314c0358bd",
-      "latitude": 43.2710694084,
-      "longitude": -2.9413050413,
+      "POI": "3e134cfc-75a2-4e21-85e9-89983d98a819",
+      "latitude": 43.27034290026031,
+      "longitude": -2.939180731773377,
       "TASKS": [
         "30fcb063-5e3d-48c5-9532-259aaba7d03a"
       ]
     },
     {
-      "POI": "3e134cfc-75a2-4e21-85e9-89983d98a819",
-      "latitude": 43.2703429003,
-      "longitude": -2.9391807318,
+      "POI": "a908261b-2a21-41ef-a1f1-eb4e3eccde15",
+      "latitude": 43.2707061554177,
+      "longitude": -2.938333153724671,
       "TASKS": [
         "40fcb063-5e3d-48c5-9532-259aaba7d03a"
       ]
     },
     {
-      "POI": "a908261b-2a21-41ef-a1f1-eb4e3eccde15",
-      "latitude": 43.2707061554,
-      "longitude": -2.9383331537,
+      "POI": "867a3095-e40c-4fdd-93f1-99f94596e9ab",
+      "latitude": 43.27083895783726,
+      "longitude": -2.937544584274292,
       "TASKS": [
         "50fcb063-5e3d-48c5-9532-259aaba7d03a"
       ]
     },
     {
-      "POI": "867a3095-e40c-4fdd-93f1-99f94596e9ab",
-      "latitude": 43.2708389578,
-      "longitude": -2.9375445843,
+      "POI": "db490f8d-961e-4781-a201-44ad1e844bfa",
+      "latitude": 43.27026087460217,
+      "longitude": -2.936729192733765,
       "TASKS": [
         "60fcb063-5e3d-48c5-9532-259aaba7d03a"
       ]
     },
     {
-      "POI": "db490f8d-961e-4781-a201-44ad1e844bfa",
-      "latitude": 43.2702608746,
-      "longitude": -2.9367291927,
+      "POI": "239b1cd2-4d6b-4e3e-980c-3f1c98b2838d",
+      "latitude": 43.26844846994983,
+      "longitude": -2.937018871307373,
       "TASKS": [
         "70fcb063-5e3d-48c5-9532-259aaba7d03a"
       ]
     },
     {
-      "POI": "239b1cd2-4d6b-4e3e-980c-3f1c98b2838d",
-      "latitude": 43.2684484699,
-      "longitude": -2.9370188713,
+      "POI": "a5bca879-3b11-4fc6-880b-b3d8b8aba839",
+      "latitude": 43.26869064783323,
+      "longitude": -2.936675548553467,
       "TASKS": [
         "80fcb063-5e3d-48c5-9532-259aaba7d03a"
       ]
     },
     {
-      "POI": "a5bca879-3b11-4fc6-880b-b3d8b8aba839",
-      "latitude": 43.2686906478,
-      "longitude": -2.9366755486,
+      "POI": "6623df1a-2486-40af-90f7-96b6bccde472",
+      "latitude": 43.27179981376928,
+      "longitude": -2.940795421600342,
       "TASKS": [
         "90fcb063-5e3d-48c5-9532-259aaba7d03a"
       ]
-    },
-    {
-      "POI": "6623df1a-2486-40af-90f7-96b6bccde472",
-      "latitude": 43.2717998138,
-      "longitude": -2.9407954216,
-      "TASKS": []
     }
   ],
-  "api_url": "http://localhost:8000/api/v1"
+  "api_url": "https://game.16.171.94.204.nip.io/api/v1"
 }

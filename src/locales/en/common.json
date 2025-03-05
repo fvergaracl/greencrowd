@@ -313,5 +313,21 @@
   "Every completed task earns you points! Your contributions help improve the platform and support citizen science initiatives.": "Every completed task earns you points! Your contributions help improve the platform and support citizen science initiatives.",
   "Stay engaged, level up, and unlock new opportunities.": "Stay engaged, level up, and unlock new opportunities.",
   "Log In and Start Earning": "Log In and Start Earning",
-  "Skip": "Skip"
+  "Skip": "Skip",
+  "Stop": "Stop",
+  "Start": "Start",
+  "Please enable location services to see the map": "Please enable location services to see the map",
+  "Sending response...": "Sending response...",
+  "Loading task...": "Loading task...",
+  "You have earned": "You have earned",
+  "points": "points",
+  "Are you sure you want to leave?": "Are you sure you want to leave?",
+  "You have not completed the task yet.": "You have not completed the task yet.",
+  "Leave": "Leave",
+  "Stay": "Stay",
+  "User Activity Over Time": "User Activity Over Time",
+  "Zoom in/out or pan to explore the data": "Zoom in/out or pan to explore the data",
+  "Points Earned": "Points Earned",
+  "Your Activity (Points Earned)": "Your Activity (Points Earned)",
+  "Average Points of Other Users": "Average Points of Other Users"
 }

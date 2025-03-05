@@ -25,7 +25,7 @@ async function createGame() {
       `${API_URL}/games`,
       {
         externalGameId: GAME_NAME,
-        platform: `${GAME_NAME}PLATFORM`,
+        platform: "GREENCROWD",
         strategyId: "greencrowdStrategy",
         params: [{ key: "variable_basic_points", value: BASIC_POINTS }]
       },

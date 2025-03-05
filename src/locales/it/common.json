@@ -313,5 +313,14 @@
   "Every completed task earns you points! Your contributions help improve the platform and support citizen science initiatives.": "Ogni compito completato vi fa guadagnare punti! I vostri contributi aiutano a migliorare la piattaforma e a sostenere le iniziative di citizen science.",
   "Stay engaged, level up, and unlock new opportunities.": "Rimanete impegnati, salite di livello e sbloccate nuove opportunità.",
   "Log In and Start Earning": "Accedi e inizia a guadagnare",
-  "Skip": "Salto"
+  "Skip": "Salto",
+  "Stop": "Fermata",
+  "Start": "Inizio",
+  "Please enable location services to see the map": "Si prega di attivare i servizi di localizzazione per vedere la mappa",
+  "Sending response...": "Invio della risposta...",
+  "Loading task...": "Caricamento dell'attività...",
+  "You have earned": "Hai guadagnato",
+  "points": "punti",
+  "User Activity Over Time": "Attività dell'utente nel tempo",
+  "Zoom in/out or pan to explore the data": "Ingrandire/ridurre o spostare per esplorare i dati"
 }

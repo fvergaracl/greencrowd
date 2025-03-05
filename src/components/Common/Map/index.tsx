@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import React, { useEffect, useMemo, useState, useRef } from "react"
+import React, { useEffect, useMemo, useState, useRef, use } from "react"
 import ReactDOMServer from "react-dom/server"
 import {
   MapContainer as LeafletMapContainer,
@@ -23,8 +23,12 @@ import { useTranslation } from "@/hooks/useTranslation"
 import FitBounds from "./FitBounds"
 import "../styles.css"
 import { logEvent } from "@/utils/logger"
-import { getApiBaseUrl } from "@/config/api"
+import { getApiBaseUrl, getApiGameBaseUrl } from "@/config/api"
 import { getDeviceHeading } from "@/utils/getDeviceHeading"
+import Lottie from "lottie-react"
+import MapLocationNeeded from "@/lotties/map_location_needed.json"
+import GamificationCircle from "./GamificationCircle"
+import TaskList from "./TaskList"
 
 import {
   Point,
@@ -51,6 +55,84 @@ type ContextType = {
   mapCenter: [number, number]
   position: { lat: number; lng: number } | null
   isTracking: boolean
+}
+
+type Dimension = { [key: string]: number }
+type TaskPreProccess = {
+  externalTaskId: string
+  totalSimulatedPoints: number
+  dimensions: Dimension[]
+}
+
+type ProcessedPOI = {
+  poiId: string
+  averagePoints: number
+  normalizedScore: number
+}
+
+const processTasks = (
+  data: { tasks: TaskPreProccess[] },
+  mode: string = "all"
+) => {
+  const poiMap: Record<string, { total: number; count: number }> = {}
+
+  data?.tasks?.forEach(task => {
+    const match = task.externalTaskId.match(/POI_([^_]+)_Task/)
+    if (match) {
+      const poiId = match[1]
+
+      let pointsToCount = 0
+      if (mode === "all") {
+        pointsToCount = task.totalSimulatedPoints
+      } else {
+        const dimension = task.dimensions.find(dim => dim[mode] !== undefined)
+        if (dimension) {
+          pointsToCount = dimension[mode]
+        }
+      }
+
+      if (!poiMap[poiId]) {
+        poiMap[poiId] = { total: 0, count: 0 }
+      }
+      poiMap[poiId].total += pointsToCount
+      poiMap[poiId].count += 1
+    }
+  })
+
+  const poiList: ProcessedPOI[] = Object.entries(poiMap)?.map(
+    ([poiId, values]) => ({
+      poiId,
+      averagePoints: values.total / values.count,
+      normalizedScore: 0
+    })
+  )
+
+  const minPoints = Math.min(...poiList?.map(poi => poi.averagePoints))
+  const maxPoints = Math.max(...poiList?.map(poi => poi.averagePoints))
+
+  poiList?.forEach(poi => {
+    if (maxPoints !== minPoints) {
+      poi.normalizedScore = Math.round(
+        1 + (poi.averagePoints - minPoints) * (9 / (maxPoints - minPoints))
+      )
+    } else {
+      poi.normalizedScore = 1
+    }
+  })
+
+  return poiList
+}
+
+const decodeToken = (token: string): { roles?: string[] } | null => {
+  try {
+    const payload = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString()
+    )
+    return payload
+  } catch {
+    console.error("Invalid token format")
+    return null
+  }
 }
 
 export const useContextMapping = ():
@@ -151,6 +233,124 @@ export default function Map({
   const [selectedPolygon, setSelectedPolygon] = useState<PolygonData | null>(
     null
   )
+  const [accessToken, setAccessToken] = useState<string | null>(null)
+  const [lastFetchToken, setLastFetchToken] = useState<Date | null>(null)
+  const [gamificationData, setGamificationData] = useState<any>(null)
+
+  const [lastFetchGamificationData, setLastFetchGamificationData] =
+    useState<Date | null>(null)
+
+  const [gamificationFilter, setGamificationFilter] = useState<string>("all")
+
+  const handlesetGamificationFilter = (filter: string) => {
+    logEvent(
+      "USER_SELECTED_GAMIFICATION_FILTER",
+      `User selected the gamification filter: ${filter}`,
+      { filter }
+    )
+
+    setGamificationFilter(filter)
+  }
+  const cookies = document.cookie.split("; ")
+  const tokenCookie = cookies.find(cookie => cookie.startsWith("access_token="))
+  tokenCookie ? tokenCookie.split("=")[1] : null
+
+  useEffect(() => {
+    if (!isTracking) {
+      console.error("No gamification data for non-tracking users")
+      return
+    }
+    if (!selectedCampaign) {
+      console.error("No gamification data for doesn't selected campaign")
+      return
+    }
+    if (!campaignData) {
+      console.error("No gamification data for doesn't selected campaign...")
+      return
+    }
+    if (!accessToken) {
+      console.error("No access token for gamification data")
+      return
+    }
+
+    const fetchGamificationData = async () => {
+      const decodedToken = decodeToken(accessToken)
+      const res = await fetch(
+        `${getApiGameBaseUrl()}/games/${campaignData?.gameId}/users/${decodedToken?.sub}/points/simulated`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      )
+      const resJson = await res.json()
+      setGamificationData(resJson)
+      logEvent(
+        "USER_FETCHED_GAMIFICATION_DATA",
+        `User fetched gamification data for campaign: ${selectedCampaign?.id}`,
+        { gamificationData: resJson }
+      )
+      localStorage.setItem("gamificationData", JSON.stringify(resJson))
+      localStorage.setItem("lastFetchGamificationData", new Date().toString())
+      setLastFetchGamificationData(new Date())
+    }
+
+    const fetchGamificationDataInterval = 5 * 60 * 1000 // 5 minute in milliseconds
+
+    if (
+      !lastFetchGamificationData ||
+      new Date().getTime() - lastFetchGamificationData.getTime() >
+        fetchGamificationDataInterval
+    ) {
+      fetchGamificationData()
+    }
+
+    // Set up interval to refresh gamification data every 5 minutes
+    const interval = setInterval(() => {
+      fetchGamificationData()
+    }, fetchGamificationDataInterval)
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval)
+  }, [accessToken, campaignData, lastFetchGamificationData, isTracking])
+
+  useEffect(() => {
+    if (!router.isReady) return
+
+    const fetchToken = async () => {
+      try {
+        const response = await fetch("/api/auth/token", {
+          method: "GET",
+          credentials: "include"
+        })
+        if (!response.ok) throw new Error("Failed to fetch token")
+
+        const { access_token } = await response.json()
+        setLastFetchToken(new Date()) // Update last fetch time
+        setAccessToken(access_token)
+        localStorage.setItem("accessToken", access_token)
+      } catch (error) {
+        console.error("Error fetching token:", error)
+      }
+    }
+
+    const fetchTokenInterval = 15 * 60 * 1000 // 15 minutes in milliseconds
+
+    if (
+      !lastFetchToken ||
+      new Date().getTime() - lastFetchToken.getTime() > fetchTokenInterval
+    ) {
+      fetchToken()
+    }
+
+    // Set up interval to refresh token every 15 minutes
+    const interval = setInterval(() => {
+      fetchToken()
+    }, fetchTokenInterval)
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval)
+  }, [router.isReady, lastFetchToken])
 
   useEffect(() => {
     if (!isTracking) return
@@ -208,8 +408,6 @@ export default function Map({
   }
 
   const handleSelectPoi = (poi: PointOfInterest | null) => {
-    console.log({ poi })
-
     logEvent(
       poi ? "USER_SELECTED_POI_IN_MAP" : "USER_UNSELECTED_POI_IN_MAP",
       `User selected a point of interest in the map with id: ${poi?.id}`,
@@ -292,11 +490,167 @@ export default function Map({
       setErrorPoi("You are not close enough to this point of interest")
     }
   }
+  if (!isTracking) {
+    return (
+      <div
+        className='min-h-screen flex flex-col justify-center items-center'
+        data-cy='map-container-for-dashboard'
+      >
+        <div className='flex justify-center'>
+          <Lottie
+            animationData={MapLocationNeeded}
+            loop={true}
+            className='max-w-[300px] w-full'
+          />
+        </div>
+        <h2 className='text-center text-2xl'>
+          {t("Please enable location services to see the map")}
+        </h2>
+      </div>
+    )
+  }
+
+  let gamificationDataNormalized = null
+  if (gamificationData && campaignData?.gameId) {
+    gamificationDataNormalized = processTasks(
+      gamificationData,
+      gamificationFilter
+    )
+  }
+
+  const RenderMarkers = () => {
+    if (isTracking && !campaignData?.gameId) {
+      return campaignData?.areas
+        ?.flatMap((area: { pointOfInterests: any }) => area?.pointOfInterests)
+        .map((poi: PointOfInterest) => (
+          <>
+            <Circle
+              key={`${poi.id}-circle`}
+              center={[poi.latitude, poi.longitude]}
+              radius={poi.radius}
+              pathOptions={{ color: "green", fillOpacity: 0.2 }}
+              eventHandlers={{
+                click: () => {
+                  if (selectedPoi?.id === poi?.id) {
+                    handleSelectPoi(null)
+                  } else {
+                    handleSelectPoi(poi)
+                  }
+                }
+              }}
+            />
+            <Marker
+              key={poi.id}
+              position={[poi.latitude, poi.longitude]}
+              icon={createCustomIcon("green", 36)}
+              eventHandlers={{
+                click: () => {
+                  if (selectedPoi) {
+                    logEvent(
+                      "USER_SELECTED_POI_IN_MAP_BY_MARKER",
+                      `User selected a point of interest in the map with id: ${selectedPoi.id}`,
+                      { poi: selectedPoi }
+                    )
+
+                    setSelectedPoi(null)
+                    return
+                  }
+                  handleSelectPoi(poi)
+                }
+              }}
+            ></Marker>
+          </>
+        ))
+    }
+    if (isTracking && campaignData?.areas) {
+      return campaignData?.areas
+        ?.flatMap(
+          (area: { pointOfInterests: any }) => area?.pointOfInterests || []
+        )
+        .map((poi: PointOfInterest) => {
+          if (!Array.isArray(gamificationDataNormalized)) return null
+          const poiId = poi.id
+
+          if (!poiId) return null 
+
+          const normalizedData = gamificationDataNormalized.find(
+            item => item.poiId === poiId
+          )
+
+          if (!normalizedData) return null
+          const { averagePoints, normalizedScore } = normalizedData
+
+          const getColorByScore = (score: number) => {
+            if (score >= 8) return "green" 
+            if (score >= 5) return "orange" 
+            return "red"
+          }
+          const color = getColorByScore(normalizedScore)
+          const iconSize = 24 + normalizedScore * 2 
+
+          return (
+            <>
+              <Circle
+                key={`${poi.id}-circle`}
+                center={[poi.latitude, poi.longitude]}
+                radius={poi.radius}
+                pathOptions={{ color, fillOpacity: 0.4 }}
+                eventHandlers={{
+                  click: () => {
+                    if (selectedPoi?.id === poi?.id) {
+                      handleSelectPoi(null)
+                    } else {
+                      handleSelectPoi(poi)
+                    }
+                  }
+                }}
+              />
+              <Marker
+                key={poi.id}
+                position={[poi.latitude, poi.longitude]}
+                icon={createCustomIcon(color, iconSize)}
+                eventHandlers={{
+                  click: () => {
+                    if (selectedPoi) {
+                      logEvent(
+                        "USER_SELECTED_POI_IN_MAP_BY_MARKER",
+                        `User selected a point of interest in the map with id: ${selectedPoi.id}`,
+                        { poi: selectedPoi }
+                      )
+
+                      setSelectedPoi(null)
+                      return
+                    }
+                    handleSelectPoi(poi)
+                  }
+                }}
+              >
+                <Tooltip direction='top' offset={[0, -10]} permanent>
+                  <span>
+                     {averagePoints.toFixed(1).toString().replace(".", ",")} 🪙
+                  </span>
+                </Tooltip>
+              </Marker>
+            </>
+          )
+        })
+    }
+    return <></>
+  }
 
   return (
     <>
       <div className={firstDivClassName} data-cy='map-container-for-dashboard'>
         <div className={secondDivClassName}>
+          {campaignData?.gameId && (
+            <div className='absolute top-4 right-4 z-99999'>
+              <GamificationCircle
+                gamificationFilter={gamificationFilter}
+                setGamificationFilter={handlesetGamificationFilter}
+              />
+            </div>
+          )}
+
           <LeafletMapContainer
             center={mapCenter || [0, 0]}
             zoom={mapCenter ? 16 : 13}
@@ -416,50 +770,8 @@ export default function Map({
                   </Polygon>
                 )
               )}
-            {isTracking &&
-              campaignData?.areas
-                ?.flatMap(
-                  (area: { pointOfInterests: any }) => area?.pointOfInterests
-                )
-                .map((poi: PointOfInterest) => (
-                  <>
-                    <Circle
-                      key={`${poi.id}-circle`}
-                      center={[poi.latitude, poi.longitude]}
-                      radius={poi.radius}
-                      pathOptions={{ color: "green", fillOpacity: 0.2 }}
-                      eventHandlers={{
-                        click: () => {
-                          if (selectedPoi?.id === poi?.id) {
-                            handleSelectPoi(null)
-                          } else {
-                            handleSelectPoi(poi)
-                          }
-                        }
-                      }}
-                    />
-                    <Marker
-                      key={poi.id}
-                      position={[poi.latitude, poi.longitude]}
-                      icon={createCustomIcon("green", 36)}
-                      eventHandlers={{
-                        click: () => {
-                          if (selectedPoi) {
-                            logEvent(
-                              "USER_SELECTED_POI_IN_MAP_BY_MARKER",
-                              `User selected a point of interest in the map with id: ${selectedPoi.id}`,
-                              { poi: selectedPoi }
-                            )
+            <RenderMarkers />
 
-                            setSelectedPoi(null)
-                            return
-                          }
-                          handleSelectPoi(poi)
-                        }
-                      }}
-                    ></Marker>
-                  </>
-                ))}
             {showMyLocation && position && (
               <Marker position={[position.lat, position.lng]} icon={markerIcon}>
                 <Popup>
@@ -481,130 +793,15 @@ export default function Map({
           </LeafletMapContainer>
         </div>
         {isTracking && selectedPoi && (
-          <div className='h-[30%] overflow-y-auto bg-white dark:bg-gray-900 shadow-lg rounded-t-lg p-3'>
-            <span className='justify-between flex items-center'>
-              {" "}
-              <h4
-                className='text-lg font-bold text-gray-900 dark:text-slate-100'
-                data-cy='poi-name'
-              >
-                {selectedPoi.name}{" "}
-              </h4>
-            </span>
-
+          <div className='h-[30%] overflow-y-auto'>
             {selectedPoi.tasks.length > 0 && (
-              <div className='mt-2'>
-                <h4
-                  data-cy='poi-tasks-title'
-                  className='text-md font-semibold text-gray-900 dark:text-slate-100'
-                >
-                  {t("Tasks")}
-                </h4>
-
-                <div className='relative'>
-                  <button
-                    className='absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow focus:outline-none'
-                    onClick={() => {
-                      logEvent(
-                        "USER_CLICKED_LEFT_ARROW_TASKS",
-                        "User clicked on the left arrow to see more tasks",
-                        { poi: selectedPoi }
-                      )
-
-                      const container =
-                        document.getElementById("tasks-container")
-                      container?.scrollBy({ left: -300, behavior: "smooth" })
-                    }}
-                  >
-                    ←
-                  </button>
-
-                  <div
-                    id='tasks-container'
-                    className='flex overflow-x-auto gap-4 scrollbar-hide scroll-smooth snap-x'
-                  >
-                    {selectedPoi.tasks.map((task: Task) => (
-                      <div
-                        key={task.id}
-                        className={`min-w-[300px] snap-start flex-shrink-0 p-4 border rounded-lg shadow ${
-                          errorPoi
-                            ? "bg-gray-200 dark:bg-gray-700 dark:border-gray-600 opacity-50 cursor-not-allowed"
-                            : "bg-white dark:bg-gray-800 dark:border-gray-700"
-                        }`}
-                      >
-                        <h5
-                          className='text-md font-semibold text-gray-900 dark:text-slate-100 truncate'
-                          data-cy={`task-title-${task.id}`}
-                        >
-                          {task.title}
-                        </h5>
-
-                        <p
-                          className='text-sm text-gray-600 dark:text-gray-400 mt-1 truncate'
-                          data-cy={`task-description-${task.id}`}
-                        >
-                          {task.description || t("No description available")}
-                        </p>
-
-                        {errorPoi && (
-                          <div className='relative'>
-                            <p
-                              className='absolute top-0 left-0 w-full bg-red-600 text-white text-sm font-bold p-2 rounded-lg shadow-lg animate-bounce z-1000'
-                              style={{ pointerEvents: "auto" }}
-                            >
-                              {t("You cannot access this task:")} {t(errorPoi)}
-                            </p>
-                          </div>
-                        )}
-
-                        <button
-                          onClick={() => {
-                            if (errorPoi) {
-                              logEvent(
-                                "USER_CLICKED_ENTER_TASK_ERROR",
-                                "User clicked on the enter task button but there was an error",
-                                { poi: selectedPoi, task, location }
-                              )
-                            } else {
-                              logEvent(
-                                "USER_CLICKED_ENTER_TASK",
-                                "User clicked on the enter task button",
-                                { poi: selectedPoi, task }
-                              )
-
-                              window.location.href = `/dashboard/task/${task.id}`
-                            }
-                          }}
-                          className={`mt-1 px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none text-center transition ${
-                            errorPoi
-                              ? "bg-gray-500 cursor-not-allowed"
-                              : "bg-blue-600 hover:bg-blue-700 focus:ring focus:ring-blue-400"
-                          }`}
-                          data-cy={`enter-task-${task.id}`}
-                        >
-                          {t("Enter Task")}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button
-                    className='absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow focus:outline-none'
-                    onClick={() => {
-                      logEvent(
-                        "USER_CLICKED_RIGHT_ARROW_TASKS",
-                        "User clicked on the right arrow to see more tasks",
-                        { poi: selectedPoi }
-                      )
-                      const container =
-                        document.getElementById("tasks-container")
-                      container?.scrollBy({ left: 300, behavior: "smooth" })
-                    }}
-                  >
-                    →
-                  </button>
-                </div>
-              </div>
+              <TaskList
+                isTracking={isTracking}
+                selectedPoi={selectedPoi}
+                errorPoi={errorPoi}
+                logEvent={logEvent}
+                t={t}
+              />
             )}
           </div>
         )}

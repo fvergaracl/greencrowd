@@ -17,6 +17,27 @@ export const getApiBaseUrl = (): string => {
   return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api";
 };
 
+export const getApiGameBaseUrl = (): string => {
+  if (
+    typeof window !== "undefined" &&
+    window.__ENV__?.NEXT_PUBLIC_API_GAME_BASE_URL
+  ) {
+    console.log(
+      "[+] Usando API_BASE_URL desde window.__ENV__:",
+      window.__ENV__.NEXT_PUBLIC_API_GAME_BASE_URL
+    );
+    return window.__ENV__.NEXT_PUBLIC_API_GAME_BASE_URL;
+  }
+
+  console.log(
+    "[-] Usando API_BASE_URL desde process.env:",
+    process.env.NEXT_PUBLIC_API_GAME_BASE_URL || "http://localhost:3000/api/v1"
+  );
+  return (
+    process.env.NEXT_PUBLIC_API_GAME_BASE_URL || "http://localhost:3000/api/v1"
+  );
+};
+
 export const getLogginEnabled = (): boolean => {
   if (
     typeof window !== "undefined" &&
