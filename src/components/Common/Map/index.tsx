@@ -536,7 +536,7 @@ export default function Map({
     );
   }
 
-  const RenderMarkers = () => {
+  const renderMarkers = useMemo(() => {
     if (isTracking && !campaignData?.gameId) {
       return campaignData?.areas
         ?.flatMap((area: { pointOfInterests: any }) => area?.pointOfInterests)
@@ -654,7 +654,7 @@ export default function Map({
         });
     }
     return <></>;
-  };
+  }, [campaignData, gamificationDataNormalized, selectedPoi]);
 
   return (
     <>
@@ -732,7 +732,7 @@ export default function Map({
                               {polygon.name}
                             </h3>
                             <p>
-                              <strong>Description:</strong>
+                              <strong>{t("Description")}:</strong>
                               {polygon.description}
                             </p>
                             <button
@@ -790,7 +790,7 @@ export default function Map({
                   </Polygon>
                 )
               )}
-            <RenderMarkers />
+            {renderMarkers}
 
             {showMyLocation && position && (
               <Marker position={[position.lat, position.lng]} icon={markerIcon}>
