@@ -1,5 +1,5 @@
 import { FiMapPin } from "react-icons/fi";
-import { LuRouteOff } from "react-icons/lu";
+import { LuRouteOff, LuRoute } from "react-icons/lu";
 import { TbLassoPolygon } from "react-icons/tb";
 import L from "leaflet";
 import { useMap } from "react-leaflet";
@@ -9,13 +9,17 @@ import { logEvent } from "@/utils/logger";
 
 interface MapControlsProps {
   position: Position | null;
-  removeRoute: () => void | null;
+  showRoute?: boolean;
+  isSelectedPoi?: boolean;
+  toggleRoute: () => void | null;
   campaignData: CampaignData | null;
 }
 
 const MapControls: React.FC<MapControlsProps> = ({
   position,
-  removeRoute = null,
+  showRoute = false,
+  isSelectedPoi = false,
+  toggleRoute = null,
   campaignData,
 }) => {
   const { t } = useTranslation();
@@ -43,7 +47,6 @@ const MapControls: React.FC<MapControlsProps> = ({
         });
       });
       map.fitBounds(bounds);
-      console.log("Focusing on campaign area.");
       logEvent(
         "BUTTON_CLICKED_FOCUS_ON_CAMPAIGN_AREA",
         "User clicked on focus on campaign area button",
@@ -56,20 +59,32 @@ const MapControls: React.FC<MapControlsProps> = ({
 
   return (
     <div className="absolute bottom-4 right-4 z-99999 flex flex-col gap-2">
-      {removeRoute && (
-        <button
-          onClick={removeRoute}
-          className="p-3 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md focus:outline-none"
-          title={t("Remove route")}
-        >
-          <LuRouteOff size={24} />
-        </button>
+      {isSelectedPoi && (
+        <>
+          {showRoute ? (
+            <button
+              onClick={toggleRoute}
+              className="p-3 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md focus:outline-none"
+              title={t("Remove route")}
+            >
+              <LuRouteOff size={24} />
+            </button>
+          ) : (
+            <button
+              onClick={toggleRoute}
+              className="p-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-md focus:outline-none"
+              title={t("Show route")}
+            >
+              <LuRoute size={24} />
+            </button>
+          )}
+        </>
       )}
       <button
         onClick={focusOnCampaign}
         className={`p-3 ${
           campaignData?.areas
-            ? "bg-green-500 hover:bg-green-600"
+            ? "bg-teal-500 hover:bg-teal-600"
             : "bg-gray-300"
         } text-white rounded-full shadow-md focus:outline-none`}
         title={t("Focus on campaign area")}
@@ -81,7 +96,7 @@ const MapControls: React.FC<MapControlsProps> = ({
       <button
         onClick={focusOnCurrentLocation}
         className={`p-3 ${
-          position ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-300"
+          position ? "bg-indigo-500 hover:bg-indigo-600" : "bg-gray-300"
         } text-white rounded-full shadow-md focus:outline-none`}
         title={
           position
