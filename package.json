@@ -24,7 +24,7 @@
     "@sentry/cli": "^2.31.0",
     "@sentry/nextjs": "^7.113.0",
     "@sentry/react": "^7.112.2",
-    "axios": "^1.6.8",
+    "axios": "^1.8.2",
     "chartjs-adapter-date-fns": "^3.0.0",
     "chartjs-plugin-zoom": "^2.2.0",
     "cookie": "^1.0.2",
