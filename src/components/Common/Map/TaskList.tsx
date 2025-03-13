@@ -1,20 +1,33 @@
 import { motion } from "framer-motion"
-import { useState, useRef } from "react"
-import { Pie } from "react-chartjs-2"
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
-
-ChartJS.register(ArcElement, Tooltip, Legend)
+import { useState, useRef, useEffect } from "react"
+import { useDashboard } from "@/context/DashboardContext"
 
 const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
+  const { distanceToPoi } = useDashboard()
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [allowEntryPoi, setAllowEntryPoi] = useState(false)
   const tasksRef = useRef(null)
-
-  if (!isTracking || !selectedPoi) return null
 
   const tasks = selectedPoi.tasks || []
   const totalTasks = tasks.length
 
-  const scrollTasks = direction => {
+  useEffect(() => {
+    const conditon =
+      distanceToPoi.kilometters <= 0 &&
+      distanceToPoi.metters <= 0 &&
+      distanceToPoi.metters < selectedPoi.radius + 100
+        ? true
+        : false
+    if (conditon) {
+      setAllowEntryPoi(true)
+    } else {
+      setAllowEntryPoi(false)
+    }
+  }, [distanceToPoi])
+
+  if (!isTracking || !selectedPoi) return null
+
+  const scrollTasks = (direction: string) => {
     if (!tasksRef.current) return
 
     if (direction === "up" && currentIndex > 0) {
@@ -32,7 +45,6 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
 
       {totalTasks > 0 && (
         <div className='relative flex flex-col items-center'>
-          {/* Botón para subir */}
           {currentIndex > 0 && (
             <button
               className='absolute top-0 left-1/2 -translate-x-1/2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow focus:outline-none z-10'
@@ -48,7 +60,7 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
               className='w-full flex flex-col items-center transition-transform'
               animate={{ translateY: -currentIndex * 120 }}
             >
-              {errorPoi && (
+              {!allowEntryPoi && errorPoi && (
                 <p className='text-red-500 dark:text-red-400 text-center p-4'>
                   {errorPoi}
                 </p>
@@ -57,7 +69,7 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
                 <motion.div
                   key={task.id}
                   className={`w-full flex items-center p-4 border rounded-lg shadow mb-2 transition ${
-                    errorPoi
+                    !allowEntryPoi && errorPoi
                       ? "bg-gray-200 dark:bg-gray-700 opacity-50 cursor-not-allowed"
                       : "bg-white dark:bg-gray-800"
                   }`}
@@ -77,7 +89,7 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
 
                     <button
                       onClick={() => {
-                        if (errorPoi) {
+                        if (!allowEntryPoi && errorPoi) {
                           logEvent(
                             "USER_CLICKED_ENTER_TASK_ERROR",
                             "User clicked on the enter task button but there was an error",
@@ -93,7 +105,7 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
                         }
                       }}
                       className={`mt-2 px-4 py-2 text-sm font-medium text-white rounded-md transition ${
-                        errorPoi
+                        !allowEntryPoi && errorPoi
                           ? "bg-gray-500 cursor-not-allowed"
                           : "bg-blue-600 hover:bg-blue-700 focus:ring focus:ring-blue-400"
                       }`}
@@ -106,7 +118,6 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
             </motion.div>
           </div>
 
-          {/* Botón para bajar */}
           {currentIndex < totalTasks - 1 && (
             <button
               className='absolute bottom-0 left-1/2 -translate-x-1/2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow focus:outline-none z-10'

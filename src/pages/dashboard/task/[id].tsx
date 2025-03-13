@@ -38,12 +38,14 @@ const TaskWrapperComponent = ({
   taskData,
   t,
   isInside,
-  onComplete
+  onComplete,
+  setUserDeclareInside
 }: {
   taskData: any
   t: any
   isInside: boolean
   onComplete: (survey: any, setIsSubmitted: (value: boolean) => void) => void
+  setUserDeclareInside: (value: boolean) => void
 }) => {
   const surveyRef = useRef<SurveyModel | null>(null)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -55,7 +57,26 @@ const TaskWrapperComponent = ({
       showCompletedPage: false
     })
   }
+  surveyRef.current.onCompleting.add(async (sender, options) => {
+    if (!isInside) {
+      const result = await Swal.fire({
+        title: t("Are you inside the point of interest?"),
+        text: t("You seem to be outside the POI. Please confirm."),
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: t("Yes, I am inside"),
+        cancelButtonText: t("No, cancel submission")
+      })
 
+      if (!result.isConfirmed) {
+        options.allowComplete = false
+        return
+      }
+
+      setUserDeclareInside(true)
+    }
+  })
+  // WIP
   const form = surveyRef.current
 
   useEffect(() => {
@@ -100,6 +121,8 @@ export default function Task() {
   const [loading, setLoading] = useState(true)
   const [sendingResponse, setSendingResponse] = useState(false)
   const [responseSent, setResponseSent] = useState(false)
+  // User declare that user is inside of poi
+  const [userDeclareInside, setUserDeclareInside] = useState(false)
 
   const localStorageAccesstoken = localStorage.getItem("access_token")
   const localStorageGamificationData = localStorage.getItem("gamificationData")
@@ -201,7 +224,7 @@ export default function Task() {
       localStorage.setItem("lastFetchGamificationData", new Date().toString())
       setLastFetchGamificationData(new Date())
     }
-    const fetchGamificationDataInterval = 5 * 60 * 1000 
+    const fetchGamificationDataInterval = 5 * 60 * 1000
 
     if (
       (!lastFetchGamificationData ||
@@ -266,13 +289,15 @@ export default function Task() {
     logEvent("TASK_SENDING_RESPONSE", "Task sending response", {
       taskResponse: survey.data,
       taskId: id,
-      position
+      position,
+      userDeclareInside
     })
     await axios
       .post(`${getApiBaseUrl()}/task/${id}/response`, {
         taskResponse: survey.data,
         taskId: id,
-        position
+        position,
+        userDeclareInside
       })
       .then(async () => {
         logEvent("TASK_COMPLETED_SUCCESS", "Task completed", {
@@ -456,6 +481,7 @@ export default function Task() {
                     t={t}
                     isInside={isInside}
                     onComplete={handleSurveyCompletion}
+                    setUserDeclareInside={setUserDeclareInside}
                   />
                 </div>
               ) : (

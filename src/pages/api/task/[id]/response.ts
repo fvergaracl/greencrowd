@@ -13,7 +13,7 @@ export default async function handler(
     case "POST":
       try {
         const body = req?.body
-        const { taskResponse, position, taskId } = body
+        const { taskResponse, position, taskId, userDeclareInside } = body
 
         if (!taskResponse) {
           return res.status(400).json({ error: "Task response is required" })
@@ -45,7 +45,7 @@ export default async function handler(
         const area = taskData.pointOfInterest.area
         const areaPolygon = area.polygon
         const isInsidePolygon = require("point-in-polygon")
-        if (!isInsidePolygon(position, areaPolygon)) {
+        if (!userDeclareInside && !isInsidePolygon(position, areaPolygon)) {
           const distanceWithPOI = haversineDistance(position, [
             taskData.pointOfInterest.latitude,
             taskData.pointOfInterest.longitude
@@ -117,7 +117,6 @@ export default async function handler(
           latitude: body?.position?.lat,
           longitude: body?.position?.lng
         })
-
 
         return res.status(200).json(body)
       } catch (err: any) {
