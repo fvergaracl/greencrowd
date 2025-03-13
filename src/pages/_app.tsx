@@ -3,18 +3,17 @@ import "../styles/globals.css"
 import { StrictMode, ReactNode, useEffect, useState } from "react"
 import { AppProps } from "next/app"
 import { useRouter } from "next/router"
-import { DashboardProvider } from "../context/DashboardContext"
-import { AdminProvider } from "../context/AdminContext"
-import enhanceConsole from "@/utils/enhanceConsole"
+import { DashboardProvider } from "@/context/DashboardContext"
+import { AdminProvider } from "@/context/AdminContext"
+// import enhanceConsole from "@/utils/enhanceConsole"
 
-// Evita ejecutar `enhanceConsole` múltiples veces en modo SSR
-if (typeof window !== "undefined") {
-  let isEnhanced = (window as any).__ENHANCED_CONSOLE__ || false
-  if (!isEnhanced) {
-    enhanceConsole()
-    ;(window as any).__ENHANCED_CONSOLE__ = true
-  }
-}
+// if (typeof window !== "undefined") {
+//   let isEnhanced = (window as any).__ENHANCED_CONSOLE__ || false
+//   if (!isEnhanced) {
+//     enhanceConsole()
+//     ;(window as any).__ENHANCED_CONSOLE__ = true
+//   }
+// }
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const [configLoaded, setConfigLoaded] = useState(false)
