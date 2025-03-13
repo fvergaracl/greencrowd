@@ -32,7 +32,8 @@ export const getDeviceHeading = async (
     })
 
     timeoutId = setTimeout(() => {
-      console.warn("⚠️ Heading detection timed out.")
+      if (process.env.NODE_ENV === "development")
+        console.warn("⚠️ Heading detection timed out.")
       cleanup()
       resolve(null)
     }, timeoutMs)

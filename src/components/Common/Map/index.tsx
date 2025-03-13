@@ -27,7 +27,6 @@ import { getApiBaseUrl, getApiGameBaseUrl } from "@/config/api"
 import { getDeviceHeading } from "@/utils/getDeviceHeading"
 import Lottie from "lottie-react"
 import MapLocationNeeded from "@/lotties/map_location_needed.json"
-import GamificationCircle from "./GamificationCircle"
 import TaskList from "./TaskList"
 
 import {
@@ -295,7 +294,7 @@ export default function Map({
       setLastFetchGamificationData(new Date())
     }
 
-    const fetchGamificationDataInterval = 5 * 60 * 1000 
+    const fetchGamificationDataInterval = 5 * 60 * 1000
 
     if (
       !lastFetchGamificationData ||
@@ -324,7 +323,7 @@ export default function Map({
         if (!response.ok) throw new Error("Failed to fetch token")
 
         const { access_token } = await response.json()
-        setLastFetchToken(new Date()) 
+        setLastFetchToken(new Date())
         setAccessToken(access_token)
         localStorage.setItem("accessToken", access_token)
       } catch (error) {
@@ -332,7 +331,7 @@ export default function Map({
       }
     }
 
-    const fetchTokenInterval = 15 * 60 * 1000 
+    const fetchTokenInterval = 15 * 60 * 1000
 
     if (
       !lastFetchToken ||

@@ -9,8 +9,13 @@ import { getPersistedState, persistState } from "../utils/persistentState"
 import axios from "axios"
 import { getApiBaseUrl } from "@/config/api"
 import { logEvent } from "@/utils/logger"
-import Swal from "sweetalert2"
 import { getDeviceHeading } from "@/utils/getDeviceHeading"
+
+export interface IDistanceToPoi {
+  kilometters: number
+  metters: number
+}
+
 export interface IPosition {
   lat: number
   lng: number
@@ -45,6 +50,8 @@ export interface DashboardContextType {
   loading: boolean
   logout: () => void
   positionFullDetails: IPositionFullDetails | null
+  distanceToPoi: IDistanceToPoi
+  setDistanceToPoi: (distance: IDistanceToPoi) => void
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(
@@ -68,6 +75,10 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [isTracking, setIsTracking] = useState<boolean>(true)
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [distanceToPoi, setDistanceToPoi] = useState<IDistanceToPoi>({
+    kilometters: 0,
+    metters: 0
+  })
   const toggleTracking = () => setIsTracking(prev => !prev)
 
   const updatePosition = async (time = 1) => {
@@ -237,7 +248,9 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         setSelectedCampaign,
         loading,
         logout,
-        positionFullDetails
+        positionFullDetails,
+        distanceToPoi,
+        setDistanceToPoi
       }}
     >
       {children}
