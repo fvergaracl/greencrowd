@@ -104,3 +104,4 @@ android/app/src/main/res/xml*
 .vscode/
 .idea/
 *.log
+.qodo

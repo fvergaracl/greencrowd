@@ -137,13 +137,13 @@ export default function Task() {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (!responseSent) {
         event.preventDefault()
-        event.returnValue = "" // Requerido para el mensaje de confirmación del navegador
+        event.returnValue = ""
       }
     }
 
     const handleRouteChange = (url: string) => {
       if (!responseSent) {
-        router.events.off("routeChangeStart", handleRouteChange) // Desactiva el listener antes de mostrar Swal
+        router.events.off("routeChangeStart", handleRouteChange)
 
         Swal.fire({
           title: t("Are you sure you want to leave?"),
@@ -154,24 +154,28 @@ export default function Task() {
           cancelButtonText: t("Stay")
         }).then(result => {
           if (result.isConfirmed) {
-            router.push(url) // Permite la navegación
+            window.removeEventListener("beforeunload", handleBeforeUnload)
+            router.events.off("routeChangeStart", handleRouteChange)
+            router.push(url)
           } else {
-            router.events.on("routeChangeStart", handleRouteChange) // Reactiva el listener solo si se cancela la salida
+            router.events.on("routeChangeStart", handleRouteChange)
           }
         })
 
-        return false // Bloquea la navegación momentáneamente
+        throw "Route change cancelled"
       }
     }
 
-    window.addEventListener("beforeunload", handleBeforeUnload)
-    router.events.on("routeChangeStart", handleRouteChange)
+    if (!responseSent) {
+      window.addEventListener("beforeunload", handleBeforeUnload)
+      router.events.on("routeChangeStart", handleRouteChange)
+    }
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload)
       router.events.off("routeChangeStart", handleRouteChange)
     }
-  }, [responseSent, router])
+  }, [responseSent])
 
   useEffect(() => {
     if (!accessToken) return
@@ -197,7 +201,7 @@ export default function Task() {
       localStorage.setItem("lastFetchGamificationData", new Date().toString())
       setLastFetchGamificationData(new Date())
     }
-    const fetchGamificationDataInterval = 5 * 60 * 1000 // 5 minute in milliseconds
+    const fetchGamificationDataInterval = 5 * 60 * 1000 
 
     if (
       (!lastFetchGamificationData ||
@@ -208,7 +212,6 @@ export default function Task() {
       fetchGamificationData()
     }
 
-    // Set up interval to refresh gamification data every 5 minutes
     const interval = setInterval(() => {
       fetchGamificationData()
     }, fetchGamificationDataInterval)

@@ -68,10 +68,10 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [isTracking, setIsTracking] = useState<boolean>(true)
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  console.log({ selectedCampaign })
   const toggleTracking = () => setIsTracking(prev => !prev)
 
-  const updatePosition = async () => {
+  const updatePosition = async (time = 1) => {
+    if (time >= 3) return
     if (!isTracking) return
 
     const geoOptions = {
@@ -92,17 +92,20 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           heading: finalHeading,
           speed: location.coords.speed
         }
+        if (location?.coords?.altitudeAccuracy > 20) {
+          setPositionFullDetails(newPosition)
+          setPosition(newPosition)
 
-        setPositionFullDetails(newPosition)
-        setPosition(newPosition)
+          try {
+            await axios.post(`${getApiBaseUrl()}/userTrajectory`, newPosition)
+          } catch (error) {
+            console.error("Error sending user trajectory:", error)
+          }
 
-        try {
-          await axios.post(`${getApiBaseUrl()}/userTrajectory`, newPosition)
-        } catch (error) {
-          console.error("Error sending user trajectory:", error)
+          if (!mapCenter) setMapCenter(newPosition)
+        } else {
+          updatePosition(time + 1)
         }
-
-        if (!mapCenter) setMapCenter(newPosition)
       },
       error => {
         let text = "An unknown error occurred."
