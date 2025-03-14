@@ -36,13 +36,16 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
       setCurrentIndex(currentIndex + 1)
     }
   }
-
   return (
     <div className='relative h-[40vh] bg-white dark:bg-gray-900 shadow-lg rounded-lg  overflow-hidden'>
       <h4 className='text-lg text-center font-bold text-gray-900 dark:text-slate-100 mb-2'>
         {selectedPoi.name}
       </h4>
-
+      {totalTasks <= 0 && (
+        <p className='text-gray-600 dark:text-gray-400 text-center p-4'>
+          {t("No tasks available")}
+        </p>
+      )}
       {totalTasks > 0 && (
         <div className='relative flex flex-col items-center'>
           {currentIndex > 0 && (

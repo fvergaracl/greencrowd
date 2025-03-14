@@ -421,6 +421,7 @@ export default function Map({
       `User selected a point of interest in the map with id: ${poi?.id}`,
       { poi }
     )
+
     setSelectedPoi(poi)
   }
 
@@ -805,7 +806,7 @@ export default function Map({
         </div>
         {isTracking && selectedPoi && (
           <div className='h-[30%] overflow-y-auto'>
-            {selectedPoi.tasks.length > 0 && (
+            {selectedPoi.tasks.length >= 0 && (
               <TaskList
                 isTracking={isTracking}
                 selectedPoi={selectedPoi}
