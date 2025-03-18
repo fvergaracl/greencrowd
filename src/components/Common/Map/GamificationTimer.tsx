@@ -1,4 +1,4 @@
-
+import { useTranslation } from "@/hooks/useTranslation"
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Tooltip from "@mui/material/Tooltip";
@@ -9,11 +9,11 @@ interface GamificationTimerProps {
 }
 
 export default function GamificationTimer({ endTime }: GamificationTimerProps) {
+  const { t } = useTranslation();
   const [timeLeft, setTimeLeft] = useState(() => {
     const initialDiff = endTime && endTime > 0 ? endTime - Date.now() : 0;
     return initialDiff > 0 ? initialDiff : 0;
   });
-
   useEffect(() => {
     if (!endTime || endTime <= 0) return;
 
@@ -40,7 +40,11 @@ export default function GamificationTimer({ endTime }: GamificationTimerProps) {
 
   return (
     <div className="fixed top-3 right-3 z-50">
-      <Tooltip title="Tiempo restante para el próximo cálculo de puntos" arrow>
+      <Tooltip title={
+        t("Time left to complete the challenge and earn points")
+      }
+
+        arrow>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}

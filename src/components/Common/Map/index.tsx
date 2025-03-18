@@ -28,6 +28,7 @@ import { getDeviceHeading } from "@/utils/getDeviceHeading"
 import Lottie from "lottie-react"
 import MapLocationNeeded from "@/lotties/map_location_needed.json"
 import TaskList from "./TaskList"
+import GamificationTimer from "./GamificationTimer"
 
 import {
   Point,
@@ -200,12 +201,12 @@ const Routing = ({ map, start, end, routingControlRef }) => {
       console.error("Error al inicializar la ruta:", error)
     }
 
-    return () => {}
+    return () => { }
   }, [map, start, end])
 
   return null
 }
-
+const FOURTEEN_MINUTES_MS = 14 * 60 * 1000;
 export default function Map({
   showMyLocation = false,
   points = [],
@@ -238,7 +239,7 @@ export default function Map({
   const [showRoute, setShowRoute] = useState<boolean>(false)
   const [lastFetchGamificationData, setLastFetchGamificationData] =
     useState<Date | null>(null)
-
+  const fetchTimerRef = useRef<NodeJS.Timeout | null>(null)
   const [gamificationFilter, setGamificationFilter] = useState<string>("all")
 
   const handlesetGamificationFilter = (filter: string) => {
@@ -293,23 +294,46 @@ export default function Map({
       localStorage.setItem("lastFetchGamificationData", new Date().toString())
       setLastFetchGamificationData(new Date())
     }
+    const shouldFetch = (): boolean => {
+      const lastFetchStored = localStorage.getItem("lastFetchGamificationData");
+      const lastFetchGamificationData = localStorage.getItem("gamificationData")
+      if (!lastFetchStored) return true;
+      if (!lastFetchGamificationData) return true;
+      console.log('======================================')
+      console.log(new Date(lastFetchStored).getTime())
+      console.log(new Date(lastFetchStored))
 
-    const fetchGamificationDataInterval = 5 * 60 * 1000
+      setLastFetchGamificationData(new Date(lastFetchStored).getTime() + FOURTEEN_MINUTES_MS)
+      setGamificationData(JSON.parse(lastFetchGamificationData))
 
-    if (
-      !lastFetchGamificationData ||
-      new Date().getTime() - lastFetchGamificationData.getTime() >
-        fetchGamificationDataInterval
-    ) {
-      fetchGamificationData()
+
+      const lastFetchDate = new Date(lastFetchStored);
+      const now = Date.now();
+      return now - lastFetchDate.getTime() > FOURTEEN_MINUTES_MS;
+    };
+
+    // Ejecutar fetch si es necesario al cargar
+    if (shouldFetch()) {
+      fetchGamificationData();
     }
 
-    const interval = setInterval(() => {
-      fetchGamificationData()
-    }, fetchGamificationDataInterval)
+    // Solo iniciar un intervalo controlado una vez
+    if (!fetchTimerRef.current) {
+      fetchTimerRef.current = setInterval(() => {
+        if (shouldFetch()) {
+          fetchGamificationData();
+        }
+      }, FOURTEEN_MINUTES_MS);
+    }
 
-    return () => clearInterval(interval)
-  }, [accessToken, campaignData, lastFetchGamificationData, isTracking])
+    // Cleanup
+    return () => {
+      if (fetchTimerRef.current) {
+        clearInterval(fetchTimerRef.current);
+        fetchTimerRef.current = null;
+      }
+    };
+  }, [isTracking, selectedCampaign?.id, campaignData?.gameId, accessToken]);
 
   useEffect(() => {
     if (!router.isReady) return
@@ -649,10 +673,19 @@ export default function Map({
     }
     return <></>
   }, [campaignData, gamificationDataNormalized, selectedPoi])
-
   return (
     <>
       <div className={firstDivClassName} data-cy='map-container-for-dashboard'>
+        {
+          campaignData?.gameId && gamificationData && (
+            <div className="absolute top-4 right-4 z-[9999]">
+              <GamificationTimer
+                endTime={lastFetchGamificationData}
+              />
+            </div>
+          )
+        }
+
         <div className={secondDivClassName}>
           <LeafletMapContainer
             center={mapCenter || [0, 0]}
