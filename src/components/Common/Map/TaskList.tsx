@@ -14,7 +14,7 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
   useEffect(() => {
     const conditon =
       distanceToPoi.kilometters <= 0 &&
-      distanceToPoi.metters <= 0 &&
+      distanceToPoi.metters >= 0 &&
       distanceToPoi.metters < selectedPoi.radius + 100
         ? true
         : false

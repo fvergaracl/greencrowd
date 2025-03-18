@@ -15,9 +15,13 @@
     "migration:deploy": "dotenv -e .env.local -- npx prisma migrate deploy"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mui/icons-material": "^6.4.7",
+    "@mui/material": "^6.4.7",
     "@nivo/calendar": "^0.88.0",
     "@prisma/client": "^6.0.1",
     "@reactour/tour": "^3.7.0",
