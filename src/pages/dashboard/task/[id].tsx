@@ -48,9 +48,8 @@ const TaskWrapperComponent = ({
   setUserDeclareInside: (value: boolean) => void;
 }) => {
   const surveyRef = useRef<SurveyModel | null>(null);
+  const forceCompleteRef = useRef(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const [forceComplete, setForceComplete] = useState(false); // control interno
 
   if (!surveyRef.current && taskData) {
     surveyRef.current = new SurveyModel({
@@ -65,10 +64,8 @@ const TaskWrapperComponent = ({
   useEffect(() => {
     if (!form) return;
 
-    // Importante: agregar este listener solo una vez
     const handler = async (sender: any, options: any) => {
-      // Solo bloquear si no es inside y aún no es un intento forzado
-      if (!isInside && !forceComplete) {
+      if (!isInside && !forceCompleteRef.current) {
         options.allowComplete = false;
 
         const result = await Swal.fire({
@@ -82,18 +79,15 @@ const TaskWrapperComponent = ({
 
         if (result.isConfirmed) {
           setUserDeclareInside(true);
-          setForceComplete(true); // marcamos para permitir el siguiente intento
-          form?.doComplete(); // vuelve a ejecutar el envío
+          forceCompleteRef.current = true;
+          form.doComplete();
         }
       }
     };
 
     form.onCompleting.add(handler);
-
-    return () => {
-      form.onCompleting.remove(handler);
-    };
-  }, [form, isInside, forceComplete]);
+    return () => form.onCompleting.remove(handler);
+  }, [form, isInside]);
 
   if (!form) return <p>{t("Loading...")}</p>;
 
@@ -141,11 +135,6 @@ export default function Task() {
   const localStorageLastFetchGamificationData = localStorage.getItem(
     "lastFetchGamificationData"
   );
-  console.log({
-    loading,
-    sendingResponse,
-    responseSent,
-  });
   const [accessToken, setAccessToken] = useState<string | null>(
     localStorageAccesstoken
   );
@@ -323,10 +312,7 @@ export default function Task() {
         });
         const decodedToken = decodeToken(accessToken);
         const externalTaskId = `POI_${task.pointOfInterest.id}_Task_${id}`;
-        console.log({
-          externalTaskId,
-          decodedToken,
-        });
+
         await axios
           .post(
             `${getApiGameBaseUrl()}/games/${task.pointOfInterest.area.campaign.gameId}/tasks/${externalTaskId}/points`,
@@ -468,7 +454,7 @@ export default function Task() {
       </DashboardLayout>
     );
   }
-  console.log("RENDERIT");
+
   return (
     <DashboardLayout>
       <div className="pt-4">
