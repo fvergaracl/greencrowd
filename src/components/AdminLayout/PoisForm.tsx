@@ -170,6 +170,7 @@ const POIForm: React.FC<POIFormProps> = ({ poiId, onSuccess }) => {
       if (poiId) {
         response = await axios.put(`${getApiBaseUrl()}/admin/pois/${poiId}`, {
           ...formValues,
+          // radius should be number type (formValues.radius)
           radius: parseInt(formValues.radius),
         });
       } else {
