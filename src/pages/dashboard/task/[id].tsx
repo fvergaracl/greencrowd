@@ -19,6 +19,7 @@ import loading_3 from "@/lotties/loading_3.json";
 import loading_4 from "@/lotties/loading_4.json";
 import loading_5 from "@/lotties/loading_5.json";
 import loading_6 from "@/lotties/loading_6.json";
+import sent_without_gamification from "@/lotties/sent_without_gamification.json";
 import downloading_task from "@/lotties/downloading_task.json";
 import points_reward from "@/lotties/points_reward.json";
 
@@ -312,57 +313,62 @@ export default function Task() {
         });
         const decodedToken = decodeToken(accessToken);
         const externalTaskId = `POI_${task.pointOfInterest.id}_Task_${id}`;
-
-        await axios
-          .post(
-            `${getApiGameBaseUrl()}/games/${task.pointOfInterest.area.campaign.gameId}/tasks/${externalTaskId}/points`,
-            {
-              externalUserId: decodedToken?.sub,
-              data: gamificationData,
-              isSimulated: true,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
+        if (task?.pointOfInterest?.area?.campaign?.gameId) {
+          await axios
+            .post(
+              `${getApiGameBaseUrl()}/games/${task.pointOfInterest.area.campaign.gameId}/tasks/${externalTaskId}/points`,
+              {
+                externalUserId: decodedToken?.sub,
+                data: gamificationData,
+                isSimulated: true,
               },
-            }
-          )
-          .then((res) => {
-            logEvent(
-              "TASK_COMPLETED_GAMIFICATION",
-              "Task completed with gamification",
               {
-                taskResponse: survey.data,
-                gamificationData,
-                taskId: id,
-                position,
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
               }
-            );
-            localStorage.removeItem("gamificationData");
-            localStorage.removeItem("lastFetchGamificationData");
+            )
+            .then((res) => {
+              logEvent(
+                "TASK_COMPLETED_GAMIFICATION",
+                "Task completed with gamification",
+                {
+                  taskResponse: survey.data,
+                  gamificationData,
+                  taskId: id,
+                  position,
+                }
+              );
+              localStorage.removeItem("gamificationData");
+              localStorage.removeItem("lastFetchGamificationData");
 
-            setPointsEarned(res?.data?.points);
-            setResponseSent(true);
-          })
-          .catch((error) => {
-            console.error("Error adding points:", error);
-            logEvent(
-              "TASK_COMPLETED_ERROR_GAMIFICATION",
-              "Task completed with error",
-              {
-                taskResponse: survey.data,
-                gamificationData,
-                taskId: id,
-                position,
-                error,
-              }
-            );
-            Swal.fire(
-              t("Error!"),
-              t(error?.response?.data?.error || t("An error occurred")),
-              "error"
-            );
-          });
+              setPointsEarned(res?.data?.points);
+              setResponseSent(true);
+            })
+            .catch((error) => {
+              console.error("Error adding points:", error);
+              logEvent(
+                "TASK_COMPLETED_ERROR_GAMIFICATION",
+                "Task completed with error",
+                {
+                  taskResponse: survey.data,
+                  gamificationData,
+                  taskId: id,
+                  position,
+                  error,
+                }
+              );
+              Swal.fire(
+                t("Error!"),
+                t(error?.response?.data?.error || t("An error occurred")),
+                "error"
+              );
+            });
+        } else {
+          setResponseSent(true);
+          setPointsEarned(-1);
+        }
+
         Swal.fire(t("Success!"), t("Task completed successfully!"), "success");
         setSendingResponse(false);
 
@@ -384,6 +390,34 @@ export default function Task() {
         );
       });
   };
+
+  if (pointsEarned === -1 && responseSent) {
+    return (
+      <DashboardLayout>
+        <div className="h-screen flex flex-col items-center justify-center p-4">
+          <div className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center justify-center text-center gap-4">
+            <Lottie
+              animationData={sent_without_gamification}
+              loop={false}
+              className="flex w-full justify-center min-w-[300px] max-w-[400px]"
+            />
+            <h1 className="text-gray-600 text-lg font-medium">
+              {t("Task completed successfully!")}
+              <span className="text-black-600 text-xl pt-2 ">
+                <br />
+                {t("You have already completed this task")}
+              </span>
+            </h1>
+            <GoBack
+              data-cy="go-back-task"
+              className="text-blue-600 cursor-pointer mt-8 mb-4 inline-block"
+            />
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   if (responseSent) {
     return (
       <DashboardLayout>
