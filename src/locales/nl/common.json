@@ -339,5 +339,15 @@
   "Task not found": "Taak niet gevonden",
   "Responses": "Reacties",
   "View Response": "Reactie bekijken",
-  "No responses yet": "Nog geen reacties"
+  "No responses yet": "Nog geen reacties",
+  "View Details": "Details bekijken",
+  "▲ Hide Tasks": "▲ Taken verbergen",
+  "▼ Show Tasks": "▼ Taken tonen",
+  "Hide Dates": "Datums verbergen",
+  "Show Dates": "Datums tonen",
+  "Task Response": "Taakreactie",
+  "▲ Hide Responses": "▲ Reacties verbergen",
+  "▼ Show Responses": "▼ Reacties tonen",
+  "Hierarchical View": "Hiërarchische weergave",
+  "Grouped by Campaign": "Gegroepeerd per campagne"
 }

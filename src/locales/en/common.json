@@ -343,5 +343,15 @@
   "Task not found": "Task not found",
   "Responses": "Responses",
   "View Response": "View Response",
-  "No responses yet": "No responses yet"
+  "No responses yet": "No responses yet",
+  "View Details": "View Details",
+  "▲ Hide Tasks": "▲ Hide Tasks",
+  "▼ Show Tasks": "▼ Show Tasks",
+  "Hide Dates": "Hide Dates",
+  "Show Dates": "Show Dates",
+  "Task Response": "Task Response",
+  "▲ Hide Responses": "▲ Hide Responses",
+  "▼ Show Responses": "▼ Show Responses",
+  "Hierarchical View": "Hierarchical View",
+  "Grouped by Campaign": "Grouped by Campaign"
 }

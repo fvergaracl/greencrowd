@@ -6,6 +6,7 @@ import { getApiBaseUrl } from "@/config/api";
 import { useTranslation } from "@/hooks/useTranslation";
 import { SurveyModel } from "survey-core";
 import { Survey } from "survey-react-ui";
+import { logEvent } from "@/utils/logger";
 import "survey-core/defaultV2.min.css";
 
 export default function TaskDetailsPage() {
@@ -100,9 +101,14 @@ export default function TaskDetailsPage() {
                     </div>
 
                     <button
-                      onClick={() =>
-                        router.push(`/dashboard/task/${id}/response/${res.id}`)
-                      }
+                      onClick={() => {
+                        logEvent(
+                          "CLICKED_VIEW_RESPONSE_IN_TASK_DETAILS",
+                          "User clicked on view response in task details",
+                          { taskId: id, responseId: res.id }
+                        );
+                        router.push(`/dashboard/task/${id}/response/${res.id}`);
+                      }}
                       className="text-xs font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
                     >
                       🔍 {t("View Response")}

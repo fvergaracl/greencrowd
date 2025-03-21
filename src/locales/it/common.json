@@ -336,5 +336,15 @@
   "Task not found": "Attività non trovata",
   "Responses": "Risposte",
   "View Response": "Visualizza risposta",
-  "No responses yet": "Ancora nessuna risposta"
+  "No responses yet": "Ancora nessuna risposta",
+  "View Details": "Visualizza dettagli",
+  "▲ Hide Tasks": "▲ Nascondi attività",
+  "▼ Show Tasks": "▼ Mostra attività",
+  "Hide Dates": "Nascondi date",
+  "Show Dates": "Mostra date",
+  "Task Response": "Risposta all'attività",
+  "▲ Hide Responses": "▲ Nascondi risposte",
+  "▼ Show Responses": "▼ Mostra risposte",
+  "Hierarchical View": "Vista gerarchica",
+  "Grouped by Campaign": "Raggruppato per campagna"
 }

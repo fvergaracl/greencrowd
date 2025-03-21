@@ -13,6 +13,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { useTranslation } from "@/hooks/useTranslation";
 import { getApiBaseUrl } from "@/config/api";
 import axios from "axios";
+import { logEvent } from "@/utils/logger";
 
 export default function MyTaskActivity() {
   const router = useRouter();
@@ -47,20 +48,34 @@ export default function MyTaskActivity() {
     description: any;
     createdAt: string | number | Date;
   }) => {
-    console.log({ task });
     return (
       <button
         onClick={() => {
+          logEvent(
+            "VIEW_TASK_DETAILS_FROM_MY_ACTIVITY",
+            "User clicked view task details",
+            {
+              taskId: task.id,
+            }
+          );
           router.push(`/dashboard/task/${task.id}/details`);
         }}
         className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 text-sm rounded"
       >
-        View Details
+        {t("View Details")}
       </button>
     );
   };
 
   const toggleExpand = (taskId: string | number) => {
+    logEvent(
+      "TOGGLE_RESPONSES_FROM_MY_ACTIVITY",
+      "User clicked toggle responses",
+      {
+        expandedTasks,
+        taskId,
+      }
+    );
     setExpandedTasks((prev) => ({ ...prev, [taskId]: !prev[taskId] }));
   };
 
@@ -78,22 +93,31 @@ export default function MyTaskActivity() {
         return (
           <div
             key={campaign.id}
-            className="bg-white rounded-2xl shadow-md p-4 mb-6 border border-gray-100"
+            className="bg-white rounded-2xl shadow-md p-4 mb-6 border border-gray-100  mx-4"
           >
             <div className="flex justify-between items-center mb-1">
               <h3 className="text-xl font-bold text-blue-700">
                 {campaign.name}
               </h3>
               <button
-                onClick={() =>
+                onClick={() => {
+                  logEvent(
+                    "TOGGLE_TASKS_FROM_MY_ACTIVITY",
+                    "User clicked toggle tasks",
+                    {
+                      expandedCampaigns,
+                      campaignId: campaign.id,
+                    }
+                  );
+
                   setExpandedCampaigns((prev) => ({
                     ...prev,
                     [campaign.id]: !isCampaignExpanded,
-                  }))
-                }
+                  }));
+                }}
                 className="text-xs px-3 py-1 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium transition"
               >
-                {isCampaignExpanded ? "▲ Ocultar tareas" : "▼ Ver tareas"}
+                {isCampaignExpanded ? t("▲ Hide Tasks") : t("▼ Show Tasks")}
               </button>
             </div>
 
@@ -161,7 +185,7 @@ export default function MyTaskActivity() {
                                       ...task,
                                       description:
                                         task.description ||
-                                        "No description available",
+                                        t("No description available"),
                                     })
                                   : null}
                                 {task.UserTaskResponses?.length > 0 && (
@@ -170,8 +194,8 @@ export default function MyTaskActivity() {
                                     className="text-xs px-2 py-1 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium transition"
                                   >
                                     {expandedTasks[task.id]
-                                      ? "Ocultar fechas"
-                                      : "Ver fechas"}
+                                      ? t("▲ Hide Responses")
+                                      : t("▼ Show Responses")}
                                   </button>
                                 )}
                               </div>
@@ -196,20 +220,18 @@ export default function MyTaskActivity() {
                                       </div>
                                       <button
                                         onClick={() => {
-                                          const win = window.open("", "_blank");
-                                          if (win) {
-                                            win.document.write(
-                                              `<h2>Task Response</h2>`
-                                            );
-                                            win.document.write(
-                                              `<p><strong>Created at:</strong> ${new Date(
-                                                res.createdAt
-                                              ).toLocaleString()}</p>`
-                                            );
-                                            win.document.write(
-                                              `<p><em>Here goes full response content...</em></p>`
-                                            );
-                                          }
+                                          logEvent(
+                                            "VIEW_RESPONSE_FROM_MY_ACTIVITY",
+                                            "User clicked view response",
+                                            {
+                                              taskId: task.id,
+                                              responseId: res.id,
+                                            }
+                                          );
+
+                                          router.push(
+                                            `/dashboard/task/${task.id}/response/${res.id}`
+                                          );
                                         }}
                                         className="text-xs px-2 py-1 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-medium transition"
                                       >
@@ -245,15 +267,23 @@ export default function MyTaskActivity() {
           <div className="flex justify-between items-center mb-1">
             <h3 className="text-xl font-bold text-blue-700">{campaign.name}</h3>
             <button
-              onClick={() =>
+              onClick={() => {
+                logEvent(
+                  "TOGGLE_TASKS_FROM_MY_ACTIVITY",
+                  "User clicked toggle tasks",
+                  {
+                    expandedCampaigns,
+                    campaignId: campaign.id,
+                  }
+                );
                 setExpandedCampaigns((prev) => ({
                   ...prev,
                   [campaign.id]: !isCampaignExpanded,
-                }))
-              }
+                }));
+              }}
               className="text-xs px-3 py-1 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium transition"
             >
-              {isCampaignExpanded ? "▲ Ocultar tareas" : "▼ Ver tareas"}
+              {isCampaignExpanded ? t("▲ Hide Tasks") : t("▼ Show Tasks")}
             </button>
           </div>
 
@@ -283,7 +313,8 @@ export default function MyTaskActivity() {
                             {renderTaskDetailsButton({
                               title: task.title,
                               description:
-                                task.description || "No description available",
+                                task.description ||
+                                t("No description available"),
                               createdAt: task.createdAt,
                             })}
                             {task.UserTaskResponses?.length > 0 && (
@@ -292,8 +323,8 @@ export default function MyTaskActivity() {
                                 className="text-xs px-2 py-1 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium transition"
                               >
                                 {expandedTasks[task.id]
-                                  ? "Ocultar fechas"
-                                  : "Ver fechas"}
+                                  ? t("▲ Hide Responses")
+                                  : t("▼ Show Responses")}
                               </button>
                             )}
                           </div>
@@ -316,20 +347,17 @@ export default function MyTaskActivity() {
                                   </div>
                                   <button
                                     onClick={() => {
-                                      const win = window.open("", "_blank");
-                                      if (win) {
-                                        win.document.write(
-                                          `<h2>Task Response</h2>`
-                                        );
-                                        win.document.write(
-                                          `<p><strong>Created at:</strong> ${new Date(
-                                            res.createdAt
-                                          ).toLocaleString()}</p>`
-                                        );
-                                        win.document.write(
-                                          `<p><em>Here goes full response content...</em></p>`
-                                        );
-                                      }
+                                      logEvent(
+                                        "VIEW_RESPONSE_FROM_MY_ACTIVITY",
+                                        "User clicked view response",
+                                        {
+                                          taskId: task.id,
+                                          responseId: res.id,
+                                        }
+                                      );
+                                      router.push(
+                                        `/dashboard/task/${task.id}/response/${res.id}`
+                                      );
                                     }}
                                     className="text-xs px-2 py-1 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-medium transition"
                                   >
@@ -361,13 +389,31 @@ export default function MyTaskActivity() {
       <div className="flex justify-center space-x-4 my-4">
         <button
           className={`px-4 py-2 rounded ${viewMode === "hierarchical" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-          onClick={() => setViewMode("hierarchical")}
+          onClick={() => {
+            logEvent(
+              "CHANGE_VIEW_MODE_FROM_MY_ACTIVITY",
+              "User clicked change view mode",
+              {
+                viewMode,
+              }
+            );
+            setViewMode("hierarchical");
+          }}
         >
           {t("Hierarchical View")}
         </button>
         <button
           className={`px-4 py-2 rounded ${viewMode === "grouped" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-          onClick={() => setViewMode("grouped")}
+          onClick={() => {
+            logEvent(
+              "CHANGE_VIEW_MODE_FROM_MY_ACTIVITY",
+              "User clicked change view mode",
+              {
+                viewMode,
+              }
+            );
+            setViewMode("grouped");
+          }}
         >
           {t("Grouped by Campaign")}
         </button>

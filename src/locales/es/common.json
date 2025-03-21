@@ -339,5 +339,15 @@
   "Task not found": "Tarea no encontrada",
   "Responses": "Respuestas",
   "View Response": "Ver respuesta",
-  "No responses yet": "Aún no hay respuestas"
+  "No responses yet": "Aún no hay respuestas",
+  "View Details": "Ver detalles",
+  "▲ Hide Tasks": "▲ Ocultar tareas",
+  "▼ Show Tasks": "▼ Mostrar tareas",
+  "Hide Dates": "Ocultar fechas",
+  "Show Dates": "Mostrar fechas",
+  "▲ Hide Responses": "▲ Ocultar respuestas",
+  "▼ Show Responses": "▼ Mostrar respuestas",
+  "Task Response": "Respuesta de la tarea",
+  "Hierarchical View": "Vista jerárquica",
+  "Grouped by Campaign": "Agrupado por campaña"
 }
