@@ -15,7 +15,7 @@ import { logEvent } from "@/utils/logger";
 import Lottie from "lottie-react";
 import onboarding_right_arrow_up from "@/lotties/onboarding_right_arrow_up.json";
 interface DashboardLayoutProps {
-  children: ReactNode;
+  children: ReactNode | ReactNode[];
 }
 
 interface NavItem {
