@@ -10,8 +10,6 @@ import "survey-core/defaultV2.min.css"; // Estilo por defecto SurveyJS
 import dynamic from "next/dynamic";
 import GoBack from "@/components/Admin/GoBack";
 
-import { logEvent } from "@/utils/logger";
-
 const ResponseLocationMap = dynamic(
   () => import("@/components/ResponseLocationMap"),
   { ssr: false }

@@ -327,5 +327,17 @@
   "Your Activity (Points Earned)": "Uw activiteit (verdiende punten)",
   "Average Points of Other Users": "Gemiddelde punten van andere gebruikers",
   "Time left to complete the challenge and earn points": "Tijd over om de uitdaging te voltooien en punten te verdienen",
-  "My Task Activity": "Mijn taakactiviteit"
+  "My Task Activity": "Mijn taakactiviteit",
+  "Response not found": "Reactie niet gevonden",
+  "Response Location": "Reactie locatie",
+  "Response": "Reactie",
+  "This task has no associated form": "Deze taak heeft geen bijbehorend formulier",
+  "Created at": "Gemaakt op",
+  "Task Title": "Taak titel",
+  "Task Description": "Taak beschrijving",
+  "id": "id",
+  "Task not found": "Taak niet gevonden",
+  "Responses": "Reacties",
+  "View Response": "Reactie bekijken",
+  "No responses yet": "Nog geen reacties"
 }

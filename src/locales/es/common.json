@@ -327,5 +327,17 @@
   "Your Activity (Points Earned)": "Tu actividad (Puntos ganados)",
   "Average Points of Other Users": "Puntos medios de otros usuarios",
   "Time left to complete the challenge and earn points": "Tiempo restante para completar el desafío y ganar puntos",
-  "My Task Activity": "Mi actividad de tareas"
+  "My Task Activity": "Mi actividad de tareas",
+  "Response not found": "Respuesta no encontrada",
+  "Response Location": "Ubicación de la respuesta",
+  "Response": "Respuesta",
+  "This task has no associated form": "Esta tarea no tiene un formulario asociado",
+  "Created at": "Creado en",
+  "Task Title": "Título de la tarea",
+  "Task Description": "Descripción de la tarea",
+  "id": "id",
+  "Task not found": "Tarea no encontrada",
+  "Responses": "Respuestas",
+  "View Response": "Ver respuesta",
+  "No responses yet": "Aún no hay respuestas"
 }

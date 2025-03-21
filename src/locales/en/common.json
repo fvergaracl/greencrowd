@@ -331,5 +331,17 @@
   "Your Activity (Points Earned)": "Your Activity (Points Earned)",
   "Average Points of Other Users": "Average Points of Other Users",
   "Time left to complete the challenge and earn points": "Time left to complete the challenge and earn points",
-  "My Task Activity": "My Task Activity"
+  "My Task Activity": "My Task Activity",
+  "Response not found": "Response not found",
+  "Response Location": "Response Location",
+  "Response": "Response",
+  "This task has no associated form": "This task has no associated form",
+  "Created at": "Created at",
+  "Task Title": "Task Title",
+  "Task Description": "Task Description",
+  "id": "id",
+  "Task not found": "Task not found",
+  "Responses": "Responses",
+  "View Response": "View Response",
+  "No responses yet": "No responses yet"
 }

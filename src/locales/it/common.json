@@ -324,5 +324,17 @@
   "User Activity Over Time": "Attività dell'utente nel tempo",
   "Zoom in/out or pan to explore the data": "Ingrandire/ridurre o spostare per esplorare i dati",
   "Time left to complete the challenge and earn points": "Tempo rimasto per completare la sfida e guadagnare punti",
-  "My Task Activity": "La mia attività di compiti"
+  "My Task Activity": "La mia attività di compiti",
+  "Response not found": "Risposta non trovata",
+  "Response Location:": "Posizione della risposta:",
+  "Response": "Risposta",
+  "This task has no associated form": "Questo compito non ha un modulo associato",
+  "Created at": "Creato a",
+  "Task Title": "Titolo dell'attività",
+  "Task Description": "Descrizione dell'attività",
+  "id": "id",
+  "Task not found": "Attività non trovata",
+  "Responses": "Risposte",
+  "View Response": "Visualizza risposta",
+  "No responses yet": "Ancora nessuna risposta"
 }

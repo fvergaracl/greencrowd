@@ -1,13 +1,11 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Key, useEffect, useState } from "react";
 import axios from "axios";
 import DashboardLayout from "@/components/DashboardLayout";
 import { getApiBaseUrl } from "@/config/api";
 import { useTranslation } from "@/hooks/useTranslation";
 import { SurveyModel } from "survey-core";
 import { Survey } from "survey-react-ui";
-
-// Importar estilos de SurveyJS si no lo has hecho aún:
 import "survey-core/defaultV2.min.css";
 
 export default function TaskDetailsPage() {
@@ -54,7 +52,7 @@ export default function TaskDetailsPage() {
       </DashboardLayout>
     );
   }
-  console.log(taskDetails);
+
   return (
     <DashboardLayout>
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6 mt-6 border border-gray-100">
@@ -87,30 +85,32 @@ export default function TaskDetailsPage() {
               {t("Responses")}
             </h3>
 
-            {taskDetails.UserTaskResponses.map((res) => (
-              <div
-                key={res.id}
-                className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm transition hover:shadow-md"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-600 flex items-center gap-2">
-                    <span className="text-gray-500">🕒</span>
-                    <span className="font-medium">
-                      {new Date(res.createdAt).toLocaleString()}
-                    </span>
-                  </div>
+            {taskDetails.UserTaskResponses.map(
+              (res: { id: Key; createdAt: string | number | Date }) => (
+                <div
+                  key={res.id}
+                  className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm transition hover:shadow-md"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-600 flex items-center gap-2">
+                      <span className="text-gray-500">🕒</span>
+                      <span className="font-medium">
+                        {new Date(res.createdAt).toLocaleString()}
+                      </span>
+                    </div>
 
-                  <button
-                    onClick={() =>
-                      router.push(`/dashboard/task/${id}/response/${res.id}`)
-                    }
-                    className="text-xs font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
-                  >
-                    🔍 {t("View Response")}
-                  </button>
+                    <button
+                      onClick={() =>
+                        router.push(`/dashboard/task/${id}/response/${res.id}`)
+                      }
+                      className="text-xs font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
+                    >
+                      🔍 {t("View Response")}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
           </div>
         ) : (
           <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6 mt-6 border border-gray-100">
