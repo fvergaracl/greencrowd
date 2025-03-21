@@ -7,6 +7,8 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { SurveyModel } from "survey-core";
 import { Survey } from "survey-react-ui";
 import { logEvent } from "@/utils/logger";
+import GoBack from "@/components/Admin/GoBack";
+
 import "survey-core/defaultV2.min.css";
 
 export default function TaskDetailsPage() {
@@ -57,7 +59,16 @@ export default function TaskDetailsPage() {
   return (
     <DashboardLayout>
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6 mt-6 border border-gray-100">
-        <h1 className="text-2xl font-bold text-blue-700 mb-2">
+        <GoBack
+          data-cy="go-back-link-from-task-detail"
+          className="text-blue-600 cursor-pointer mb-4 inline-block text-xl font-bold"
+          event={{
+            eventType: "GO_BACK_FROM_TASK_DETAIL",
+            description: "User clicked go back from task detail",
+            metadata: { taskId: id },
+          }}
+        />
+        <h1 className="text-2xl font-bold text-black-700 mb-4 text-center">
           {taskDetails.title}
         </h1>
         <p className="text-sm text-gray-500 mb-3">{taskDetails.description}</p>
