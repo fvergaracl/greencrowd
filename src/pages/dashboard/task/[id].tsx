@@ -62,10 +62,11 @@ const TaskWrapperComponent = ({
 
   const form = surveyRef.current;
 
+
   useEffect(() => {
     if (!form) return;
 
-    const handler = async (sender: any, options: any) => {
+    const handleCompleting = async (sender: any, options: any) => {
       if (!isInside && !forceCompleteRef.current) {
         options.allowComplete = false;
 
@@ -86,11 +87,46 @@ const TaskWrapperComponent = ({
       }
     };
 
-    form.onCompleting.add(handler);
-    return () => form.onCompleting.remove(handler);
-  }, [form, isInside]);
+    const compressImage = (file: File, quality = 0.7): Promise<string> => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target?.result as string;
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx?.drawImage(img, 0, 0);
+            const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+            resolve(compressedDataUrl);
+          };
+        };
+      });
+    };
 
-  if (!form) return <p>{t("Loading...")}</p>;
+    const handleValueChanging = async (sender: any, options: any) => {
+      const question = sender.getQuestionByName(options.name);
+      if (
+        (question?.getType() === "file" || question?.getType() === "image") &&
+        options.newValue?.[0] instanceof File
+      ) {
+        const file = options.newValue[0];
+        const compressed = await compressImage(file, 0.6);
+        options.newValue = [compressed];
+      }
+    };
+
+    form.onCompleting.add(handleCompleting);
+    form.onValueChanging.add(handleValueChanging);
+
+    return () => {
+      form.onCompleting.remove(handleCompleting);
+      form.onValueChanging.remove(handleValueChanging);
+    };
+  }, [form, isInside, t]);
 
   return (
     <div>
@@ -235,7 +271,7 @@ export default function Task() {
     if (
       (!lastFetchGamificationData ||
         new Date().getTime() - lastFetchGamificationData.getTime() >
-          fetchGamificationDataInterval) &&
+        fetchGamificationDataInterval) &&
       task
     ) {
       fetchGamificationData();

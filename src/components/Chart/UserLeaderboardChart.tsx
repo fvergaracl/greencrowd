@@ -51,7 +51,7 @@ const UserLeaderboardChart: React.FC<UserLeaderboardChartProps> = ({
     datasets: [
       {
         label: t("Your Activity (Points Earned)"),
-        data: userActivity,
+        data: userActivity.sort((a, b) => a.x.getTime() - b.x.getTime()),
         borderColor: "#1D4ED8",
         backgroundColor: "rgba(29, 78, 216, 0.3)",
         fill: true,
@@ -61,7 +61,9 @@ const UserLeaderboardChart: React.FC<UserLeaderboardChartProps> = ({
       },
       {
         label: t("Average Points of Other Users"),
-        data: averageOtherUsersActivity,
+        data: averageOtherUsersActivity.sort(
+          (a, b) => a.x.getTime() - b.x.getTime()
+        ),
         borderColor: "#6B7280",
         backgroundColor: "rgba(107, 114, 128, 0.3)",
         fill: true,
