@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import TasksController from "@/controllers/admin/TasksController"
 import { PrismaClient } from "@prisma/client"
-import { title } from "process"
 
 const prisma = new PrismaClient()
 

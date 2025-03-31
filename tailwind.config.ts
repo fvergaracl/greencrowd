@@ -166,6 +166,16 @@ const config: Config = {
         "spin-1.5": "spin 1.5s linear infinite",
         "spin-2": "spin 2s linear infinite",
         "spin-3": "spin 3s linear infinite"
+      },
+      height: {
+        "screen-dvh": "100dvh"
+      },
+      minHeight: {
+        "screen-dvh": "100dvh"
+      },
+      padding: {
+        "safe-top": "env(safe-area-inset-top)",
+        "safe-bottom": "env(safe-area-inset-bottom)"
       }
     }
   },

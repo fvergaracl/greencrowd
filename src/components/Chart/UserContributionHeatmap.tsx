@@ -25,7 +25,7 @@ const UserContributionHeatmap: React.FC<UserContributionHeatmapProps> = ({
           const dateObj = new Date(data.created_at)
           const day = dateObj.toISOString().slice(0, 10)
           if (dateObj >= last30Days && dateObj <= today) {
-            activityMap[day] = (activityMap[day] || 0) + 1 
+            activityMap[day] = (activityMap[day] || 0) + 1
           }
         })
       } else {

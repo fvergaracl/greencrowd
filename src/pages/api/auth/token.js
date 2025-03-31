@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken"
 import { getCookies } from "@/utils/cookies"
 import refreshAccessToken from "@/utils/refreshAccessToken"
 import setAuthCookies from "@/utils/setAuthCookies"
@@ -7,8 +8,23 @@ export default async function handler(req, res) {
   const access_token =
     req.headers.authorization?.split(" ")[1] || cookies.access_token
   const refreshToken = req.headers?.refresh_token || cookies?.refresh_token
+
+  if (access_token) {
+    try {
+      const decoded = jwt.decode(access_token)
+      const currentTime = Math.floor(Date.now() / 1000)
+
+      if (decoded?.exp && decoded.exp > currentTime + 60) {
+        return res.status(200).json({ access_token })
+      }
+    } catch (err) {
+      console.warn("Token inválido o no decodificable", err)
+    }
+  }
+
   try {
     const tokenData = await refreshAccessToken(refreshToken)
+
     if (!tokenData) {
       return res.status(401).json({ error: "Failed to refresh token" })
     }
@@ -27,14 +43,11 @@ export default async function handler(req, res) {
         maxAge: tokenData.expires_in
       }
     }
+
     setAuthCookies(req, res, newTokenData)
+    return res.status(200).json({ access_token: tokenData.access_token })
   } catch (error) {
     console.error("Error refreshing token:", error.message)
     return res.status(401).json({ error: "Failed to refresh token" })
   }
-
-  if (!access_token) {
-    return res.status(401).json({ error: "No autenticado" })
-  }
-  return res.status(200).json({ access_token })
 }

@@ -5,7 +5,8 @@ export default class TaskController {
   @withPrismaDisconnect
   static async getAllTasks() {
     try {
-      return await prisma.task.findMany({
+      
+      const response = await prisma.task.findMany({
         where: { isDisabled: false },
         include: {
           pointOfInterest: {

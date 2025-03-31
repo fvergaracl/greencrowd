@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import axios from "axios";
-import Swal from "sweetalert2";
+import { useState, useEffect } from "react"
+import { useRouter } from "next/router"
+import axios from "axios"
+import Swal from "sweetalert2"
 import {
   MapContainer,
   TileLayer,
@@ -9,46 +9,46 @@ import {
   FeatureGroup,
   Marker,
   useMap,
-  Popup,
-} from "react-leaflet";
-import { EditControl } from "react-leaflet-draw";
-import GoBack from "@/components/Admin/GoBack";
-import { useTranslation } from "@/hooks/useTranslation";
-import { getApiBaseUrl } from "@/config/api";
-import "leaflet/dist/leaflet.css";
-import "leaflet-draw/dist/leaflet.draw.css";
-import L, { DivIcon } from "leaflet";
-import "./../styles.css";
+  Popup
+} from "react-leaflet"
+import { EditControl } from "react-leaflet-draw"
+import GoBack from "@/components/Admin/GoBack"
+import { useTranslation } from "@/hooks/useTranslation"
+import { getApiBaseUrl } from "@/config/api"
+import "leaflet/dist/leaflet.css"
+import "leaflet-draw/dist/leaflet.draw.css"
+import L, { DivIcon } from "leaflet"
+import "./../styles.css"
 
 interface AreaFormProps {
-  areaId?: string;
-  onSuccess?: () => void;
+  areaId?: string
+  onSuccess?: () => void
 }
 
 interface IFormValues {
-  name: string;
-  description: string;
-  polygon: number[][] | null;
-  campaignId: string;
+  name: string
+  description: string
+  polygon: number[][] | null
+  campaignId: string
 }
 
 const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
-  const { t } = useTranslation();
-  const router = useRouter();
+  const { t } = useTranslation()
+  const router = useRouter()
   const [formValues, setFormValues] = useState<IFormValues>({
     name: "",
     description: "",
     polygon: null as number[][] | null,
-    campaignId: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [allCampaigns, setAllCampaigns] = useState<any[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([51.505, -0.09]);
-  const [focusInPolygon, setFocusInPolygon] = useState<boolean>(true);
+    campaignId: ""
+  })
+  const [loading, setLoading] = useState(false)
+  const [allCampaigns, setAllCampaigns] = useState<any[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const [mapCenter, setMapCenter] = useState<[number, number]>([51.505, -0.09])
+  const [focusInPolygon, setFocusInPolygon] = useState<boolean>(true)
   const [userLocation, setUserLocation] = useState<[number, number] | null>(
     null
-  );
+  )
 
   const markerIcon = new DivIcon({
     className: "static-marker-icon",
@@ -58,88 +58,86 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
       </div>
     `,
     iconSize: [20, 20],
-    iconAnchor: [10, 10],
-  });
+    iconAnchor: [10, 10]
+  })
 
   useEffect(() => {
     if (areaId) {
       const fetchArea = async () => {
         try {
-          setLoading(true);
+          setLoading(true)
           const response = await axios.get(
             `${getApiBaseUrl()}/admin/areas/${areaId}`
-          );
+          )
           setFormValues({
             name: response.data.name,
             description: response.data.description || "",
             polygon: response.data.polygon || null,
-            campaignId: response.data.campaignId || "",
-          });
-          setLoading(false);
+            campaignId: response.data.campaignId || ""
+          })
+          setLoading(false)
         } catch (err) {
-          console.error(err);
-          setError(t("Failed to fetch area details"));
-          setLoading(false);
+          console.error(err)
+          setError(t("Failed to fetch area details"))
+          setLoading(false)
         }
-      };
-      fetchArea();
+      }
+      fetchArea()
     }
-  }, [areaId]);
+  }, [areaId])
 
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
         const response = await axios.get(
           `${getApiBaseUrl()}/admin/campaigns/areas`
-        );
-        setAllCampaigns(response.data);
+        )
+        setAllCampaigns(response.data)
       } catch (err) {
-        console.error("Failed to fetch campaigns:", err);
+        console.error("Failed to fetch campaigns:", err)
       }
-    };
+    }
 
-    fetchCampaigns();
-  }, []);
+    fetchCampaigns()
+  }, [])
 
   const RecenterMap = ({ center }: { center: [number, number] }) => {
-    const map = useMap();
+    const map = useMap()
 
     useEffect(() => {
       if (center) {
-        map.setView(center, map.getZoom(), { animate: true });
+        map.setView(center, map.getZoom(), { animate: true })
       }
-    }, [center, map]);
+    }, [center, map])
 
-    return null;
-  };
+    return null
+  }
 
   const RecenterAndFitBounds = ({
-    polygon,
+    polygon
   }: {
-    polygon: number[][] | null;
+    polygon: number[][] | null
   }) => {
-    const map = useMap();
+    const map = useMap()
 
     useEffect(() => {
       if (polygon && polygon.length > 0 && map) {
         try {
-          const bounds = L.latLngBounds(
-            polygon.map(([lat, lng]) => [lat, lng])
-          );
-          map.fitBounds(bounds, { padding: [20, 20] });
+          const bounds = L.latLngBounds(polygon.map(([lat, lng]) => [lat, lng]))
+          map.fitBounds(bounds, { padding: [20, 20] })
         } catch (error) {
-          console.error("Error fitting bounds:", error);
+          console.error("Error fitting bounds:", error)
         }
       }
-    }, [polygon, map]);
+    }, [polygon, map])
 
-    return null;
-  };
+    return null
+  }
 
   const RenderPolygons = ({
-    polygons,
+    polygons
   }: {
-    polygons: { polygon: number[][]; name: string }[];
+    polygons: { polygon: number[][]; name: string }[]
   }) => {
     return (
       <>
@@ -153,46 +151,46 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
           </Polygon>
         ))}
       </>
-    );
-  };
+    )
+  }
 
   const handleGeolocation = () => {
-    setFocusInPolygon(false);
+    setFocusInPolygon(false)
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const newLocation: [number, number] = [latitude, longitude];
-          setUserLocation(newLocation);
-          setMapCenter(newLocation);
+        position => {
+          const { latitude, longitude } = position.coords
+          const newLocation: [number, number] = [latitude, longitude]
+          setUserLocation(newLocation)
+          setMapCenter(newLocation)
         },
-        (error) => {
-          console.warn("Geolocation not enabled or denied.", error);
+        error => {
+          console.warn("Geolocation not enabled or denied.", error)
           Swal.fire({
             title: t("Geolocation Error"),
             text: t(
               "Unable to access your location. Please enable geolocation in your browser/phone settings"
             ),
-            icon: "error",
-          });
+            icon: "error"
+          })
         }
-      );
+      )
     } else {
       Swal.fire({
         title: t("Geolocation Unsupported"),
         text: t("Your browser does not support geolocation"),
-        icon: "warning",
-      });
+        icon: "warning"
+      })
     }
-  };
+  }
 
   const validateForm = () => {
-    const missingFields: string[] = [];
+    const missingFields: string[] = []
 
-    if (!formValues.name.trim()) missingFields.push("Name");
-    if (!formValues.campaignId.trim()) missingFields.push(t("Parent Campaign"));
+    if (!formValues.name.trim()) missingFields.push("Name")
+    if (!formValues.campaignId.trim()) missingFields.push(t("Parent Campaign"))
     if (!formValues.polygon || formValues.polygon.length < 3)
-      missingFields.push(t("Polygon (at least 3 points)"));
+      missingFields.push(t("Polygon (at least 3 points)"))
 
     if (missingFields.length > 0) {
       Swal.fire({
@@ -200,140 +198,138 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
         title: t("Missing Fields"),
         html: `${t("Please fill the following fields")}:<br><b>${missingFields.join(
           ", "
-        )}</b>`,
-      });
-      return false;
+        )}</b>`
+      })
+      return false
     }
-    return true;
-  };
+    return true
+  }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
-    setFormValues((prev) => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    setFormValues(prev => ({ ...prev, [name]: value }))
+  }
 
   const handlePolygonChange = (polygonCoords: number[][]) => {
-    setFormValues((prev) => ({ ...prev, polygon: polygonCoords }));
-  };
+    setFormValues(prev => ({ ...prev, polygon: polygonCoords }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    if (!validateForm()) return;
+    if (!validateForm()) return
 
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
-      const swalMessage = areaId
-        ? t("Updating area...")
-        : t("Creating area...");
+      const swalMessage = areaId ? t("Updating area...") : t("Creating area...")
 
       Swal.fire({
         title: swalMessage,
         icon: "info",
         timer: 5000,
         timerProgressBar: true,
-        showConfirmButton: false,
-      });
-      let responseCreated = null;
+        showConfirmButton: false
+      })
+      let responseCreated = null
       if (areaId) {
-        await axios.put(`${getApiBaseUrl()}/admin/areas/${areaId}`, formValues);
+        await axios.put(`${getApiBaseUrl()}/admin/areas/${areaId}`, formValues)
       } else {
         responseCreated = await axios.post(
           `${getApiBaseUrl()}/admin/areas`,
           formValues
-        );
+        )
       }
 
-      setLoading(false);
+      setLoading(false)
       Swal.fire({
         title: t("Success!"),
         text: `${t("Area")} ${areaId ? t("updated") : t("created")} ${t("successfully")}!`,
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-      });
+        showConfirmButton: false
+      })
 
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess()
       if (!areaId) {
-        router.push(`/admin/areas/${responseCreated.data.id}/pointsofinterest`);
+        router.push(`/admin/areas/${responseCreated.data.id}/pointsofinterest`)
       } else {
-        router.back();
+        router.back()
       }
     } catch (err) {
-      console.error(err);
+      console.error(err)
       Swal.fire({
         title: t("Error"),
         text: t("Failed to save the area. Please try again."),
-        icon: "error",
-      });
-      setLoading(false);
+        icon: "error"
+      })
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <>
-      <div className="flex space-x-6">
+      <div className='flex space-x-6'>
         <form
           onSubmit={handleSubmit}
-          className="w-1/2 bg-white p-6 rounded-lg shadow-md dark:bg-gray-800"
+          className='w-1/2 bg-white p-6 rounded-lg shadow-md dark:bg-gray-800'
         >
-          <GoBack data-cy="go-back-area-details" />
+          <GoBack data-cy='go-back-area-details' />
 
-          {error && <p className="text-red-500 mb-4">{t(error)}</p>}
-          <div className="mb-4">
+          {error && <p className='text-red-500 mb-4'>{t(error)}</p>}
+          <div className='mb-4'>
             <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              htmlFor='name'
+              className='block text-sm font-medium text-gray-700 dark:text-gray-300'
             >
-              {t("Name")} <span className="text-red-500">*</span>
+              {t("Name")} <span className='text-red-500'>*</span>
             </label>
             <input
-              type="text"
-              id="name"
-              name="name"
+              type='text'
+              id='name'
+              name='name'
               value={formValues.name}
               onChange={handleChange}
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              className='mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white'
             />
           </div>
-          <div className="mb-4">
+          <div className='mb-4'>
             <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              htmlFor='description'
+              className='block text-sm font-medium text-gray-700 dark:text-gray-300'
             >
               {t("Description")}
             </label>
             <input
-              type="text"
-              id="description"
-              name="description"
+              type='text'
+              id='description'
+              name='description'
               value={formValues.description}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              className='mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white'
             />
           </div>
-          <div className="mb-4">
+          <div className='mb-4'>
             <label
-              htmlFor="campaignId"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              htmlFor='campaignId'
+              className='block text-sm font-medium text-gray-700 dark:text-gray-300'
             >
-              {t("Parent Campaign")} <span className="text-red-500">*</span>
+              {t("Parent Campaign")} <span className='text-red-500'>*</span>
             </label>
             <select
-              id="campaignId"
-              name="campaignId"
+              id='campaignId'
+              name='campaignId'
               value={formValues.campaignId}
               onChange={handleChange}
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-green-200 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              className='mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-green-200 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white'
             >
-              <option value="">{t("Select Campaign")}</option>
-              {allCampaigns?.map((campaign) => (
+              <option value=''>{t("Select Campaign")}</option>
+              {allCampaigns?.map(campaign => (
                 <option key={campaign.id} value={campaign.id}>
                   {campaign.name}
                 </option>
@@ -341,8 +337,8 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
             </select>
           </div>
           <button
-            type="submit"
-            className="mt-4 w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:ring focus:ring-green-200 dark:bg-green-700 dark:hover:bg-green-600"
+            type='submit'
+            className='mt-4 w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:ring focus:ring-green-200 dark:bg-green-700 dark:hover:bg-green-600'
             disabled={loading}
           >
             {loading
@@ -353,25 +349,25 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
           </button>
         </form>
 
-        <div className="w-1/2 h-96">
+        <div className='w-1/2 h-96'>
           <MapContainer
             center={mapCenter}
             zoom={13}
             scrollWheelZoom={false}
-            className="h-full rounded-lg shadow-md"
+            className='h-full rounded-lg shadow-md'
           >
             <RecenterMap center={mapCenter} />
             {formValues?.campaignId && allCampaigns.length > 0 && (
               <RenderPolygons
                 polygons={
                   allCampaigns
-                    .find((campaign) => campaign.id === formValues.campaignId)
+                    .find(campaign => campaign.id === formValues.campaignId)
                     ?.areas.map((area: any) => area) || []
                 }
               />
             )}
             <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
               attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
             />
             {focusInPolygon && formValues?.polygon?.length > 0 && (
@@ -389,9 +385,9 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
             )}
             <FeatureGroup>
               <EditControl
-                position="topright"
-                onEdited={(e) => {
-                  const layers = e.layers;
+                position='topright'
+                onEdited={e => {
+                  const layers = e.layers
                   layers.eachLayer(
                     (layer: { getLatLngs: () => L.LatLng[][] }) => {
                       if (layer instanceof L.Polygon) {
@@ -399,19 +395,19 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
                           layer
                             .getLatLngs()[0]
                             .map((latlng: L.LatLng) => [latlng.lat, latlng.lng])
-                        );
+                        )
                       }
                     }
-                  );
+                  )
                 }}
-                onCreated={(e) => {
-                  const layer = e.layer;
+                onCreated={e => {
+                  const layer = e.layer
                   if (layer instanceof L.Polygon) {
                     handlePolygonChange(
                       layer
                         .getLatLngs()[0]
                         .map((latlng: L.LatLng) => [latlng.lat, latlng.lng])
-                    );
+                    )
                   }
                 }}
                 onDeleted={() => handlePolygonChange([])}
@@ -421,30 +417,30 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
                   circle: false,
                   circlemarker: false,
                   marker: false,
-                  polyline: false,
+                  polyline: false
                 }}
               />
             </FeatureGroup>
           </MapContainer>
-          <div className="flex justify-around mt-2">
+          <div className='flex justify-around mt-2'>
             <button
               onClick={() => {
-                setFocusInPolygon(true);
+                setFocusInPolygon(true)
                 if (formValues.polygon && formValues.polygon.length > 0) {
                   const bounds = L.latLngBounds(
                     formValues.polygon.map(([lat, lng]) => [lat, lng])
-                  );
-                  setMapCenter(bounds.getCenter());
+                  )
+                  setMapCenter(bounds.getCenter())
                 } else {
                   Swal.fire({
                     title: t("Polygon Not Found"),
                     text: t("No polygon data available to center the map."),
-                    icon: "warning",
-                  });
+                    icon: "warning"
+                  })
                 }
               }}
-              className="py-2 px-4 bg-orange-600 text-white rounded-md hover:bg-orange-700 focus:ring focus:ring-orange-200 dark:bg-orange-700 dark:hover:bg-orange-600"
-              data-cy="polygon-center-button"
+              className='py-2 px-4 bg-orange-600 text-white rounded-md hover:bg-orange-700 focus:ring focus:ring-orange-200 dark:bg-orange-700 dark:hover:bg-orange-600'
+              data-cy='polygon-center-button'
               disabled={!formValues.polygon || formValues.polygon.length === 0}
             >
               {t("Go to Polygon Center")}
@@ -452,8 +448,8 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
 
             <button
               onClick={handleGeolocation}
-              className="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring focus:ring-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600"
-              data-cy="geolocation-button"
+              className='py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring focus:ring-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600'
+              data-cy='geolocation-button'
             >
               {t("Go to My Location")}
             </button>
@@ -461,7 +457,7 @@ const AreaForm: React.FC<AreaFormProps> = ({ areaId, onSuccess }) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default AreaForm;
+export default AreaForm

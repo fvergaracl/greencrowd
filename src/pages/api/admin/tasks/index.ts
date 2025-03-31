@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next"
 import TasksController from "@/controllers/admin/TasksController"
 import { PrismaClient } from "@prisma/client"
 
-const prisma = new PrismaClient()
 
 export default async function handler(
   req: NextApiRequest,
@@ -89,6 +88,5 @@ export default async function handler(
     console.error("API Error:", error)
     return res.status(500).json({ error: "Internal Server Error" })
   } finally {
-    await prisma.$disconnect()
   }
 }

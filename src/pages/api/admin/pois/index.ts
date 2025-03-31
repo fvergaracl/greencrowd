@@ -4,7 +4,6 @@ import AreaController from "@/controllers/admin/AreaController";
 import { PrismaClient } from "@prisma/client";
 // import point-in-polygon
 
-const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
@@ -75,6 +74,6 @@ export default async function handler(
     console.error("API Error:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   } finally {
-    await prisma.$disconnect();
+    
   }
 }

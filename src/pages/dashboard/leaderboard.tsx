@@ -4,6 +4,9 @@ import DashboardLayout from "@/components/DashboardLayout"
 import { useTranslation } from "@/hooks/useTranslation"
 import { useDashboard } from "@/context/DashboardContext"
 import { getApiGameBaseUrl } from "@/config/api"
+import Lottie from "lottie-react";
+import LoadingGraph from "@/lotties/loading_graph.json";
+
 
 const UserLeaderboardChart = dynamic(
   () => import("@/components/Chart/UserLeaderboardChart"),
@@ -137,9 +140,8 @@ export default function Leaderboard() {
               return (
                 <li
                   key={entry.externalUserId}
-                  className={`py-4 px-6 flex justify-between items-center text-lg rounded-md transition duration-200 ${
-                    isUser ? "bg-blue-100 font-bold" : "hover:bg-gray-100"
-                  }`}
+                  className={`py-4 px-6 flex justify-between items-center text-lg rounded-md transition duration-200 ${isUser ? "bg-blue-100 font-bold" : "hover:bg-gray-100"
+                    }`}
                 >
                   <span className='font-medium'>
                     {isUser ? (
@@ -160,6 +162,14 @@ export default function Leaderboard() {
             })}
           </ul>
         </div>
+        {
+          !leaderboardCompleteData && (
+            <div className='mt-6 bg-white shadow-lg rounded-lg p-2'>
+              <Lottie animationData={LoadingGraph} loop className='w-2/3' />
+            </div>
+          )
+        }
+
         {leaderboardCompleteData && MemoizedCharts}
       </div>
     </DashboardLayout>

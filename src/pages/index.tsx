@@ -5,6 +5,7 @@ import { logEvent } from "@/utils/logger"
 import decodeJwt from "@/utils/getDecodedToken"
 import Lottie from "lottie-react"
 import onboardingBearLoading from "@/lotties/onboarding_bear_loading.json"
+import { useTranslation } from "@/hooks/useTranslation"
 
 import {
   Step1,
@@ -15,6 +16,7 @@ import {
   Step6,
   Step7
 } from "@/components/Onboarding"
+import { a } from "framer-motion/dist/types.d-6pKw1mTI"
 
 type StepNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7
 
@@ -36,6 +38,7 @@ const stepsMap: Record<StepNumber, typeof Step1> = {
 }
 
 export default function Home() {
+  const { t } = useTranslation()
   const router = useRouter()
   const [stepNumber, setStepNumber] = useState<StepNumber>(1)
   const [loading, setLoading] = useState(true)
@@ -61,8 +64,11 @@ export default function Home() {
           method: "GET",
           credentials: "include"
         })
-        if (!response.ok) throw new Error("Failed to fetch token")
-
+        if (!response.ok) {
+          setLoading(false)
+          console.warn("User is not logged in")
+          return
+        }
         const { access_token } = await response.json()
         const decodedToken = decodeJwt(access_token)
 
@@ -82,7 +88,8 @@ export default function Home() {
   }, [router.isReady])
 
   const CurrentStep = stepsMap[stepNumber] ?? Step1
-
+  console.log(CurrentStep)
+  console.log(stepNumber)
   if (loading) {
     return (
       <div className='h-screen bg-gradient-to-r from-blue-400 to-green-400 flex items-center justify-center relative overflow-hidden'>
@@ -99,7 +106,7 @@ export default function Home() {
                 marginTop: "7rem"
               }}
             >
-              Loading
+              {t("Loading...")}
             </p>
           </motion.div>
         </div>
@@ -108,12 +115,12 @@ export default function Home() {
   }
 
   return (
-    <div className='h-screen bg-gradient-to-r from-blue-400 to-green-400 flex items-center justify-center relative overflow-hidden'>
+    <div className='min-h-screen-dvh flex items-center justify-center pt-safe-top pb-safe-bottom bg-gradient-to-r from-blue-400 to-green-400 relative overflow-hidden'>
       <AnimatePresence mode='wait'>
         <motion.div
           key={stepNumber}
           {...stepTransition}
-          className='absolute w-full flex items-center justify-center'
+          className='w-full flex items-center justify-center'
         >
           <CurrentStep setStepNumber={goToStep} />
         </motion.div>
