@@ -1,8 +1,9 @@
 // sentry.client.config.ts
 import * as Sentry from "@sentry/nextjs"
+import { browserTracingIntegration } from "@sentry/browser"
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN_FRONTEND || "",
-  tracesSampleRate: 1.0,
-  integrations: [new Sentry.BrowserTracing()]
+  integrations: [browserTracingIntegration()],
+  tracesSampleRate: 1.0
 })
