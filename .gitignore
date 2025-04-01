@@ -86,8 +86,11 @@ android/app/src/main/res/xml*
 # Binary files and compiled files
 *.apk
 *.aab
+*.idsig
 *.keystore
 
+!public/*.apk
+!public/*.aab
 
 # related with Next.js and React.js
 /.next/

@@ -1,3 +1,4 @@
+# bubblewrap update 
 # #!/bin/bash
 # in android/app/src/main/AndroidManifest.xml
 #     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
