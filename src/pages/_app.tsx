@@ -6,6 +6,7 @@ import { AppProps } from "next/app"
 import { useRouter } from "next/router"
 import { DashboardProvider } from "@/context/DashboardContext"
 import { AdminProvider } from "@/context/AdminContext"
+
 // import enhanceConsole from "@/utils/enhanceConsole"
 
 // if (typeof window !== "undefined") {

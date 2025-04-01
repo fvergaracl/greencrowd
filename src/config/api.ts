@@ -43,3 +43,14 @@ export const getSentryEnabled = (): boolean => {
 
   return process.env.NEXT_PUBLIC_SENTRY_ENABLED === "true"
 }
+
+export const getSentryDSN = (): string => {
+  if (
+    typeof window !== "undefined" &&
+    window.__ENV__?.NEXT_PUBLIC_SENTRY_DSN_FRONTEND
+  ) {
+    return window.__ENV__.NEXT_PUBLIC_SENTRY_DSN_FRONTEND
+  }
+
+  return process.env.NEXT_PUBLIC_SENTRY_DSN_FRONTEND || ""
+}
