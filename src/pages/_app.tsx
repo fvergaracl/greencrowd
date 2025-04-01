@@ -1,3 +1,4 @@
+import "@/sentry.client.config"
 import "leaflet/dist/leaflet.css"
 import "../styles/globals.css"
 import { StrictMode, ReactNode, useEffect, useState } from "react"
