@@ -3,9 +3,8 @@ import webpush from "web-push"
 import { validateKeycloakToken } from "@/utils/validateToken"
 import PushSubscriptionController from "@/controllers/PushSubscriptionController"
 
-// Configura las claves VAPID
 webpush.setVapidDetails(
-  process.env.VAPID_EMAIL!,
+  `mailto:${process.env.VAPID_EMAIL!}`,
   process.env.VAPID_PUBLIC_KEY!,
   process.env.VAPID_PRIVATE_KEY!
 )
@@ -23,7 +22,6 @@ export default async function handler(
         }
 
         const result = await PushSubscriptionController.save(userId, req.body)
-        webpush.sendNotification(req.body, "Notification from GreenCrowd")
         return res.status(201).json({
           message: "Notification subscription saved successfully",
           id: result.id
