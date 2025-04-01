@@ -306,13 +306,38 @@ export default function Map({
       fetchGamificationData();
     } else {
       const cachedData = localStorage.getItem("gamificationData");
+
       if (cachedData) {
-        setGamificationData(JSON.parse(cachedData));
+        const cachedDataJson = JSON.parse(cachedData);
+        setGamificationData(cachedDataJson);
         const storedTimestamp = new Date(
           localStorage.getItem("lastFetchGamificationData")!
         ).getTime();
 
         setLastFetchGamificationData(storedTimestamp);
+        const cachedTasks = cachedDataJson.tasks;
+        const expectedTaskIds = [];
+        for (const area of campaignData.areas) {
+          for (const poi of area.pointOfInterests) {
+            for (const task of poi.tasks) {
+              const id = `POI_${poi.id}_Task_${task.id}`;
+              expectedTaskIds.push(id);
+            }
+          }
+        }
+
+        const existingTaskIds = cachedTasks.map((task) => task.externalTaskId);
+
+        const missing = expectedTaskIds.filter(
+          (id) => !existingTaskIds.includes(id)
+        );
+
+        if (missing.length > 0) {
+          localStorage.removeItem("gamificationData");
+          localStorage.removeItem("lastFetchGamificationData");
+          setLastFetchGamificationData(null);
+          setGamificationData(null);
+        }
       }
     }
 
@@ -591,7 +616,6 @@ export default function Map({
           </React.Fragment>
         ));
     }
-    console.log({ isTracking, campaignData, gamificationDataNormalized });
     if (isTracking && campaignData?.areas) {
       return campaignData?.areas
         ?.flatMap(
@@ -602,13 +626,11 @@ export default function Map({
           const poiId = poi.id;
 
           if (!poiId) return null;
-          console.log(">>>>>>>>>>>>>> 0");
-          console.log({ poiId, gamificationDataNormalized });
+
           const normalizedData = gamificationDataNormalized.find(
             (item) => item.poiId === poiId
           );
-          console.log(">>>>>>>>>>>>>> 1");
-          console.log({ normalizedData });
+
           if (!normalizedData) return null;
           const { averagePoints, normalizedScore } = normalizedData;
 
@@ -618,7 +640,6 @@ export default function Map({
             return "red";
           };
           const iconSize = 8 + normalizedScore * 2;
-          console.log(">>>>>>>>>>>>>> 2");
           return (
             <>
               <Circle
