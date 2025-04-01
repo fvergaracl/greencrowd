@@ -1,39 +1,38 @@
-import { useEffect, useState } from "react"
-import DashboardLayout from "@/components/DashboardLayout"
-import dynamic from "next/dynamic"
-import { useDashboard } from "@/context/DashboardContext"
-import CampaignsScreen from "@/screens/CampaignsScreen"
-import { useRouter } from "next/router"
-import { useTranslation } from "@/hooks/useTranslation"
-
-const Map = dynamic(() => import("@/components/Common/Map"), {
-  ssr: false
-})
+import { useEffect, useState } from "react";
+import DashboardLayout from "@/components/DashboardLayout";
+import dynamic from "next/dynamic";
+import { useDashboard } from "@/context/DashboardContext";
+import CampaignsScreen from "@/screens/CampaignsScreen";
+import { useRouter } from "next/router";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function Dashboard() {
-  const { t } = useTranslation()
-  const { position, selectedCampaign } = useDashboard()
-  const [puntos, setPuntos] = useState([])
-  const [poligonos, setPoligonos] = useState([])
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const router = useRouter()
+  const { t } = useTranslation();
+  const { position, selectedCampaign } = useDashboard();
+  const [puntos, setPuntos] = useState([]);
+  const [poligonos, setPoligonos] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const router = useRouter();
 
-  const { invite: campaignId } = router.query
+  const { invite: campaignId } = router.query;
 
   useEffect(() => {
     if (campaignId) {
-      console.log("Invite campaign ID:", campaignId)
+      console.log("Invite campaign ID:", campaignId);
     }
-  }, [campaignId])
+  }, [campaignId]);
 
   if (!selectedCampaign) {
     return (
       <DashboardLayout>
         <CampaignsScreen />
       </DashboardLayout>
-    )
+    );
   }
 
+  const Map = dynamic(() => import("@/components/Common/Map"), {
+    ssr: false,
+  });
   return (
     <DashboardLayout>
       {!position ? (
@@ -59,21 +58,21 @@ export default function Dashboard() {
         />
       )}
     </DashboardLayout>
-  )
+  );
 }
 
 function Modal({
   isVisible,
-  children
+  children,
 }: {
-  isVisible: boolean
-  children: React.ReactNode
+  isVisible: boolean;
+  children: React.ReactNode;
 }) {
-  if (!isVisible) return null
+  if (!isVisible) return null;
 
   return (
-    <div className='fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center'>
-      <div className='bg-white p-4 rounded shadow'>{children}</div>
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white p-4 rounded shadow">{children}</div>
     </div>
-  )
+  );
 }
