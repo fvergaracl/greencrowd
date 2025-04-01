@@ -20,6 +20,7 @@ model User {
   isDisabled          Boolean?             @default(false)
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
+  PushSubscription    PushSubscription[]
 }
 
 model UserSetting {
@@ -147,4 +148,18 @@ model Log {
   metadata    Json
   user        User?    @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String
+  endpoint  String   @unique
+  keys      Json // contiene "auth" y "p256dh"
+  user      User     @relation(fields: [userId], references: [id])
+  isRead    Boolean  @default(false)
+  isSent    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
