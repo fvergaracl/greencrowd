@@ -324,4 +324,21 @@ export default class CampaignControllerCommon {
       }
     })
   }
+
+  @withPrismaDisconnect
+  static async getMyActivityInCampaign(userId: string, campaignId: string) {
+    // get all createdat of UserTaskResponse
+    const userTaskResponses = await prisma.userTaskResponse.findMany({
+      where: {
+        user: { sub: userId },
+        task: { pointOfInterest: { area: { campaignId } } }
+      },
+      select: {
+        createdAt: true,
+        task: { select: { id: true, pointOfInterestId: true } }
+      }
+    })
+
+    return userTaskResponses
+  }
 }

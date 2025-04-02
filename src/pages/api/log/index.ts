@@ -33,7 +33,6 @@ export default async function handler(
         let user = await prisma.user.findUnique({
           where: { sub: userId }
         })
-        console.log({ userId, userRoles })
         if (!userRoles || !userRoles.includes("admin")) {
           return res.status(403).json({ error: "User not allowed" })
         }

@@ -88,8 +88,7 @@ export default function Home() {
   }, [router.isReady])
 
   const CurrentStep = stepsMap[stepNumber] ?? Step1
-  console.log(CurrentStep)
-  console.log(stepNumber)
+
   if (loading) {
     return (
       <div className='h-screen bg-gradient-to-r from-blue-400 to-green-400 flex items-center justify-center relative overflow-hidden'>

@@ -4,9 +4,8 @@ import DashboardLayout from "@/components/DashboardLayout"
 import { useTranslation } from "@/hooks/useTranslation"
 import { useDashboard } from "@/context/DashboardContext"
 import { getApiGameBaseUrl } from "@/config/api"
-import Lottie from "lottie-react";
-import LoadingGraph from "@/lotties/loading_graph.json";
-
+import Lottie from "lottie-react"
+import LoadingGraph from "@/lotties/loading_graph.json"
 
 const UserLeaderboardChart = dynamic(
   () => import("@/components/Chart/UserLeaderboardChart"),
@@ -72,7 +71,21 @@ export default function Leaderboard() {
           setLeaderboardCompleteData(leaderboard)
 
           const allPoints = leaderboard.task.flatMap(task => task.points)
-          setLeaderboardData(allPoints)
+          const userPointsMap = {}
+
+          for (const entry of allPoints) {
+            if (!entry?.externalUserId) continue
+            if (!userPointsMap[entry.externalUserId]) {
+              userPointsMap[entry.externalUserId] = {
+                externalUserId: entry.externalUserId,
+                points: 0
+              }
+            }
+            userPointsMap[entry.externalUserId].points += entry.points || 0
+          }
+
+          const aggregatedPoints = Object.values(userPointsMap)
+          setLeaderboardData(aggregatedPoints)
         } catch (error) {
           console.error("Error fetching leaderboard:", error)
         }
@@ -119,7 +132,6 @@ export default function Leaderboard() {
     )
   }, [leaderboardCompleteData])
 
-
   return (
     <DashboardLayout>
       <div className='p-6'>
@@ -140,8 +152,9 @@ export default function Leaderboard() {
               return (
                 <li
                   key={entry.externalUserId}
-                  className={`py-4 px-6 flex justify-between items-center text-lg rounded-md transition duration-200 ${isUser ? "bg-blue-100 font-bold" : "hover:bg-gray-100"
-                    }`}
+                  className={`py-4 px-6 flex justify-between items-center text-lg rounded-md transition duration-200 ${
+                    isUser ? "bg-blue-100 font-bold" : "hover:bg-gray-100"
+                  }`}
                 >
                   <span className='font-medium'>
                     {isUser ? (
@@ -162,13 +175,11 @@ export default function Leaderboard() {
             })}
           </ul>
         </div>
-        {
-          !leaderboardCompleteData && (
-            <div className='mt-6 bg-white shadow-lg rounded-lg p-2'>
-              <Lottie animationData={LoadingGraph} loop className='w-2/3' />
-            </div>
-          )
-        }
+        {!leaderboardCompleteData && (
+          <div className='mt-6 bg-white shadow-lg rounded-lg p-2'>
+            <Lottie animationData={LoadingGraph} loop className='w-2/3' />
+          </div>
+        )}
 
         {leaderboardCompleteData && MemoizedCharts}
       </div>

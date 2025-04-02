@@ -10,8 +10,7 @@ export default async function handler(
     case "GET":
       try {
         const { userId } = await validateKeycloakToken(req);
-        console.log("--------------- userId");
-        console.log(userId);
+
         const data = await TaskController.getAllMyActivity(userId);
         return res.status(200).json(data);
       } catch (err: any) {

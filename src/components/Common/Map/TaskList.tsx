@@ -1,8 +1,19 @@
 import { motion } from "framer-motion"
 import { useState, useRef, useEffect } from "react"
+import { getApiBaseUrl } from "@/config/api"
+
 import { useDashboard } from "@/context/DashboardContext"
 
-const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
+const TaskList = ({
+  isTracking,
+  selectedPoi,
+  myActivityInCampaign,
+  errorPoi,
+  logEvent,
+  t
+}) => {
+
+
   const { distanceToPoi } = useDashboard()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [allowEntryPoi, setAllowEntryPoi] = useState(false)
@@ -36,6 +47,64 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
       setCurrentIndex(currentIndex + 1)
     }
   }
+
+  const timeAgo = timestamp => {
+    const diffMs = Date.now() - timestamp
+    const minutes = Math.floor(diffMs / 60000)
+    const hours = Math.floor(minutes / 60)
+    const days = Math.floor(hours / 24)
+
+    if (days > 0) return `${days} day${days > 1 ? "s" : ""} ago`
+    if (hours > 0) return `${hours} hour${hours > 1 ? "s" : ""} ago`
+    if (minutes > 0) return `${minutes} minute${minutes > 1 ? "s" : ""} ago`
+    return "a few seconds ago"
+  }
+
+  const getTaskActivitySummary = myActivityInCampaign => {
+    const summary = {}
+
+    myActivityInCampaign.forEach(({ createdAt, task }) => {
+      const key = `${task.id}|${task.pointOfInterestId}`
+      const timestamp = new Date(createdAt).getTime()
+
+      if (!summary[key]) {
+        summary[key] = {
+          count: 1,
+          lastResponse: timestamp
+        }
+      } else {
+        summary[key].count += 1
+        summary[key].lastResponse = Math.max(
+          summary[key].lastResponse,
+          timestamp
+        )
+      }
+    })
+
+    return summary
+  }
+
+  const TaskInfoRow = ({ icon, label, value }) => (
+    <div className='flex items-center justify-between gap-1'>
+      <span className='flex items-center gap-2 text-gray-600 dark:text-gray-300'>
+        <span className='text-lg'>{icon}</span>
+        <span className='font-medium text-sm'>{label}</span>
+      </span>
+      <span className='text-sm text-right'>{value}</span>
+    </div>
+  )
+
+  const formatDate = dateString =>
+    new Intl.DateTimeFormat("default", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(new Date(dateString))
+
+  const taskActivitySummary = getTaskActivitySummary(myActivityInCampaign)
+
   return (
     <div className='relative h-[40vh] bg-white dark:bg-gray-900 shadow-lg rounded-lg  overflow-hidden'>
       <h4 className='text-lg text-center font-bold text-gray-900 dark:text-slate-100 mb-2'>
@@ -60,64 +129,124 @@ const TaskList = ({ isTracking, selectedPoi, errorPoi, logEvent, t }) => {
           <div className='relative w-full flex flex-col items-center overflow-y-hidden px-1'>
             <motion.div
               ref={tasksRef}
-              className='w-full flex flex-col items-center transition-transform'
-              animate={{ translateY: -currentIndex * 120 }}
+              className='w-full flex flex-col items-center px-3 pb-4 transition-transform'
+              animate={{ translateY: -currentIndex * 140 }}
             >
               {!allowEntryPoi && errorPoi && (
-                <p className='text-red-500 dark:text-red-400 text-center p-4'>
+                <p className='text-red-500 dark:text-red-400 text-center p-4 text-sm font-medium'>
                   {errorPoi}
                 </p>
               )}
-              {tasks.map((task, index) => (
-                <motion.div
-                  key={task.id}
-                  className={`w-full flex items-center p-4 border rounded-lg shadow mb-2 transition ${
-                    !allowEntryPoi && errorPoi
-                      ? "bg-gray-200 dark:bg-gray-700 opacity-50 cursor-not-allowed"
-                      : "bg-white dark:bg-gray-800"
-                  }`}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {/* Lado Izquierdo: Descripción */}
 
-                  <div className='flex-1'>
-                    <h5 className='text-md font-semibold text-gray-900 dark:text-slate-100 truncate'>
-                      {task.title}
-                    </h5>
-                    <p className='text-sm text-gray-600 dark:text-gray-400 mt-1 truncate'>
-                      {task.description || t("No description available")}
-                    </p>
+              {tasks.map(task => {
+                const key = `${task.id}|${task.pointOfInterestId}`
+                const activity = taskActivitySummary[key]
 
-                    <button
-                      onClick={() => {
-                        if (!allowEntryPoi && errorPoi) {
-                          logEvent(
-                            "USER_CLICKED_ENTER_TASK_ERROR",
-                            "User clicked on the enter task button but there was an error",
-                            { poi: selectedPoi, task }
-                          )
-                        } else {
-                          logEvent(
-                            "USER_CLICKED_ENTER_TASK",
-                            "User clicked on the enter task button",
-                            { poi: selectedPoi, task }
-                          )
-                          window.location.href = `/dashboard/task/${task.id}`
-                        }
-                      }}
-                      className={`mt-2 px-4 py-2 text-sm font-medium text-white rounded-md transition ${
-                        !allowEntryPoi && errorPoi
-                          ? "bg-gray-500 cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-700 focus:ring focus:ring-blue-400"
-                      }`}
-                    >
-                      {t("Enter Task")}
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
+                return (
+                  <motion.div
+                    key={task.id}
+                    className={`w-full bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 mb-4 transition-all ${
+                      !allowEntryPoi && errorPoi
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:ring-1 hover:ring-blue-400"
+                    }`}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <div className='flex flex-col'>
+                      <h5 className='text-base font-semibold text-gray-900 dark:text-white leading-tight'>
+                        {task.title}
+                      </h5>
+                      <p className='text-sm text-gray-500 dark:text-gray-300 mt-1 overflow-hidden text-ellipsis whitespace-nowrap'>
+                        {task.description || t("No description available")}
+                      </p>
+
+                      <div className='text-sm text-gray-700 dark:text-gray-200 mt-4 space-y-3'>
+                        {task.availableFrom && (
+                          <TaskInfoRow
+                            icon='📅'
+                            label={t("Available from")}
+                            value={formatDate(task.availableFrom)}
+                          />
+                        )}
+
+                        {task.availableTo && (
+                          <TaskInfoRow
+                            icon='⏳'
+                            label={t("Available until")}
+                            value={formatDate(task.availableTo)}
+                          />
+                        )}
+
+                        <TaskInfoRow
+                          icon='📝'
+                          label={t("Response limit")}
+                          value={task?.responseLimit ?? t("No limit")}
+                        />
+
+                        <TaskInfoRow
+                          icon='⏱️'
+                          label={t("Response interval (min)")}
+                          value={
+                            task?.responseLimitInterval ?? t("Not defined")
+                          }
+                        />
+
+                        {activity && (
+                          <>
+                            <TaskInfoRow
+                              icon='✅'
+                              label={t("Responses")}
+                              value={
+                                <span className='bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 px-2 py-0.5 rounded-full text-xs font-semibold'>
+                                  {activity.count}
+                                </span>
+                              }
+                            />
+
+                            <TaskInfoRow
+                              icon='⏰'
+                              label={t("Last response")}
+                              value={
+                                <span className='italic text-xs text-gray-500 dark:text-gray-400'>
+                                  {timeAgo(activity.lastResponse)}
+                                </span>
+                              }
+                            />
+                          </>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          if (!allowEntryPoi && errorPoi) {
+                            logEvent(
+                              "USER_CLICKED_ENTER_TASK_ERROR",
+                              "User clicked on the enter task button but there was an error",
+                              { poi: selectedPoi, task }
+                            )
+                          } else {
+                            logEvent(
+                              "USER_CLICKED_ENTER_TASK",
+                              "User clicked on the enter task button",
+                              { poi: selectedPoi, task }
+                            )
+                            window.location.href = `/dashboard/task/${task.id}`
+                          }
+                        }}
+                        className={`w-full mt-4 px-4 py-2 text-center text-sm font-semibold rounded-lg transition ${
+                          !allowEntryPoi && errorPoi
+                            ? "bg-gray-500 text-white cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700 text-white focus:ring focus:ring-blue-300"
+                        }`}
+                      >
+                        {t("Enter Task")}
+                      </button>
+                    </div>
+                  </motion.div>
+                )
+              })}
             </motion.div>
           </div>
 

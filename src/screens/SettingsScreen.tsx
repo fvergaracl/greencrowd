@@ -1,34 +1,47 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import DashboardLayout from "@/components/DashboardLayout";
-import AdminLayout from "@/components/AdminLayout";
-import { useDashboard } from "@/context/DashboardContext";
-import { useAdmin } from "@/context/AdminContext";
-import { useTranslation } from "@/hooks/useTranslation";
-import LanguageDropdown from "@/components/Common/LanguageDropdown";
-import axios from "axios";
-import Swal from "sweetalert2";
-import { getApiBaseUrl } from "@/config/api";
-import { logEvent } from "@/utils/logger";
+import React, { useState, useEffect, useRef, useMemo } from "react"
+import DashboardLayout from "@/components/DashboardLayout"
+import AdminLayout from "@/components/AdminLayout"
+import { useDashboard } from "@/context/DashboardContext"
+import { useAdmin } from "@/context/AdminContext"
+import { useTranslation } from "@/hooks/useTranslation"
+import LanguageDropdown from "@/components/Common/LanguageDropdown"
+import axios from "axios"
+import Swal from "sweetalert2"
+import { getApiBaseUrl } from "@/config/api"
+import { logEvent } from "@/utils/logger"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCopy, faCheck } from "@fortawesome/free-solid-svg-icons"
 
 const SettingsScreen = ({ DashboardContext }) => {
-  const { t } = useTranslation();
-  const { setUser, logout, user } = DashboardContext();
-  const lastFetchTime = useRef<number | null>(null);
+  const { t } = useTranslation()
+  const { setUser, logout, user } = DashboardContext()
+  const lastFetchTime = useRef<number | null>(null)
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(userDataMemo.id)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error("Failed to copy!", err)
+    }
+  }
 
   useEffect(() => {
-    logEvent("RENDER_SETTINGS_SCREEN", "User viewed the settings screen");
-  }, []);
+    logEvent("RENDER_SETTINGS_SCREEN", "User viewed the settings screen")
+  }, [])
 
   useEffect(() => {
     const fetchUser = async () => {
-      const now = Date.now();
+      const now = Date.now()
       if (lastFetchTime.current && now - lastFetchTime.current < 60000) {
-        return;
+        return
       }
 
       try {
-        const response = await axios.get(`${getApiBaseUrl()}/auth/user`);
-        const userData = response.data;
+        const response = await axios.get(`${getApiBaseUrl()}/auth/user`)
+        const userData = response.data
 
         setUser({
           id: userData.sub,
@@ -37,12 +50,12 @@ const SettingsScreen = ({ DashboardContext }) => {
           picture: userData.picture,
           pictureKeycloak: userData.pictureKeycloak,
           roles: userData.roles,
-          locale: userData.locale,
-        });
+          locale: userData.locale
+        })
 
-        lastFetchTime.current = now;
+        lastFetchTime.current = now
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching user data:", error)
         Swal.fire({
           icon: "error",
           title: t("Error"),
@@ -51,42 +64,42 @@ const SettingsScreen = ({ DashboardContext }) => {
           ),
           timer: 10000,
           showConfirmButton: true,
-          confirmButtonText: t("Ok"),
+          confirmButtonText: t("Ok")
         }).then(() => {
-          logout();
-        });
+          logout()
+        })
       }
-    };
+    }
 
-    fetchUser();
-  }, [setUser, t, logout]);
+    fetchUser()
+  }, [setUser, t, logout])
 
   const photoUrl = useMemo(
     () => user?.pictureKeycloak || user?.picture || null,
     [user?.pictureKeycloak, user?.picture]
-  );
+  )
 
   const userDataMemo = useMemo(
     () => ({
       id: user?.id || t("No ID"),
       name: user?.name || t("No Name"),
       email: user?.email || t("No Email"),
-      roles: user?.roles || [],
+      roles: user?.roles || []
     }),
     [user, t]
-  );
+  )
 
   const initials = useMemo(() => {
-    if (!user?.name) return "NN";
+    if (!user?.name) return "NN"
     return user.name
       .split(" ")
-      .map((word) => word[0])
-      .join("");
-  }, [user?.name]);
+      .map(word => word[0])
+      .join("")
+  }, [user?.name])
 
   const handleUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
+    const formData = new FormData()
+    formData.append("file", file)
 
     try {
       const response = await axios.put(
@@ -94,39 +107,39 @@ const SettingsScreen = ({ DashboardContext }) => {
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
-          },
+            "Content-Type": "multipart/form-data"
+          }
         }
-      );
+      )
 
       if (response.status === 200) {
-        const newPhotoUrl = response.data.url;
+        const newPhotoUrl = response.data.url
 
-        setUser((prev) => ({
+        setUser(prev => ({
           ...prev,
           picture: newPhotoUrl,
-          pictureKeycloak: newPhotoUrl,
-        }));
+          pictureKeycloak: newPhotoUrl
+        }))
 
         Swal.fire({
           icon: "success",
           title: t("Success!"),
-          text: t("Photo updated successfully"),
-        });
+          text: t("Photo updated successfully")
+        })
       }
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: t("Oops..."),
-        text: t("Failed to upload the photo"),
-      });
+        text: t("Failed to upload the photo")
+      })
     }
-  };
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) handleUpload(file);
-  };
+    const file = e.target.files?.[0]
+    if (file) handleUpload(file)
+  }
 
   const handleLogout = () => {
     Swal.fire({
@@ -135,122 +148,127 @@ const SettingsScreen = ({ DashboardContext }) => {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: t("Yes"),
-      cancelButtonText: t("No"),
-    }).then((result) => {
-      if (result.isConfirmed) logout();
-    });
-  };
+      cancelButtonText: t("No")
+    }).then(result => {
+      if (result.isConfirmed) logout()
+    })
+  }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row items-center gap-6">
-        <div className="flex flex-col items-center pb-4 flex-[1]">
-          <div className="h-20 w-20 rounded-full bg-gray-200 overflow-hidden mb-4">
-            {photoUrl ? (
-              <img
-                src={photoUrl}
-                alt="Profile"
-                className="w-full h-full object-cover w-3xs"
-                data-cy="settings-profile-photo"
-                style={{ maxWidth: "15rem" }}
-              />
-            ) : (
-              <div
-                className="flex items-center justify-center w-full h-full bg-blue-500 text-white text-xl font-bold"
-                data-cy="settings-profile-initials"
-              >
-                {initials}
-              </div>
-            )}
-          </div>
-
-          <label
-            className="cursor-pointer bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 mt-3 w-full text-center"
-            data-cy="settings-upload-photo-button"
-          >
-            {t("Upload Photo")}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-              data-cy="settings-upload-photo-input"
+    <div className='max-w-md mx-auto px-4 pt-6 pb-10'>
+      <div className='bg-white  shadow-lg rounded-2xl p-6 flex flex-col items-center'>
+        {/* Foto */}
+        <div className='w-24 h-24 rounded-full overflow-hidden bg-gray-200 shadow mb-4'>
+          {photoUrl ? (
+            <img
+              src={photoUrl}
+              alt='Profile'
+              className='w-full h-full object-cover'
+              data-cy='settings-profile-photo'
             />
-          </label>
+          ) : (
+            <div
+              className='flex items-center justify-center w-full h-full bg-blue-600 text-white text-2xl font-semibold'
+              data-cy='settings-profile-initials'
+            >
+              {initials}
+            </div>
+          )}
         </div>
 
-        <div className="flex-[4]">
-          <p className="text-gray-600">{t("User ID")}:</p>
-          <p className="font-medium text-gray-800">{userDataMemo.id}</p>
-          <hr className="my-4" />
+        {/* Info */}
+        <div className='w-full space-y-4'>
+          {/* User ID con copiar */}
+          <div className='flex items-center justify-between'>
+            <div className='flex flex-col text-sm'>
+              <span className='text-gray-500'>{t("User ID")}:</span>
+              <span className='font-medium text-gray-800 truncate max-w-[180px]'>
+                {userDataMemo.id}
+              </span>
+            </div>
+            <button
+              onClick={handleCopy}
+              className='text-blue-600 hover:text-blue-800 transition'
+              title={copied ? t("Copied!") : t("Copy to clipboard")}
+            >
+              <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
+            </button>
+          </div>
 
-          <p className="text-gray-600">{t("Name")}:</p>
-          <p className="font-medium text-gray-800">{userDataMemo.name}</p>
+          <div className='text-sm'>
+            <p className='text-gray-500'>{t("Name")}:</p>
+            <p className='font-medium text-gray-800'>{userDataMemo.name}</p>
+          </div>
 
-          <p className="text-gray-600 mt-2">{t("Email")}:</p>
-          <p className="font-medium text-gray-800">{userDataMemo.email}</p>
+          <div className='text-sm'>
+            <p className='text-gray-500'>{t("Email")}:</p>
+            <p className='font-medium text-gray-800'>{userDataMemo.email}</p>
+          </div>
 
           {userDataMemo.roles.length > 0 ? (
-            <>
-              <p className="text-gray-600 mt-4 mb-2">{t("Roles")}:</p>
-              <div className="flex flex-wrap gap-2">
-                {userDataMemo.roles.map((role) => (
+            <div className='text-sm'>
+              <p className='text-gray-500 mb-1'>{t("Roles")}:</p>
+              <div className='flex flex-wrap gap-2'>
+                {userDataMemo.roles.map(role => (
                   <span
                     key={role}
-                    className="inline-block bg-blue-100 text-blue-800 text-sm font-medium py-1 px-3 rounded-lg shadow-sm"
-                    data-cy="settings-user-role"
+                    className='bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full shadow-sm'
+                    data-cy='settings-user-role'
                   >
                     {t(role)}
                   </span>
                 ))}
               </div>
-            </>
+            </div>
           ) : (
-            <p className="text-gray-500 mt-4">{t("No roles assigned")}.</p>
+            <p className='text-sm text-gray-400'>{t("No roles assigned")}.</p>
           )}
-          <div className="font-medium text-gray-800 flex items-center gap-2">
+
+          {/* Idioma */}
+          <div className='text-sm flex items-center gap-2 pt-1'>
             <LanguageDropdown />
           </div>
         </div>
       </div>
 
-      <div className="text-center mt-2">
+      {/* Logout */}
+      <div className='text-center mt-6'>
         <button
           onClick={handleLogout}
-          className="py-2 mt-2 px-4 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600"
-          data-cy="settings-logout-button"
+          className='w-full py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl shadow'
+          data-cy='settings-logout-button'
         >
           {t("Logout")}
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default function SettingsInApp() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <DashboardLayout>
-      <div className="pt-6 max-full mx-auto text-center">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+      <div className='pt-6 max-full mx-auto text-center'>
+        <h1 className='text-3xl font-bold text-gray-800 mb-6'>
           {t("Settings")}
         </h1>
       </div>
       <SettingsScreen DashboardContext={useDashboard} />
     </DashboardLayout>
-  );
+  )
 }
 
 const SettingsInAdmin = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <AdminLayout>
-      <div className="pt-6 max-full mx-auto text-center">
-        <h1 className="text-3xl font-bold text-white mb-6">{t("Settings")}</h1>
+      <div className='pt-6 max-full mx-auto text-center'>
+        <h1 className='text-3xl font-bold text-white mb-6'>{t("Settings")}</h1>
       </div>
       <SettingsScreen DashboardContext={useAdmin} />
     </AdminLayout>
-  );
-};
+  )
+}
 
-export { SettingsInAdmin };
+export { SettingsInAdmin }

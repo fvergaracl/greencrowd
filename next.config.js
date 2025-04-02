@@ -1,11 +1,11 @@
-const { withSentryConfig } = require("@sentry/nextjs");
-const { i18n } = require("./next-i18next.config");
+const { withSentryConfig } = require("@sentry/nextjs")
+const { i18n } = require("./next-i18next.config")
 const withPWA = require("next-pwa")({
   dest: "public",
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === "development",
-});
+  disable: process.env.NODE_ENV === "development"
+})
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withPWA({
@@ -17,25 +17,25 @@ const nextConfig = withPWA({
     NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
     NEXT_PUBLIC_SENTRY_ENVIRONMENT: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
-    NEXT_PUBLIC_SENTRY_ENABLED: process.env.NEXT_PUBLIC_SENTRY_ENABLED,
+    NEXT_PUBLIC_SENTRY_ENABLED: process.env.NEXT_PUBLIC_SENTRY_ENABLED
   },
   experimental: {
-    trustHostHeader: true,
+    trustHostHeader: true
   },
   async headers() {
     return [
       {
         source: "/(.*)",
-        headers: [{ key: "X-Forwarded-Proto", value: "https" }],
-      },
-    ];
+        headers: [{ key: "X-Forwarded-Proto", value: "https" }]
+      }
+    ]
   },
   i18n,
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true
   },
   images: {
     remotePatterns: [
@@ -43,53 +43,53 @@ const nextConfig = withPWA({
       {
         protocol: "https",
         hostname: "me.greengage-project.eu",
-        pathname: "/**",
+        pathname: "/**"
       },
       {
         protocol: "https",
         hostname: "me.13-50-150-58.nip.io",
-        pathname: "/**",
+        pathname: "/**"
       },
       {
         protocol: "https",
         hostname: "minioapi.13-50-150-58.nip.io",
-        pathname: "/**",
+        pathname: "/**"
       },
       { protocol: "https", hostname: "googleusercontent.com", pathname: "/**" },
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
-        pathname: "/**",
+        pathname: "/**"
       },
       {
         protocol: "https",
         hostname: ".*.googleusercontent.com",
-        pathname: "/**",
+        pathname: "/**"
       },
       {
         protocol: "https",
         hostname: "greencrowd.16.171.94.204.nip.io",
-        pathname: "/**",
-      },
-    ],
+        pathname: "/**"
+      }
+    ]
   },
   webpack: (config, { isServer }) => {
-    return config;
-  },
-});
+    return config
+  }
+})
 
 module.exports = withSentryConfig(
   nextConfig,
   {
     silent: true,
     org: "projectgreengage",
-    project: "javascript-nextjs",
+    project: "javascript-nextjs"
   },
   {
     widenClientFileUpload: true,
     transpileClientSDK: true,
     hideSourceMaps: true,
     disableLogger: true,
-    automaticVercelMonitors: true,
+    automaticVercelMonitors: true
   }
-);
+)

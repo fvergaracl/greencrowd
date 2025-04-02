@@ -18,7 +18,6 @@ const headers = {
   Accept: "application/json"
 }
 
-// Function to create a game
 async function createGame() {
   try {
     const response = await axios.post(
@@ -48,7 +47,6 @@ async function createGame() {
 async function createTasks(gameId) {
   for (const poi of POI_TASKS) {
     for (const taskId of poi.TASKS) {
-      console.log(poi)
       if (!poi.latitude || !poi.longitude) {
         console.error(`❌ Missing latitude/longitude for POI: ${poi.POI}`)
         continue // Skip this iteration
