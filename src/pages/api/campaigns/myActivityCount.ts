@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import CampaignController from "@/controllers/CampaignController"
 import { validateKeycloakToken } from "@/utils/validateToken" // Token validator
+import { prisma } from "@/utils/withPrismaDisconnect"
 
 export default async function handler(
   req: NextApiRequest,

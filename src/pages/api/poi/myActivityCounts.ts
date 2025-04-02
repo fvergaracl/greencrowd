@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import PointOfInterestController from "@/controllers/PointOfInterestController"
 import { validateKeycloakToken } from "@/utils/validateToken" // Token validator
+import { prisma } from "@/utils/withPrismaDisconnect"
 
 export default async function handler(
   req: NextApiRequest,
