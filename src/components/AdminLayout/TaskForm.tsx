@@ -78,9 +78,6 @@ export default function TaskForm({
 
   const [creator] = useState(() => {
     const newCreator = new SurveyCreator(creatorOptions);
-    newCreator.onModified.add(() => {
-      console.log("Autosaved Survey:", newCreator.JSON);
-    });
     return newCreator;
   });
 

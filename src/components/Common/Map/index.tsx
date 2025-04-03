@@ -543,10 +543,10 @@ export default function Map({
       if (poi.tasks.length > 0) {
         handleSelectPoi(poi)
       } else {
-        setErrorPoi("This point of interest has no tasks")
+        setErrorPoi(t("This point of interest has no tasks"))
       }
     } else {
-      setErrorPoi("You are not close enough to this point of interest")
+      setErrorPoi(t("You are not close enough to this point of interest"))
     }
   }
 

@@ -205,8 +205,6 @@ export default function Task() {
         const response = await axios.get(
           `${getApiBaseUrl()}/task/myActivityCounts?taskId=${id}`
         )
-        console.log("------------------ response.data")
-        console.log(response.data)
         setMyActivityInTask(response.data)
       } catch (error) {
         console.error("Error fetching my activity in task:", error)

@@ -354,5 +354,22 @@
   "▼ Show Responses": "▼ Show Responses",
   "Hierarchical View": "Hierarchical View",
   "Grouped by Campaign": "Grouped by Campaign",
-  "View My Activity": "View My Activity"
+  "View My Activity": "View My Activity",
+  "Admin Panel": "Admin Panel",
+  "Available from": "Available from",
+  "Available until": "Available until",
+  "Hide details": "Hide details",
+  "Last response": "Last response",
+  "My Activity": "My Activity",
+  "No activity recorded in the last 30 days.": "No activity recorded in the last 30 days.",
+  "No limit": "No limit",
+  "Response Location:": "Response Location:",
+  "Response interval (min)": "Response interval (min)",
+  "Response limit": "Response limit",
+  "Show details": "Show details",
+  "The darker the color, the more activity on that day.": "The darker the color, the more activity on that day.",
+  "Track your daily activity with this heatmap": "Track your daily activity with this heatmap",
+  "Vs others": "Vs others",
+  "You": "You",
+  "Your Contribution Heatmap (Last 30 Days)": "Your Contribution Heatmap (Last 30 Days)"
 }

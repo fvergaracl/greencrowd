@@ -1,3 +1,4 @@
+import { useRouter } from "next/router"
 import React, { useState, useEffect, useRef, useMemo } from "react"
 import DashboardLayout from "@/components/DashboardLayout"
 import AdminLayout from "@/components/AdminLayout"
@@ -17,6 +18,7 @@ const SettingsScreen = ({ DashboardContext }) => {
   const { setUser, logout, user } = DashboardContext()
   const lastFetchTime = useRef<number | null>(null)
   const [copied, setCopied] = useState(false)
+  const router = useRouter()
 
   const handleCopy = async () => {
     try {
@@ -136,10 +138,7 @@ const SettingsScreen = ({ DashboardContext }) => {
     }
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) handleUpload(file)
-  }
+  console.log({ user })
 
   const handleLogout = () => {
     Swal.fire({
@@ -176,9 +175,7 @@ const SettingsScreen = ({ DashboardContext }) => {
           )}
         </div>
 
-        {/* Info */}
         <div className='w-full space-y-4'>
-          {/* User ID con copiar */}
           <div className='flex items-center justify-between'>
             <div className='flex flex-col text-sm'>
               <span className='text-gray-500'>{t("User ID")}:</span>
@@ -224,14 +221,26 @@ const SettingsScreen = ({ DashboardContext }) => {
             <p className='text-sm text-gray-400'>{t("No roles assigned")}.</p>
           )}
 
-          {/* Idioma */}
           <div className='text-sm flex items-center gap-2 pt-1'>
             <LanguageDropdown />
           </div>
+          {user?.roles?.includes("admin") && (
+            <div className='text-sm flex items-center gap-2 pt-1'>
+              <button
+                className='w-full py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl shadow'
+                onClick={() => {
+                  router.push("/admin")
+                }}
+                data-cy='settings-admin-panel-button'
+                title={t("Open admin panel")}
+              >
+                {t("Admin Panel")}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Logout */}
       <div className='text-center mt-6'>
         <button
           onClick={handleLogout}

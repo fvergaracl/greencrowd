@@ -1,7 +1,6 @@
 import { motion } from "framer-motion"
 import { useState, useRef, useEffect } from "react"
-import { getApiBaseUrl } from "@/config/api"
-
+import { useTranslation } from "@/hooks/useTranslation"
 import { useDashboard } from "@/context/DashboardContext"
 
 const TaskList = ({
@@ -12,13 +11,11 @@ const TaskList = ({
   logEvent,
   t
 }) => {
-
-
   const { distanceToPoi } = useDashboard()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [allowEntryPoi, setAllowEntryPoi] = useState(false)
   const tasksRef = useRef(null)
-
+  
   const tasks = selectedPoi.tasks || []
   const totalTasks = tasks.length
 
@@ -46,18 +43,6 @@ const TaskList = ({
     } else if (direction === "down" && currentIndex < totalTasks - 1) {
       setCurrentIndex(currentIndex + 1)
     }
-  }
-
-  const timeAgo = timestamp => {
-    const diffMs = Date.now() - timestamp
-    const minutes = Math.floor(diffMs / 60000)
-    const hours = Math.floor(minutes / 60)
-    const days = Math.floor(hours / 24)
-
-    if (days > 0) return `${days} day${days > 1 ? "s" : ""} ago`
-    if (hours > 0) return `${hours} hour${hours > 1 ? "s" : ""} ago`
-    if (minutes > 0) return `${minutes} minute${minutes > 1 ? "s" : ""} ago`
-    return "a few seconds ago"
   }
 
   const getTaskActivitySummary = myActivityInCampaign => {
@@ -94,16 +79,114 @@ const TaskList = ({
     </div>
   )
 
-  const formatDate = dateString =>
-    new Intl.DateTimeFormat("default", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    }).format(new Date(dateString))
-
   const taskActivitySummary = getTaskActivitySummary(myActivityInCampaign)
+
+  const CollapseDetails = ({ task, activity, t, parentRef }) => {
+    const [showDetails, setShowDetails] = useState(false)
+    const detailsEndRef = useRef(null)
+
+    const formatDate = dateString =>
+      new Intl.DateTimeFormat("default", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(new Date(dateString))
+
+    const timeAgo = timestamp => {
+      const diffMs = Date.now() - timestamp
+      const minutes = Math.floor(diffMs / 60000)
+      const hours = Math.floor(minutes / 60)
+      const days = Math.floor(hours / 24)
+
+      if (days > 0) return `${days} day${days > 1 ? "s" : ""} ago`
+      if (hours > 0) return `${hours} hour${hours > 1 ? "s" : ""} ago`
+      if (minutes > 0) return `${minutes} minute${minutes > 1 ? "s" : ""} ago`
+      return "a few seconds ago"
+    }
+
+    const handleToggle = () => {
+      const willOpen = !showDetails
+      setShowDetails(willOpen)
+      setTimeout(() => {
+        if (willOpen && detailsEndRef.current) {
+          detailsEndRef.current.scrollIntoView({ behavior: "smooth" })
+        } else if (!willOpen && parentRef.current) {
+          parentRef.current.scrollIntoView({ behavior: "smooth" })
+        }
+      }, 100)
+    }
+
+    return (
+      <div className='mt-2'>
+        <button
+          onClick={handleToggle}
+          className='w-full text-xs text-blue-600 dark:text-blue-400 mt-2 underline focus:outline-none'
+        >
+          {showDetails ? t("Hide details") : t("Show details")}
+        </button>
+
+        {showDetails && (
+          <div className='text-sm text-gray-700 dark:text-gray-200 mt-3 space-y-2'>
+            {task.availableFrom && (
+              <TaskInfoRow
+                icon='📅'
+                label={t("Available from")}
+                value={formatDate(task.availableFrom)}
+              />
+            )}
+
+            {task.availableTo && (
+              <TaskInfoRow
+                icon='⏳'
+                label={t("Available until")}
+                value={formatDate(task.availableTo)}
+              />
+            )}
+
+            <TaskInfoRow
+              icon='📝'
+              label={t("Response limit")}
+              value={task?.responseLimit ?? t("No limit")}
+            />
+
+            <TaskInfoRow
+              icon='⏱️'
+              label={t("Response interval (min)")}
+              value={task?.responseLimitInterval ?? t("Not defined")}
+            />
+
+            {activity && (
+              <>
+                <TaskInfoRow
+                  icon='✅'
+                  label={t("Responses")}
+                  value={
+                    <span className='bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 px-2 py-0.5 rounded-full text-xs font-semibold'>
+                      {activity.count}
+                    </span>
+                  }
+                />
+
+                <TaskInfoRow
+                  icon='⏰'
+                  label={t("Last response")}
+                  value={
+                    <span className='italic text-xs text-gray-500 dark:text-gray-400'>
+                      {timeAgo(activity.lastResponse)}
+                    </span>
+                  }
+                />
+              </>
+            )}
+
+            <div ref={detailsEndRef} />
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className='relative h-[40vh] bg-white dark:bg-gray-900 shadow-lg rounded-lg  overflow-hidden'>
@@ -141,7 +224,7 @@ const TaskList = ({
               {tasks.map(task => {
                 const key = `${task.id}|${task.pointOfInterestId}`
                 const activity = taskActivitySummary[key]
-
+                const cardRef = useRef(null)
                 return (
                   <motion.div
                     key={task.id}
@@ -150,6 +233,7 @@ const TaskList = ({
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:ring-1 hover:ring-blue-400"
                     }`}
+                    ref={cardRef}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.25 }}
@@ -161,62 +245,6 @@ const TaskList = ({
                       <p className='text-sm text-gray-500 dark:text-gray-300 mt-1 overflow-hidden text-ellipsis whitespace-nowrap'>
                         {task.description || t("No description available")}
                       </p>
-
-                      <div className='text-sm text-gray-700 dark:text-gray-200 mt-4 space-y-3'>
-                        {task.availableFrom && (
-                          <TaskInfoRow
-                            icon='📅'
-                            label={t("Available from")}
-                            value={formatDate(task.availableFrom)}
-                          />
-                        )}
-
-                        {task.availableTo && (
-                          <TaskInfoRow
-                            icon='⏳'
-                            label={t("Available until")}
-                            value={formatDate(task.availableTo)}
-                          />
-                        )}
-
-                        <TaskInfoRow
-                          icon='📝'
-                          label={t("Response limit")}
-                          value={task?.responseLimit ?? t("No limit")}
-                        />
-
-                        <TaskInfoRow
-                          icon='⏱️'
-                          label={t("Response interval (min)")}
-                          value={
-                            task?.responseLimitInterval ?? t("Not defined")
-                          }
-                        />
-
-                        {activity && (
-                          <>
-                            <TaskInfoRow
-                              icon='✅'
-                              label={t("Responses")}
-                              value={
-                                <span className='bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 px-2 py-0.5 rounded-full text-xs font-semibold'>
-                                  {activity.count}
-                                </span>
-                              }
-                            />
-
-                            <TaskInfoRow
-                              icon='⏰'
-                              label={t("Last response")}
-                              value={
-                                <span className='italic text-xs text-gray-500 dark:text-gray-400'>
-                                  {timeAgo(activity.lastResponse)}
-                                </span>
-                              }
-                            />
-                          </>
-                        )}
-                      </div>
 
                       <button
                         onClick={() => {
@@ -243,6 +271,13 @@ const TaskList = ({
                       >
                         {t("Enter Task")}
                       </button>
+
+                      <CollapseDetails
+                        task={task}
+                        activity={activity}
+                        t={t}
+                        parentRef={cardRef}
+                      />
                     </div>
                   </motion.div>
                 )

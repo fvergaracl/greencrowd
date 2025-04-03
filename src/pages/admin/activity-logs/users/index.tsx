@@ -1,27 +1,26 @@
-import React, { useEffect } from "react";
-import axios from "axios";
-import { RiUserCommunityFill } from "react-icons/ri";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import DefaultLayout from "@/components/AdminLayout";
-import { getApiBaseUrl } from "@/config/api";
-import { useTranslation } from "@/hooks/useTranslation";
+import React, { useEffect } from "react"
+import axios from "axios"
+import { RiUserCommunityFill } from "react-icons/ri"
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
+import DefaultLayout from "@/components/AdminLayout"
+import { getApiBaseUrl } from "@/config/api"
+import { useTranslation } from "@/hooks/useTranslation"
 
 export default function AdminUsersActivityLogs() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   useEffect(() => {
     const fetchUsersLogs = async () => {
       try {
         const response = await axios.get(
           `${getApiBaseUrl()}/admin/activity-logs/users`
-        );
-        console.log("Users logs:", response.data);
+        )
       } catch (error) {
-        console.error("Error fetching users logs:", error);
+        console.error("Error fetching users logs:", error)
       }
-    };
-    fetchUsersLogs();
-  }, []);
+    }
+    fetchUsersLogs()
+  }, [])
 
   return (
     <DefaultLayout>
@@ -31,5 +30,5 @@ export default function AdminUsersActivityLogs() {
         breadcrumbPath={t("Users Activity Logs")}
       />
     </DefaultLayout>
-  );
+  )
 }

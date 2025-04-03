@@ -21,7 +21,6 @@ export default function Dashboard() {
       </DashboardLayout>
     )
   }
-  console.log({ isTracking })
   return (
     <DashboardLayout>
       {!isTracking ? (

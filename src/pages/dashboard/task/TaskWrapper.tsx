@@ -37,7 +37,6 @@ function TaskWrapper({ taskData, t, isInside, onComplete }: TaskWrapperProps) {
     <Survey
       model={surveyModel}
       onComplete={() => {
-        console.log("Survey completed");
         onComplete(surveyModel.data);
       }}
       renderCompleted={() => (
