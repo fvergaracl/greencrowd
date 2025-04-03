@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import React, { useEffect, useMemo, useState, useRef, use } from "react"
+import React, { useEffect, useMemo, useState, useRef } from "react"
 import ReactDOMServer from "react-dom/server"
 import {
   MapContainer as LeafletMapContainer,
@@ -32,7 +32,6 @@ import GamificationTimer from "./GamificationTimer"
 
 import {
   Point,
-  Task,
   PolygonData,
   CampaignData,
   PointOfInterest

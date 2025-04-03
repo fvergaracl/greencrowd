@@ -36,7 +36,6 @@ export default class TaskController {
         throw new Error("User sub is required")
       }
 
-      // Obtener ID del usuario desde sub
       const user = await prisma.user.findUnique({
         where: { sub: userSub },
         select: { id: true }
@@ -46,7 +45,6 @@ export default class TaskController {
         throw new Error("User not found")
       }
 
-      // Obtener campañas con estructura jerárquica y campos seleccionados
       const campaigns = await prisma.campaign.findMany({
         where: {
           areas: {

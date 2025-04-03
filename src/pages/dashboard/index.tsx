@@ -1,28 +1,18 @@
-import { useEffect, useState } from "react"
 import DashboardLayout from "@/components/DashboardLayout"
 import dynamic from "next/dynamic"
 import { useDashboard } from "@/context/DashboardContext"
 import CampaignsScreen from "@/screens/CampaignsScreen"
-import { useRouter } from "next/router"
 import { useTranslation } from "@/hooks/useTranslation"
+import Lottie from "lottie-react"
+import MapLocationNeeded from "@/lotties/map_location_needed.json"
+
 const Map = dynamic(() => import("@/components/Common/Map"), {
   ssr: false
 })
 export default function Dashboard() {
   const { t } = useTranslation()
-  const { position, selectedCampaign } = useDashboard()
-  const [puntos, setPuntos] = useState([])
-  const [poligonos, setPoligonos] = useState([])
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const router = useRouter()
-
-  const { invite: campaignId } = router.query
-
-  useEffect(() => {
-    if (campaignId) {
-      console.log("Invite campaign ID:", campaignId)
-    }
-  }, [campaignId])
+  const { selectedCampaign, isTracking } = useDashboard()
+ 
 
   if (!selectedCampaign) {
     return (
@@ -31,25 +21,30 @@ export default function Dashboard() {
       </DashboardLayout>
     )
   }
-
+  console.log({ isTracking })
   return (
     <DashboardLayout>
-      {!position ? (
-        <Modal isVisible={isModalVisible}>
-          <h2>
-            {t("We need your location to continue. Please enable location")}
+      {!isTracking ? (
+        <div
+          className='min-h-screen flex flex-col justify-center items-center'
+          data-cy='map-container-for-dashboard'
+        >
+          <div className='flex justify-center'>
+            <Lottie
+              animationData={MapLocationNeeded}
+              loop={true}
+              className='max-w-[300px] w-full'
+            />
+          </div>
+          <h2 className='text-center text-2xl'>
+            {t("Please enable location services to see the map")}
           </h2>
-          <p>
-            {t(
-              "If you are using a desktop computer, please use a mobile device"
-            )}
-          </p>
-        </Modal>
+        </div>
       ) : (
         <Map
           showMyLocation={true}
-          points={puntos}
-          polygons={poligonos}
+          points={[]}
+          polygons={[]}
           polygonsMultiColors={false}
           polygonsTitle={false}
           selectedCampaign={selectedCampaign}
@@ -60,18 +55,4 @@ export default function Dashboard() {
   )
 }
 
-function Modal({
-  isVisible,
-  children
-}: {
-  isVisible: boolean
-  children: React.ReactNode
-}) {
-  if (!isVisible) return null
 
-  return (
-    <div className='fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center'>
-      <div className='bg-white p-4 rounded shadow'>{children}</div>
-    </div>
-  )
-}
