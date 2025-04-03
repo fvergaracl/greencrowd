@@ -176,7 +176,8 @@ export default function Task() {
     localStorageAccesstoken
   )
   const [gamificationData, setGamificationData] = useState<any>(
-    localStorageGamificationData
+    localStorageGamificationData &&
+      !JSON.parse(localStorageGamificationData)?.details
       ? JSON.parse(localStorageGamificationData)
       : null
   )

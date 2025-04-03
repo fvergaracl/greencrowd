@@ -310,6 +310,14 @@ export default function Map({
       )
       if (cachedData) {
         const cachedDataJson = JSON.parse(cachedData)
+        if (cachedDataJson?.detail) {
+          localStorage.removeItem(`gamificationData_${selectedCampaign?.id}`)
+          localStorage.removeItem(
+            `lastFetchGamificationData_${selectedCampaign?.id}`
+          )
+          fetchGamificationData()
+          return
+        }
         setGamificationData(cachedDataJson)
         const storedTimestamp = new Date(
           localStorage.getItem(
