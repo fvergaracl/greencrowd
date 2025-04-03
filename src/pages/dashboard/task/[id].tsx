@@ -279,6 +279,12 @@ export default function Task() {
         `User fetched gamification data for campaign: ${id}`,
         { gamificationData: resJson }
       )
+      if (resJson?.detail) {
+        console.error("Error fetching gamification data", resJson.detail)
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        fetchGamificationData()
+        return
+      }
       localStorage.setItem(
         `gamificationData_${selectedCampaign?.id}`,
         JSON.stringify(resJson)
