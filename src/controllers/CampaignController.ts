@@ -134,7 +134,6 @@ export default class CampaignControllerCommon {
 
   @withPrismaDisconnect
   static async updateCampaign(id: string, data: Prisma.CampaignUpdateInput) {
-    // Filtrar valores undefined
     const filteredData: Prisma.CampaignUpdateInput = Object.fromEntries(
       Object.entries(data).map(([key, value]) => [
         key,
@@ -265,7 +264,6 @@ export default class CampaignControllerCommon {
         }
       })
 
-      // Agregar lógica para calcular si puede responder
       return campaigns.map(campaign => ({
         ...campaign,
         areas: campaign.areas.map(area => ({
@@ -296,7 +294,7 @@ export default class CampaignControllerCommon {
                 if (!canRespond) {
                   waitTime = Math.ceil(
                     (nextAllowedResponseTime.getTime() - now.getTime()) / 60000
-                  ) // Tiempo en minutos
+                  )
                 }
               }
 

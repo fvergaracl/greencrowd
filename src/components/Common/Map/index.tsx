@@ -30,12 +30,7 @@ import MapLocationNeeded from "@/lotties/map_location_needed.json"
 import TaskList from "./TaskList"
 import GamificationTimer from "./GamificationTimer"
 
-import {
-  Point,
-  PolygonData,
-  CampaignData,
-  PointOfInterest
-} from "./types"
+import { Point, PolygonData, CampaignData, PointOfInterest } from "./types"
 
 interface MapProps {
   showMyLocation?: boolean
@@ -257,7 +252,12 @@ export default function Map({
       )
 
       const now = new Date().getTime()
-
+      if (resJson?.detail) {
+        console.error("Error fetching gamification data", resJson.detail)
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        fetchGamificationData()
+        return
+      }
       localStorage.setItem(
         `gamificationData_${selectedCampaign?.id}`,
         JSON.stringify(resJson)
@@ -332,7 +332,7 @@ export default function Map({
         const existingTaskIds = cachedTasks?.map(task => task.externalTaskId)
 
         const missing = expectedTaskIds?.filter(
-          id => !existingTaskIds.includes(id)
+          id => !existingTaskIds?.includes(id)
         )
 
         if (missing.length > 0) {

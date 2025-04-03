@@ -112,7 +112,7 @@ export default async function handler(req, res) {
 
     const ext = photoName.split(".").pop()?.toLowerCase();
     const acceptedExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
-    if (!ext || !acceptedExtensions.includes(ext)) {
+    if (!ext || !acceptedExtensions?.includes(ext)) {
       return res.status(400).json({ error: "Invalid photo extension" });
     }
 

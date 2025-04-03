@@ -29,7 +29,7 @@ const LanguageDropdown: React.FC<LanguageDropdownProps> = ({
 
   useEffect(() => {
     const savedLocale = (localStorage.getItem("locale") as LocaleKey) || "en"
-    if (Object.keys(locales).includes(savedLocale)) {
+    if (Object.keys(locales)?.includes(savedLocale)) {
       setCurrentLocale(savedLocale)
       setLocale(savedLocale)
     }

@@ -21,7 +21,7 @@ export default async function handler(
   try {
     const { userId, userRoles } = await validateKeycloakToken(req, res)
 
-    if (!userRoles || !userRoles.includes("admin")) {
+    if (!userRoles || !userRoles?.includes("admin")) {
       return res.status(403).json({ error: "User not allowed" })
     }
 
