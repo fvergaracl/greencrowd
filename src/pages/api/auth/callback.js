@@ -18,15 +18,9 @@ export default async function handler(req, res) {
 
   const cookies = getCookies(req)
 
-  console.log("🟡🟡🟡🟡🟡🟡🟡🟡🟡 Cookies parseadas:", cookies)
+  console.log("🟡 Cookies parseadas:", cookies)
   const { code } = req.query
-  console.log("**************************** <<<<<<<<<<<<<<<<<")
-  console.log("**************************** <<<<<<<<<<<<<<<<<")
-  console.log("**************************** <<<<<<<<<<<<<<<<<")
-  console.log("**************************** <<<<<<<<<<<<<<<<<")
-  console.log(req)
-  const rawHeaders = req.rawHeaders
-  console.log(rawHeaders)
+
   if (!code) {
     return res.status(400).json({ error: "Authorization code missing" })
   }
@@ -41,7 +35,8 @@ export default async function handler(req, res) {
         client_secret: KEYCLOAK_CLIENT_SECRET,
         redirect_uri: `${NEXTAUTH_URL}/api/auth/callback`,
         grant_type: "authorization_code",
-        code
+        code,
+        code_verifier: codeVerifier
       }),
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     )
