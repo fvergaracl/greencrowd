@@ -105,7 +105,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           speed: location.coords.speed,
         };
 
-        if (location?.coords?.accuracy > 20) {
+        if (location?.coords?.accuracy <= 30) {
           setPositionFullDetails(newPosition);
           setPosition(newPosition);
 
