@@ -547,10 +547,10 @@ export default function Map({
       : "h-full";
 
   const checkTaskAndPoi = (poi: PointOfInterest) => {
-    const destination = L.latLng(poi.latitude, poi.longitude);
+    const destination = L.latLng(poi?.latitude, poi?.longitude);
 
     const distance = mapRef.current?.distance(
-      L.latLng(position.lat, position.lng),
+      L.latLng(position?.lat, position?.lng),
       destination
     );
 

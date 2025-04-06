@@ -4,6 +4,7 @@ import {
   useState,
   ReactNode,
   useEffect,
+  useRef,
 } from "react";
 import { getPersistedState, persistState } from "../utils/persistentState";
 import axios from "axios";
@@ -79,12 +80,13 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     kilometters: 0,
     metters: 0,
   });
+  const isUpdatingRef = useRef(false);
+
   const toggleTracking = () => setIsTracking((prev) => !prev);
 
-  const updatePosition = async (time = 1) => {
-    if (time >= 3) return;
-    if (!isTracking) return;
-
+  const updatePosition = async (time = 1, acceptableAccuracy = 30) => {
+    if (isUpdatingRef.current || time > 10 || !isTracking) return;
+    isUpdatingRef.current = true;
     const geoOptions = {
       enableHighAccuracy: true,
       maximumAge: 0,
@@ -98,14 +100,26 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         const newPosition = {
           lat: location.coords.latitude,
           lng: location.coords.longitude,
-          accuracy: location.coords.accuracy,
+          accuracy: location.coords.accuracy ?? 99,
           altitude: location.coords.altitude,
           altitudeAccuracy: location.coords.altitudeAccuracy,
           heading: finalHeading,
           speed: location.coords.speed,
         };
-
-        if (location?.coords?.accuracy <= 30) {
+        console.log("**************************");
+        console.log("**************************");
+        console.log(typeof accuracy === "number");
+        console.log(location?.coords?.accuracy);
+        console.log(acceptableAccuracy);
+        console.log(time);
+        console.log(" ");
+        console.log(" ");
+        console.log(" ");
+        if (
+          typeof location?.coords?.accuracy === "number" &&
+          (location?.coords?.accuracy <= acceptableAccuracy || time >= 10)
+        ) {
+          console.log("-----------------------");
           setPositionFullDetails(newPosition);
           setPosition(newPosition);
 
@@ -114,10 +128,20 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           } catch (error) {
             console.error("Error sending user trajectory:", error);
           }
-
+          isUpdatingRef.current = false;
           if (!mapCenter) setMapCenter(newPosition);
         } else {
-          updatePosition(time + 1);
+          if (time >= 9) {
+            logEvent(
+              "GEOLOCATION_ACCURACY_TOO_HIGH",
+              "Geolocation accuracy is too high, retrying...",
+              { accuracy: location.coords.accuracy, acceptableAccuracy, time }
+            );
+          }
+          isUpdatingRef.current = false;
+          updatePosition(time + 1, acceptableAccuracy + 10);
+
+          return;
         }
       },
       (error) => {
@@ -211,7 +235,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
 
     const interval = setInterval(() => {
       updatePosition();
-    }, 10000);
+    }, 5000);
 
     updatePosition();
 
