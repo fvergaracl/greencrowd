@@ -96,7 +96,7 @@ export default class CampaignControllerCommon {
 
   @withPrismaDisconnect
   static async getCampaignById(id: string) {
-    return await prisma.campaign.findUnique({
+    const campaign = await prisma.campaign.findUnique({
       where: { id },
       include: {
         areas: {
@@ -115,6 +115,22 @@ export default class CampaignControllerCommon {
         allowedUsers: true,
       },
     });
+
+    if (!campaign) return null;
+
+    const now = new Date();
+
+    const startsOk =
+      !campaign.startDatetime || now >= new Date(campaign.startDatetime);
+    const endsOk =
+      !campaign.endDatetime || now <= new Date(campaign.endDatetime);
+
+    const isOutsideDateRange = !startsOk || !endsOk;
+
+    return {
+      ...campaign,
+      isDisabled: isOutsideDateRange ? true : campaign.isDisabled,
+    };
   }
 
   @withPrismaDisconnect
@@ -231,6 +247,8 @@ export default class CampaignControllerCommon {
           id: true,
           name: true,
           gameId: true,
+          startDatetime: true,
+          endDatetime: true,
           areas: {
             where: { isDisabled: false },
             select: {
@@ -264,14 +282,24 @@ export default class CampaignControllerCommon {
         },
       });
 
-      return campaigns.map((campaign) => ({
+      const now = new Date();
+
+      const filteredCampaigns = campaigns.filter((campaign) => {
+        const { startDatetime, endDatetime } = campaign;
+
+        const startsOk = !startDatetime || now >= new Date(startDatetime);
+        const endsOk = !endDatetime || now <= new Date(endDatetime);
+
+        return startsOk && endsOk;
+      });
+
+      return filteredCampaigns.map((campaign) => ({
         ...campaign,
         areas: campaign.areas.map((area) => ({
           ...area,
           pointOfInterests: area.pointOfInterests.map((poi) => ({
             ...poi,
             tasks: poi.tasks.map((task) => {
-              const now = new Date();
               const lastResponse = task.UserTaskResponses.length
                 ? new Date(
                     Math.max(
@@ -283,25 +311,37 @@ export default class CampaignControllerCommon {
                 : null;
 
               let canRespond = true;
-              let waitTime = null;
+              let waitTime: string | null = null;
 
-              if (task.responseLimitInterval && lastResponse) {
+              // Ventana de disponibilidad de la tarea
+              if (task.availableFrom && now < new Date(task.availableFrom)) {
+                canRespond = false;
+                waitTime = "Not yet available";
+              }
+
+              if (task.availableTo && now > new Date(task.availableTo)) {
+                canRespond = false;
+                waitTime = "Expired";
+              }
+
+              // Intervalo entre respuestas
+              if (canRespond && task.responseLimitInterval && lastResponse) {
                 const nextAllowedResponseTime = new Date(
                   lastResponse.getTime() +
                     task.responseLimitInterval * 60 * 1000
                 );
-                canRespond = now >= nextAllowedResponseTime;
-                if (!canRespond) {
-                  waitTime = Math.ceil(
+                if (now < nextAllowedResponseTime) {
+                  canRespond = false;
+                  waitTime = `${Math.ceil(
                     (nextAllowedResponseTime.getTime() - now.getTime()) / 60000
-                  );
+                  )} minutes`;
                 }
               }
 
               return {
                 ...task,
                 canRespond,
-                waitTime: waitTime ? `${waitTime} minutes` : null,
+                waitTime,
               };
             }),
           })),
