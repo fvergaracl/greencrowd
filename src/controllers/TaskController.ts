@@ -1,5 +1,5 @@
-import { prisma, withPrismaDisconnect } from "@/utils/withPrismaDisconnect"
-import { Prisma } from "@prisma/client"
+import { prisma, withPrismaDisconnect } from "@/utils/withPrismaDisconnect";
+import { Prisma } from "@prisma/client";
 
 export default class TaskController {
   @withPrismaDisconnect
@@ -15,17 +15,17 @@ export default class TaskController {
                 where: { isDisabled: false },
                 include: {
                   campaign: {
-                    where: { isDisabled: false }
-                  }
-                }
-              }
-            }
-          }
-        }
-      })
+                    where: { isDisabled: false },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
     } catch (error) {
-      console.error("Error fetching tasks:", error)
-      throw new Error("Failed to fetch tasks")
+      console.error("Error fetching tasks:", error);
+      throw new Error("Failed to fetch tasks");
     }
   }
 
@@ -33,16 +33,16 @@ export default class TaskController {
   static async getAllMyActivity(userSub: string) {
     try {
       if (!userSub) {
-        throw new Error("User sub is required")
+        throw new Error("User sub is required");
       }
 
       const user = await prisma.user.findUnique({
         where: { sub: userSub },
-        select: { id: true }
-      })
+        select: { id: true },
+      });
 
       if (!user) {
-        throw new Error("User not found")
+        throw new Error("User not found");
       }
 
       const campaigns = await prisma.campaign.findMany({
@@ -53,13 +53,13 @@ export default class TaskController {
                 some: {
                   tasks: {
                     some: {
-                      UserTaskResponses: {}
-                    }
-                  }
-                }
-              }
-            }
-          }
+                      UserTaskResponses: {},
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         select: {
           id: true,
@@ -80,23 +80,23 @@ export default class TaskController {
                       description: true,
                       taskData: true,
                       UserTaskResponses: {
-                        where: { userId: user.id }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      })
+                        where: { userId: user.id },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
 
-      return campaigns
+      return campaigns;
     } catch (error) {
-      console.error("Error fetching activity by campaign:", error)
-      throw new Error("Failed to fetch tasks grouped by campaign")
+      console.error("Error fetching activity by campaign:", error);
+      throw new Error("Failed to fetch tasks grouped by campaign");
     } finally {
-      await prisma.$disconnect()
+      await prisma.$disconnect();
     }
   }
 
@@ -106,32 +106,37 @@ export default class TaskController {
       const task = await prisma.task.findUnique({
         where: { id },
         include: {
+          UserTaskResponses: true,
           pointOfInterest: {
+            where: { isDisabled: false },
             include: {
               area: {
+                where: { isDisabled: false },
                 include: {
-                  campaign: true
-                }
-              }
-            }
-          }
-        }
-      })
+                  campaign: {
+                    where: { isDisabled: false },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
 
       if (
         !task ||
-        task.isDisabled ||
-        task.pointOfInterest?.isDisabled ||
-        task.pointOfInterest?.area?.isDisabled ||
-        task.pointOfInterest?.area?.campaign?.isDisabled
+        task?.isDisabled ||
+        task?.pointOfInterest?.isDisabled ||
+        task?.pointOfInterest?.area?.isDisabled ||
+        task?.pointOfInterest?.area?.campaign?.isDisabled
       ) {
-        return null
+        return null;
       }
 
-      return task
+      return task;
     } catch (error) {
-      console.error("Error fetching task by ID:", error)
-      throw new Error("Failed to fetch task")
+      console.error("Error fetching task by ID:", error);
+      throw new Error("Failed to fetch task");
     }
   }
 
@@ -143,31 +148,35 @@ export default class TaskController {
         include: {
           UserTaskResponses: true,
           pointOfInterest: {
+            where: { isDisabled: false },
             include: {
               area: {
+                where: { isDisabled: false },
                 include: {
-                  campaign: true
-                }
-              }
-            }
-          }
-        }
-      })
+                  campaign: {
+                    where: { isDisabled: false },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
 
       if (
         !task ||
-        task.isDisabled ||
-        task.pointOfInterest?.isDisabled ||
-        task.pointOfInterest?.area?.isDisabled ||
-        task.pointOfInterest?.area?.campaign?.isDisabled
+        task?.isDisabled ||
+        task?.pointOfInterest?.isDisabled ||
+        task?.pointOfInterest?.area?.isDisabled ||
+        task?.pointOfInterest?.area?.campaign?.isDisabled
       ) {
-        return null
+        return null;
       }
 
-      return task
+      return task;
     } catch (error) {
-      console.error("Error fetching task by ID:", error)
-      throw new Error("Failed to fetch task")
+      console.error("Error fetching task by ID:", error);
+      throw new Error("Failed to fetch task");
     }
   }
 
@@ -175,7 +184,7 @@ export default class TaskController {
   static async getTaskResponseById(taskId: string, responseId: string) {
     try {
       if (!taskId || !responseId) {
-        throw new Error("Both taskId and responseId are required")
+        throw new Error("Both taskId and responseId are required");
       }
 
       const task = await prisma.task.findUnique({
@@ -185,13 +194,13 @@ export default class TaskController {
             include: {
               area: {
                 include: {
-                  campaign: true
-                }
-              }
-            }
-          }
-        }
-      })
+                  campaign: true,
+                },
+              },
+            },
+          },
+        },
+      });
 
       if (
         !task ||
@@ -200,27 +209,27 @@ export default class TaskController {
         task.pointOfInterest?.area?.isDisabled ||
         task.pointOfInterest?.area?.campaign?.isDisabled
       ) {
-        return null
+        return null;
       }
 
       const response = await prisma.userTaskResponse.findFirst({
         where: {
           id: responseId,
-          taskId: taskId
-        }
-      })
+          taskId: taskId,
+        },
+      });
 
       if (!response) {
-        return null
+        return null;
       }
 
       return {
         task,
-        response
-      }
+        response,
+      };
     } catch (error) {
-      console.error("Error fetching response by ID:", error)
-      throw new Error("Failed to fetch response")
+      console.error("Error fetching response by ID:", error);
+      throw new Error("Failed to fetch response");
     }
   }
 
@@ -228,7 +237,7 @@ export default class TaskController {
   static async getTaskByIdEvenDisabled(id: string) {
     try {
       if (!id) {
-        throw new Error("ID is required to fetch a task.")
+        throw new Error("ID is required to fetch a task.");
       }
 
       const task = await prisma.task.findUnique({
@@ -238,18 +247,18 @@ export default class TaskController {
             include: {
               area: {
                 include: {
-                  campaign: true
-                }
-              }
-            }
-          }
-        }
-      })
+                  campaign: true,
+                },
+              },
+            },
+          },
+        },
+      });
 
-      return task
+      return task;
     } catch (error) {
-      console.error("Error fetching task by ID:", error)
-      throw new Error("Failed to fetch task")
+      console.error("Error fetching task by ID:", error);
+      throw new Error("Failed to fetch task");
     }
   }
 
@@ -258,11 +267,11 @@ export default class TaskController {
     try {
       return await prisma.task.update({
         where: { id: data.id },
-        data
-      })
+        data,
+      });
     } catch (error) {
-      console.error("Error updating task:", error)
-      throw new Error("Failed to update task")
+      console.error("Error updating task:", error);
+      throw new Error("Failed to update task");
     }
   }
 
@@ -271,31 +280,56 @@ export default class TaskController {
     try {
       return await prisma.task.update({
         where: { id },
-        data: { isDisabled: true }
-      })
+        data: { isDisabled: true },
+      });
     } catch (error) {
-      console.error("Error deleting task:", error)
-      throw new Error("Failed to delete task")
+      console.error("Error deleting task:", error);
+      throw new Error("Failed to delete task");
     }
   }
 
   @withPrismaDisconnect
   static async getMyActivityInTask(userId: string, taskId: string) {
     try {
+      const task = await prisma.task.findUnique({
+        where: { id: taskId },
+        include: {
+          pointOfInterest: {
+            include: {
+              area: {
+                include: {
+                  campaign: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (
+        !task ||
+        task.isDisabled ||
+        task.pointOfInterest?.isDisabled ||
+        task.pointOfInterest?.area?.isDisabled ||
+        task.pointOfInterest?.area?.campaign?.isDisabled
+      ) {
+        return [];
+      }
+
       const userTaskResponses = await prisma.userTaskResponse.findMany({
         where: {
           userId,
-          taskId
+          taskId,
         },
         select: {
-          createdAt: true
-        }
-      })
+          createdAt: true,
+        },
+      });
 
-      return userTaskResponses
+      return userTaskResponses;
     } catch (error) {
-      console.error("Error fetching user campaigns:", error)
-      throw new Error("Failed to fetch user campaigns")
+      console.error("Error fetching user activity in task:", error);
+      throw new Error("Failed to fetch user activity in task");
     }
   }
 }
