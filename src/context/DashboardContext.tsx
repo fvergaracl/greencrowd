@@ -106,20 +106,11 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           heading: finalHeading,
           speed: location.coords.speed,
         };
-        console.log("**************************");
-        console.log("**************************");
-        console.log(typeof accuracy === "number");
-        console.log(location?.coords?.accuracy);
-        console.log(acceptableAccuracy);
-        console.log(time);
-        console.log(" ");
-        console.log(" ");
-        console.log(" ");
+
         if (
           typeof location?.coords?.accuracy === "number" &&
           (location?.coords?.accuracy <= acceptableAccuracy || time >= 10)
         ) {
-          console.log("-----------------------");
           setPositionFullDetails(newPosition);
           setPosition(newPosition);
 
