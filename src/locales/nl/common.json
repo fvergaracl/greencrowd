@@ -371,5 +371,8 @@
   "Leave": "Verlaten",
   "Response Location:": "Reactielocatie:",
   "Stay": "Blijven",
-  "You have not completed the task yet.": "Je hebt de taak nog niet voltooid."
+  "You have not completed the task yet.": "Je hebt de taak nog niet voltooid.",
+  "Please enable location services or give permissions to the app to access": "Schakel locatieservices in of geef toestemming aan de app om toegang te krijgen",
+  "Help us improve by reporting an issue": "Help ons verbeteren door een probleem te melden",
+  "Report an issue": "Probleem melden"
 }

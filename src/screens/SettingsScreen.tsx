@@ -34,8 +34,6 @@ const SettingsScreen = ({ DashboardContext }) => {
     logEvent("RENDER_SETTINGS_SCREEN", "User viewed the settings screen");
   }, []);
 
-  // https://docs.google.com/forms/d/e/1FAIpQLSewsWIB4ffZpwiPT-xzOAkUxlPon2fwVmmT-uBoEAtV8M9FYQ/viewform?usp=pp_url&entry.2109072124=
-
   useEffect(() => {
     const fetchUser = async () => {
       const now = Date.now();

@@ -371,5 +371,8 @@
   "▲ Hide Responses": "▲ Skjul svar",
   "▲ Hide Tasks": "▲ Skjul opgaver",
   "▼ Show Responses": "▼ Vis svar",
-  "▼ Show Tasks": "▼ Vis opgaver"
+  "▼ Show Tasks": "▼ Vis opgaver",
+  "Please enable location services or give permissions to the app to access": "Aktivér venligst placeringstjenester eller giv tilladelser til appen for at få adgang",
+  "Help us improve by reporting an issue": "Hjælp os med at forbedre ved at rapportere et problem",
+  "Report an issue": "Rapporter et problem"
 }

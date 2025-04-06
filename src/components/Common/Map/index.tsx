@@ -29,7 +29,7 @@ import Lottie from "lottie-react";
 import MapLocationNeeded from "@/lotties/map_location_needed.json";
 import TaskList from "./TaskList";
 import GamificationTimer from "./GamificationTimer";
-
+import Swal from "sweetalert2";
 import { Point, PolygonData, CampaignData, PointOfInterest } from "./types";
 
 interface MapProps {
@@ -481,6 +481,16 @@ export default function Map({
   };
 
   const handleSelectPoi = (poi: PointOfInterest | null) => {
+    if (!position) {
+      Swal.fire({
+        icon: "error",
+        title: t("Error"),
+        text: t(
+          "Please enable location services or give permissions to the app to access"
+        ),
+      });
+      return;
+    }
     logEvent(
       poi ? "USER_SELECTED_POI_IN_MAP" : "USER_UNSELECTED_POI_IN_MAP",
       `User selected a point of interest in the map with id: ${poi?.id}`,
