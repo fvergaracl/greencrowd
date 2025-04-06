@@ -47,38 +47,99 @@ export default class TaskController {
 
       const campaigns = await prisma.campaign.findMany({
         where: {
-          areas: {
-            some: {
-              pointOfInterests: {
+          OR: [
+            { isDisabled: false },
+            {
+              areas: {
                 some: {
-                  tasks: {
+                  pointOfInterests: {
                     some: {
-                      UserTaskResponses: {},
+                      tasks: {
+                        some: {
+                          UserTaskResponses: {
+                            some: {
+                              userId: user.id,
+                            },
+                          },
+                        },
+                      },
                     },
                   },
                 },
               },
             },
-          },
+          ],
         },
         select: {
           id: true,
           name: true,
           description: true,
+          isDisabled: true,
           areas: {
+            where: {
+              OR: [
+                { isDisabled: false },
+                {
+                  pointOfInterests: {
+                    some: {
+                      tasks: {
+                        some: {
+                          UserTaskResponses: {
+                            some: {
+                              userId: user.id,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              ],
+            },
             select: {
               name: true,
               description: true,
+              isDisabled: true,
               pointOfInterests: {
+                where: {
+                  OR: [
+                    { isDisabled: false },
+                    {
+                      tasks: {
+                        some: {
+                          UserTaskResponses: {
+                            some: {
+                              userId: user.id,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
                 select: {
                   name: true,
                   description: true,
+                  isDisabled: true,
                   tasks: {
+                    where: {
+                      OR: [
+                        { isDisabled: false },
+                        {
+                          UserTaskResponses: {
+                            some: {
+                              userId: user.id,
+                            },
+                          },
+                        },
+                      ],
+                    },
                     select: {
                       id: true,
                       title: true,
                       description: true,
                       taskData: true,
+                      isDisabled: true,
                       UserTaskResponses: {
                         where: { userId: user.id },
                       },
@@ -148,14 +209,10 @@ export default class TaskController {
         include: {
           UserTaskResponses: true,
           pointOfInterest: {
-            where: { isDisabled: false },
             include: {
               area: {
-                where: { isDisabled: false },
                 include: {
-                  campaign: {
-                    where: { isDisabled: false },
-                  },
+                  campaign: true,
                 },
               },
             },
@@ -163,13 +220,17 @@ export default class TaskController {
         },
       });
 
-      if (
-        !task ||
-        task?.isDisabled ||
-        task?.pointOfInterest?.isDisabled ||
-        task?.pointOfInterest?.area?.isDisabled ||
-        task?.pointOfInterest?.area?.campaign?.isDisabled
-      ) {
+      if (!task) return null;
+
+      const isDisabled =
+        task.isDisabled ||
+        task.pointOfInterest?.isDisabled ||
+        task.pointOfInterest?.area?.isDisabled ||
+        task.pointOfInterest?.area?.campaign?.isDisabled;
+
+      const hasUserResponses = task.UserTaskResponses.length > 0;
+
+      if (isDisabled && !hasUserResponses) {
         return null;
       }
 
