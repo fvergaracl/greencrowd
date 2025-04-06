@@ -169,14 +169,10 @@ export default class TaskController {
         include: {
           UserTaskResponses: true,
           pointOfInterest: {
-            where: { isDisabled: false },
             include: {
               area: {
-                where: { isDisabled: false },
                 include: {
-                  campaign: {
-                    where: { isDisabled: false },
-                  },
+                  campaign: true,
                 },
               },
             },
