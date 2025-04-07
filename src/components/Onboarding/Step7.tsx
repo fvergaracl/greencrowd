@@ -63,14 +63,18 @@ export const Step7 = ({ setStepNumber }: Step7Props) => {
           >
             {t("Log In and Start Earning")}
           </button>
-          <a
-            href='/consent_form.pdf'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='text-blue-500 hover:underline mt-4 text-sm'
-          >
-            {t("Read the Consent Form")}
-          </a>
+          <p className='text-sm text-gray-700 mt-4 text-center'>
+            {t("By continuing, you agree to the contents of the") + " "}
+            <a
+              href='/consent_form.pdf'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='text-blue-500 hover:underline'
+            >
+              {t("Consent Form")}
+            </a>
+            .
+          </p>
         </motion.div>
       </div>
     </div>

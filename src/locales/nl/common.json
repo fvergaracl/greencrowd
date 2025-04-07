@@ -375,5 +375,7 @@
   "Please enable location services or give permissions to the app to access": "Schakel locatieservices in of geef toestemming aan de app om toegang te krijgen",
   "Help us improve by reporting an issue": "Help ons verbeteren door een probleem te melden",
   "Report an issue": "Probleem melden",
-  "Read the Consent Form": "Lees het toestemmingsformulier"
+  "Read the Consent Form": "Lees het toestemmingsformulier",
+  "By continuing, you agree to the contents of the": "Door door te gaan, ga je akkoord met de inhoud van het",
+  "Consent Form": "toestemmingsformulier"
 }
