@@ -277,10 +277,25 @@ export default function Task() {
       setGamificationData(resJson)
       logEvent(
         "USER_FETCHED_GAMIFICATION_DATA_FROM_TASK",
-        `User fetched gamification data for campaign: ${id}`,
-        { gamificationData: resJson }
+        `User fetched gamification data for campaign (Taskid): ${id}`,
+        {
+          gamificationData: resJson,
+          gameId,
+          userId: decodedToken?.sub,
+          accessToken
+        }
       )
       if (resJson?.detail) {
+        logEvent(
+          "USER_FETCHED_GAMIFICATION_DATA_FROM_TASK_ERROR",
+          `User fetched gamification data for task: ${id} with error`,
+          {
+            gamificationData: resJson,
+            gameId,
+            userId: decodedToken?.sub,
+            accessToken
+          }
+        )
         console.error("Error fetching gamification data", resJson.detail)
         await new Promise(resolve => setTimeout(resolve, 1000))
         fetchGamificationData()
