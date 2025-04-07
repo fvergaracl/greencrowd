@@ -57,13 +57,20 @@ export const Step7 = ({ setStepNumber }: Step7Props) => {
           transition={{ duration: 1.5, ease: "easeOut", delay: 1 }}
           className='mb-6 flex flex-col w-full'
         >
-          {/* Log in Button */}
           <button
             className='w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-md'
             onClick={() => handleLogin()}
           >
             {t("Log In and Start Earning")}
           </button>
+          <a
+            href='/consent_form.pdf'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='text-blue-500 hover:underline mt-4 text-sm'
+          >
+            {t("Read the Consent Form")}
+          </a>
         </motion.div>
       </div>
     </div>
