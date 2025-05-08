@@ -21,6 +21,7 @@ model User {
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   PushSubscription    PushSubscription[]
+  OpenTaskResponse    OpenTaskResponse[]
 }
 
 model UserSetting {
@@ -54,6 +55,40 @@ model Campaign {
   updatedAt     DateTime             @updatedAt
 }
 
+model OpenTask {
+  id            String             @id @default(uuid())
+  title         String
+  description   String?
+  type          String // e.g. "survey", "photo", etc.
+  taskData      Json // como en Task
+  areaId        String
+  area          Area               @relation(fields: [areaId], references: [id])
+  allowedRadius Float              @default(50) // radio de holgura en metros
+  availableFrom DateTime?
+  availableTo   DateTime?
+  isDisabled    Boolean            @default(false)
+  responses     OpenTaskResponse[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  @@index([areaId])
+}
+
+model OpenTaskResponse {
+  id         String   @id @default(uuid())
+  userId     String
+  openTaskId String
+  data       Json
+  latitude   Float
+  longitude  Float
+  user       User     @relation(fields: [userId], references: [id])
+  openTask   OpenTask @relation(fields: [openTaskId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+  @@index([openTaskId])
+}
+
 model Area {
   id               String            @id @default(uuid())
   name             String
@@ -61,6 +96,7 @@ model Area {
   campaignId       String
   campaign         Campaign          @relation(fields: [campaignId], references: [id])
   pointOfInterests PointOfInterest[] // Relation with PointOfInterests
+  openTasks        OpenTask[]
   polygon          Json
   isDisabled       Boolean?          @default(false)
   createdAt        DateTime          @default(now())

@@ -27,6 +27,7 @@ interface VisibleColumns {
   name: boolean;
   description: boolean;
   campaign: boolean;
+  openTasks: boolean;
   details: boolean;
   actions: boolean;
   createdAt: boolean;
@@ -53,6 +54,7 @@ export default function AdminAreas() {
     name: true,
     description: true,
     campaign: true,
+    openTasks: true,
     details: true,
     actions: true,
     createdAt: false,
@@ -244,6 +246,11 @@ export default function AdminAreas() {
               {visibleColumns.campaign && (
                 <th className="border px-2 py-2">{t("Parent Campaign")}</th>
               )}
+              {
+                visibleColumns.openTasks && (
+                  <th className="border px-2 py-2">{t("Open Tasks")}</th>
+                )
+              }
               {visibleColumns.details && (
                 <th className="border px-2 py-2">{t("Details")}</th>
               )}
@@ -296,6 +303,13 @@ export default function AdminAreas() {
                   {visibleColumns.campaign && (
                     <td className="border px-4 py-2">{area.campaign.name}</td>
                   )}
+                  {
+                    visibleColumns.openTasks && (
+                      <td className="border px-4 py-2 text-center">
+                        {area.tasks?.length || 0}
+                      </td>
+                    )
+                  }
                   {visibleColumns.details && (
                     <td className="border px-4 py-2 text-center">
                       <div className="flex items-center justify-center gap-2">

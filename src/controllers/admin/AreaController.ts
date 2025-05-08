@@ -13,7 +13,19 @@ export default class AreaController {
             }
           }
         },
-
+        openTasks: {
+          include: {
+            responses: {
+              select: {
+                id: true,
+                userId: true,
+                latitude: true,
+                longitude: true,
+                createdAt: true
+              }
+            }
+          }
+        },
         campaign: {
           select: {
             id: true,
@@ -31,7 +43,7 @@ export default class AreaController {
       orderBy: {
         createdAt: "desc"
       }
-    })
+    });
   }
   @withPrismaDisconnect
   static async getAreaNames() {
