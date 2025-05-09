@@ -39,6 +39,7 @@ interface InitialData {
 interface TaskFormProps {
   mode: "create" | "edit"
   poiId?: string
+  areaId?: string
   taskId?: string
   initialData?: InitialData
 }
@@ -312,7 +313,6 @@ export default function TaskForm({
           />
         </div>
 
-        {/* Available From */}
         <div className='mb-4'>
           <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>
             {t("Available From")}
@@ -325,7 +325,6 @@ export default function TaskForm({
           />
         </div>
 
-        {/* Available To */}
         <div className='mb-4'>
           <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>
             {t("Available To")}
@@ -346,10 +345,10 @@ export default function TaskForm({
             disabled={saving}
           >
             {saving
-              ? t("Saving...")
+              ? t("Saving Open task...")
               : mode === "create"
-                ? t("Create Task")
-                : t("Update Task")}
+                ? t("Create Open Task")
+                : t("Update Open Task")}
           </button>
         </div>
       </div>
