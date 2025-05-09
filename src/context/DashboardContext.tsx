@@ -10,6 +10,7 @@ import { getPersistedState, persistState } from "../utils/persistentState"
 import axios from "axios"
 import { getApiBaseUrl } from "@/config/api"
 import { logEvent } from "@/utils/logger"
+import { evaluatePositionInPolygons } from "@/utils/evaluatePositionInPolygons"
 import { getDeviceHeading } from "@/utils/getDeviceHeading"
 
 export interface IDistanceToPoi {
@@ -67,6 +68,26 @@ export const useDashboard = () => {
   return context
 }
 
+type InputData = {
+  newPosition: { lat: number; lng: number }
+  areas: {
+    polygon: [number, number][]
+  }[]
+}
+
+export function extractPositionAndPolygons(data: InputData) {
+  const { lat, lng } = data.newPosition
+
+  const polygons: [number, number][][] = data.areas.map(area => {
+    return area.polygon
+  })
+
+  return {
+    position: { lat, lng },
+    polygons
+  }
+}
+
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [position, setPosition] = useState<IPosition | null>(null)
@@ -112,14 +133,35 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         ) {
           setPositionFullDetails(newPosition)
           setPosition(newPosition)
+          if (newPosition) {
+            const cleanedData = extractPositionAndPolygons({
+              newPosition,
+              areas: selectedCampaign?.areas || []
+            })
 
-          try {
-            await axios.post(`${getApiBaseUrl()}/userTrajectory`, newPosition)
-          } catch (error) {
-            console.error("Error sending user trajectory:", error)
+            const farFromArea = evaluatePositionInPolygons(
+              cleanedData.position,
+              cleanedData.polygons
+            )
+            let conditionToSendPositon = farFromArea?.isInsideAnyPolygon
+            if (!conditionToSendPositon) {
+              conditionToSendPositon =
+                farFromArea?.distanceToClosestPolygon !== null &&
+                farFromArea?.distanceToClosestPolygon <= 100
+            }
+            if (conditionToSendPositon) {
+              try {
+                await axios.post(
+                  `${getApiBaseUrl()}/userTrajectory`,
+                  newPosition
+                )
+              } catch (error) {
+                console.error("Error sending user trajectory:", error)
+              }
+            }
+            isUpdatingRef.current = false
+            if (!mapCenter) setMapCenter(newPosition)
           }
-          isUpdatingRef.current = false
-          if (!mapCenter) setMapCenter(newPosition)
         } else {
           if (time >= 9) {
             logEvent(
@@ -191,7 +233,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
       setMapCenter(persistedMapCenter)
       setIsTracking(persistedIsTracking)
       setSelectedCampaign(persistedCampaign)
-
       setLoading(false)
     }
 
@@ -224,15 +265,14 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     if (!isTracking) return
 
     const interval = setInterval(() => {
-      console.log("---------------")
-      console.log(selectedCampaign)
       updatePosition()
     }, 5000)
-
-    updatePosition()
+    if (selectedCampaign) {
+      updatePosition()
+    }
 
     return () => clearInterval(interval)
-  }, [isTracking])
+  }, [isTracking, selectedCampaign])
 
   const logout = () => {
     document.cookie = "access_token=; Max-Age=0; path=/"
