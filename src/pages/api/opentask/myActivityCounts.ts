@@ -1,5 +1,6 @@
+// PENDING
 import { NextApiRequest, NextApiResponse } from "next"
-import TaskController from "@/controllers/TaskController"
+import OpenTaskController from "@/controllers/OpenTaskController"
 import { validateKeycloakToken } from "@/utils/validateToken" // Token validator
 import { prisma } from "@/utils/withPrismaDisconnect"
 
@@ -13,7 +14,7 @@ export default async function handler(
 
   try {
     const { userId } = await validateKeycloakToken(req)
-    const taskId = req.query.taskId as string
+    const opentaskId = req.query.opentaskId as string
     const user = await prisma.user.findUnique({
       where: {
         sub: userId
@@ -25,7 +26,10 @@ export default async function handler(
       return res.status(404).json({ error: "User not found" })
     }
 
-    const response = await TaskController.getMyActivityInTask(userId, taskId)
+    const response = await OpenTaskController.getMyActivityInOpenTask(
+      userId,
+      opentaskId
+    )
 
     return res.status(200).json(response)
   } catch (error) {

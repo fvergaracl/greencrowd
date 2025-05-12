@@ -1,5 +1,6 @@
+// PENDING
 import { NextApiRequest, NextApiResponse } from "next"
-import TaskController from "@/controllers/TaskController"
+import OpenTaskController from "@/controllers/OpenTaskController"
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,8 +9,11 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       try {
-        const { id } = req.query
-        const data = await TaskController.getTaskById(String(id))
+        const { id, responseId } = req.query
+        const data = await OpenTaskController.getOpenTaskResponseById(
+          String(id),
+          String(responseId)
+        )
 
         if (!data) {
           return res.status(404).json({ error: "Task not found" })
@@ -20,7 +24,7 @@ export default async function handler(
         return res.status(500).json({ error: err.message })
       }
     default:
-      res.setHeader("Allow", ["GET", "PUT", "DELETE"])
+      res.setHeader("Allow", ["GET"])
       return res.status(405).end(`Method ${req.method} Not Allowed`)
   }
 }

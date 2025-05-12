@@ -102,6 +102,17 @@ export default class CampaignControllerCommon {
         areas: {
           where: { isDisabled: false },
           include: {
+            openTasks: {
+              where: { isDisabled: false },
+              include: {
+                responses: {
+                  select: {
+                    latitude: true,
+                    longitude: true
+                  }
+                }
+              }
+            },
             pointOfInterests: {
               where: { isDisabled: false },
               include: {

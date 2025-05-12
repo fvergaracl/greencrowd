@@ -46,6 +46,7 @@
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "leaflet-routing-machine": "^3.2.12",
+    "leaflet.heat": "^0.2.0",
     "lottie-react": "^2.4.1",
     "minio": "^7.1.4",
     "motion": "^12.4.3",

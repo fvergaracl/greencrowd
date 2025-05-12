@@ -396,5 +396,8 @@
   "Open Task Details": "Open Task Details",
   "Edit Open Task": "Edit Open Task",
   "Edit Open Task in Area": "Edit Open Task in Area",
-  "Area / Open Task / Edit": "Area / Open Task / Edit"
+  "Area / Open Task / Edit": "Area / Open Task / Edit",
+  "Are you inside of Area?": "Are you inside of Area?",
+  "Please confirm if you are inside the area.": "Please confirm if you are inside the area.",
+  "Thank you for completing this Open task": "Thank you for completing this Open task"
 }

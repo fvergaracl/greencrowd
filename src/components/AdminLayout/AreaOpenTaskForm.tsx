@@ -54,7 +54,6 @@ export default function OpenTaskForm({
   areaId = undefined,
   initialData
 }: OpenTaskFormProps) {
-  console.log({ mode })
   const router = useRouter()
   const { t } = useTranslation()
   const [title, setTitle] = useState(initialData?.title || "")

@@ -1,5 +1,6 @@
+// PENDING
 import { NextApiRequest, NextApiResponse } from "next"
-import TaskController from "@/controllers/TaskController"
+import OpenTaskController from "@/controllers/OpenTaskController"
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,7 +10,7 @@ export default async function handler(
     case "GET":
       try {
         const { id } = req.query
-        const data = await TaskController.getTaskById(String(id))
+        const data = await OpenTaskController.getOpenTaskById(String(id))
 
         if (!data) {
           return res.status(404).json({ error: "Task not found" })

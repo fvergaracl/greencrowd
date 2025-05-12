@@ -10,6 +10,8 @@ import Swal from "sweetalert2"
 import { FaDrawPolygon, FaTasks, FaUsers } from "react-icons/fa"
 import { MdOutlinePinDrop } from "react-icons/md"
 import { useTranslation } from "@/hooks/useTranslation"
+import { MdOutlineCreateNewFolder } from "react-icons/md"
+
 import { getApiBaseUrl } from "@/config/api"
 interface Area {
   id: string
@@ -17,6 +19,7 @@ interface Area {
   description: string
   campaign: { id: string; name: string } // Parent Campaign
   disabled: boolean
+  openTasks: { id: string }[]
   tasks: { id: string }[]
   createdAt: string
   updatedAt: string
@@ -73,8 +76,6 @@ export default function AdminAreas() {
     const fetchAreas = async () => {
       try {
         const response = await axios.get(`${getApiBaseUrl()}/admin/areas`)
-        console.log("1111111111111111111111111111111")
-        console.log(response.data)
         setAllAreas(response.data)
         setFilteredAreas(response.data)
       } catch (err) {
@@ -301,9 +302,25 @@ export default function AdminAreas() {
                   )}
                   {visibleColumns.openTasks && (
                     <td className='border px-4 py-2 text-center'>
-                      {area.tasks?.length || 0}
+                      <div className='flex flex-col items-center justify-center space-y-2'>
+                        <span className='text-sm font-medium text-gray-800 dark:text-gray-200'>
+                          <strong>{area?.openTasks?.length || 0}</strong>
+                        </span>
+                        <button
+                          className='rounded px-3 py-1 text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400'
+                          title={t(
+                            "Click to view or create open tasks in the area"
+                          )}
+                          onClick={() =>
+                            router.push(`/admin/areas/${area.id}/opentasks`)
+                          }
+                        >
+                          {t("Create")}
+                        </button>
+                      </div>
                     </td>
                   )}
+
                   {visibleColumns.details && (
                     <td className='border px-4 py-2 text-center'>
                       <div className='flex items-center justify-center gap-2'>

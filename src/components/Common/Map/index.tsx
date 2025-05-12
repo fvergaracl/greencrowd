@@ -12,6 +12,7 @@ import {
 } from "react-leaflet"
 import L, { DivIcon } from "leaflet"
 import "leaflet-routing-machine"
+import findContainingArea from "@/utils/findContainingArea"
 import LeafletRoutingMachine from "leaflet-routing-machine"
 import CustomMarker from "../Mapmarker"
 import DistanceIndicator from "./DistanceIndicator"
@@ -31,6 +32,8 @@ import TaskList from "./TaskList"
 import GamificationTimer from "./GamificationTimer"
 import Swal from "sweetalert2"
 import { Point, PolygonData, CampaignData, PointOfInterest } from "./types"
+import "leaflet.heat"
+import { HeatLayerForArea } from "./HeatLayerForArea"
 
 interface MapProps {
   showMyLocation?: boolean
@@ -230,12 +233,17 @@ export default function Map({
   const [showRoute, setShowRoute] = useState<boolean>(false)
   const [lastFetchGamificationData, setLastFetchGamificationData] =
     useState<Date | null>(null)
+  const [areaOpenTask, setAreaOpenTask] = useState<any>(null)
+  const [explorationIndices, setExplorationIndices] = useState<
+    Record<string, number>
+  >({})
   const fetchTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   const cookies = document.cookie.split("; ")
   const tokenCookie = cookies.find(cookie => cookie.startsWith("access_token="))
   tokenCookie ? tokenCookie.split("=")[1] : null
-
+  console.log(">>>>>>>>>>>>>><< explorationIndices")
+  console.log(explorationIndices)
   const fetchGamificationData = async () => {
     try {
       const decodedToken = decodeToken(accessToken)
@@ -293,6 +301,19 @@ export default function Map({
       console.error("Failed to fetch gamification data", err)
     }
   }
+
+  useEffect(() => {
+    if (!position || !campaignData) return
+    const containingArea = findContainingArea(campaignData, position)
+
+    if (containingArea) {
+      setAreaOpenTask(containingArea)
+      console.log("Está dentro del área:", containingArea.name)
+      console.log({ containingArea, position })
+    } else {
+      console.log("No está dentro de ninguna área.")
+    }
+  }, [campaignData, position])
 
   useEffect(() => {
     const fetchMyActivity = async () => {
@@ -866,6 +887,7 @@ export default function Map({
                 setSelectedCampaign={setSelectedCampaign}
                 toggleRoute={selectedPoi && toggleRoute}
                 campaignData={campaignData}
+                areaOpenTask={areaOpenTask}
               />
             )}
             {isTracking &&
@@ -879,7 +901,7 @@ export default function Map({
                       pathOptions={{
                         color: color.border,
                         fillColor: color.fill,
-                        fillOpacity: 0.5
+                        fillOpacity: 0.2
                       }}
                       eventHandlers={{
                         click: () => {
@@ -942,19 +964,39 @@ export default function Map({
                   description: string
                   polygon: [number, number][]
                   pointOfInterests: any[]
+                  openTasks?: {
+                    responses?: { latitude: number; longitude: number }[]
+                  }[]
                 }) => (
-                  <Polygon
-                    key={area.id}
-                    positions={area.polygon}
-                    pathOptions={{ color: "blue", weight: 2 }}
-                  >
-                    <Popup>
-                      <h3>{area.name}</h3>
-                      <p>{area.description}</p>
-                    </Popup>
-                  </Polygon>
+                  <>
+                    <Polygon
+                      key={area.id}
+                      positions={area.polygon}
+                      pathOptions={{ color: "blue", weight: 2 }}
+                    >
+                      <Popup>
+                        <h3>{area.name}</h3>
+                        <p>{area.description}</p>
+                      </Popup>
+                    </Polygon>
+
+                    {area.openTasks?.some(task => task.responses?.length) && (
+                      <HeatLayerForArea
+                        area={area}
+                        position={position}
+                        totalResponses={area?.responses?.length || 0}
+                        onIndexCalculated={(id, index) => {
+                          setExplorationIndices(prev => ({
+                            ...prev,
+                            [id]: index
+                          }))
+                        }}
+                      />
+                    )}
+                  </>
                 )
               )}
+
             {renderMarkers}
 
             {showMyLocation && position && (
