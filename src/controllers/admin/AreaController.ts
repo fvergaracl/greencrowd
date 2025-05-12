@@ -43,7 +43,7 @@ export default class AreaController {
       orderBy: {
         createdAt: "desc"
       }
-    });
+    })
   }
   @withPrismaDisconnect
   static async getAreaNames() {
@@ -65,6 +65,11 @@ export default class AreaController {
     return await prisma.area.findUnique({
       where: { id },
       include: {
+        openTasks: {
+          where: {
+            isDisabled: false
+          }
+        },
         pointOfInterests: {
           include: {
             tasks: true

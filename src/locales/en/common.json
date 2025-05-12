@@ -390,5 +390,7 @@
   "The OpenTask was successfully": "The OpenTask was successfully",
   "Failed to save the Opentask. Please try again": "Failed to save the Opentask. Please try again",
   "Invalid area ID": "Invalid area ID",
-  "A valid ID's area is required to save the Opentask": "A valid ID's area is required to save the Opentask"
+  "A valid ID's area is required to save the Opentask": "A valid ID's area is required to save the Opentask",
+  "Open Tasks": "Open Tasks",
+  "No open tasks available for this area": "No open tasks available for this area"
 }

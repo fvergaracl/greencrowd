@@ -22,12 +22,29 @@ const Polygon = dynamic(
   { ssr: false }
 )
 
+const Marker = dynamic(() => import("react-leaflet").then(mod => mod.Marker), {
+  ssr: false
+})
+const Popup = dynamic(() => import("react-leaflet").then(mod => mod.Popup), {
+  ssr: false
+})
+
 interface Area {
   id: string
   name: string
   description: string
   campaign: { id: string; name: string }
   isDisabled: boolean
+  openTasks: {
+    id: string
+    title: string
+    description: string
+    type: string
+    allowedRadius: number
+    availableFrom: string | null
+    availableTo: string | null
+    isDisabled: boolean
+  }[]
   pointOfInterests: {
     id: string
     title: string
@@ -38,6 +55,15 @@ interface Area {
   createdAt: string
   updatedAt: string
 }
+
+const poiIcon = new L.Icon({
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  shadowSize: [41, 41]
+})
 
 export default function AreaDetails() {
   const { t } = useTranslation()
@@ -172,10 +198,111 @@ export default function AreaDetails() {
                 positions={polygonCoordinates}
                 pathOptions={{ color: "blue", fillOpacity: 0.3 }}
               />
+
+              {area.pointOfInterests?.map(poi => (
+                <Marker
+                  key={poi.id}
+                  position={[poi.latitude, poi.longitude]}
+                  icon={poiIcon}
+                >
+                  <Popup>
+                    <strong>{poi.name}</strong>
+                    <br />
+                    {poi.description || t("No description")}
+                  </Popup>
+                </Marker>
+              ))}
             </MapContainer>
           ) : (
             <p className='text-gray-600 dark:text-gray-300'>
               {t("No polygon defined for this area")}.
+            </p>
+          )}
+        </div>
+      </div>
+      <div className='flex w-full'>
+        <div className='mb-6 w-full'>
+          <h2 className='text-xl font-semibold text-gray-800 dark:text-white '>
+            {t("Open Tasks")}
+          </h2>
+
+          {area?.openTasks?.length > 0 ? (
+            <ul className='space-y-4'>
+              {area.openTasks.map(openTask => (
+                <li
+                  key={openTask.id}
+                  className='p-4 bg-gray-50 dark:bg-gray-700 rounded-md shadow-sm border border-gray-200 dark:border-gray-600 '
+                >
+                  <div className='flex justify-between items-start'>
+                    <div>
+                      <h3 className='text-lg font-bold text-gray-800 dark:text-white'>
+                        {openTask.title}
+                      </h3>
+                      <p className='text-sm text-gray-600 dark:text-gray-300'>
+                        {openTask.description || t("No description available")}
+                      </p>
+                      <p className='mt-1 text-sm'>
+                        <strong>{t("Type")}:</strong> {openTask.type}
+                      </p>
+                      <p className='text-sm'>
+                        <strong>{t("Allowed Radius")}:</strong>{" "}
+                        {openTask.allowedRadius} m
+                      </p>
+                      <p className='text-sm'>
+                        <strong>{t("Available From")}:</strong>{" "}
+                        {openTask.availableFrom
+                          ? new Date(openTask.availableFrom).toLocaleString()
+                          : t("Not defined")}
+                      </p>
+                      <p className='text-sm'>
+                        <strong>{t("Available To")}:</strong>{" "}
+                        {openTask.availableTo
+                          ? new Date(openTask.availableTo).toLocaleString()
+                          : t("Not defined")}
+                      </p>
+                      <p className='text-sm mt-1'>
+                        <strong>{t("Status")}:</strong>{" "}
+                        <span
+                          className={`px-2 py-0.5 text-xs font-semibold rounded ${
+                            openTask.isDisabled
+                              ? "bg-red-100 text-red-700 dark:bg-red-700 dark:text-white"
+                              : "bg-green-100 text-green-700 dark:bg-green-700 dark:text-white"
+                          }`}
+                        >
+                          {openTask.isDisabled ? t("Disabled") : t("Active")}
+                        </span>
+                      </p>
+                    </div>
+
+                    <div className='flex flex-col space-y-2 ml-4'>
+                      <button
+                        onClick={() =>
+                          router.push(
+                            `/admin/${area.id}/opentasks/${openTask.id}`
+                          )
+                        }
+                        className='px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600'
+                      >
+                        {t("View Details")}
+                      </button>
+                      <button
+                        onClick={() =>
+                          router.push(
+                            `/admin/areas/${area.id}/opentasks/${openTask.id}/edit`
+                          )
+                        }
+                        className='px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600'
+                      >
+                        {t("Edit")}
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className='text-gray-600 dark:text-gray-300'>
+              {t("No open tasks available for this area")}.
             </p>
           )}
         </div>
