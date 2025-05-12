@@ -11,6 +11,9 @@ export default async function handler(
   const { id } = req.query as {
     id: string
   }
+  const { openTaskid } = req.query as {
+    openTaskid: string
+  }
 
   try {
     switch (req.method) {
@@ -19,13 +22,14 @@ export default async function handler(
           return res.status(400).json({ error: "OpenTask ID is required" })
         }
 
-        const task = await OpenTaskController.getOpenTaskById(id as string)
+        const task = await OpenTaskController.getOpenTaskById(
+          openTaskid as string
+        )
         return res.status(200).json(task)
       }
       case "POST": {
         try {
           const areaId = id
-          console.log({ areaId, id })
           const newTaskBody = {
             ...req.body,
             areaId
@@ -81,7 +85,7 @@ export default async function handler(
         }
       }
       case "PUT": {
-        if (!id) {
+        if (!openTaskid) {
           return res.status(400).json({ error: "OpenTask ID is required" })
         }
 
@@ -126,7 +130,7 @@ export default async function handler(
         }
 
         const task = await OpenTaskController.updateOpenTask(
-          id as string,
+          openTaskid as string,
           updatedTaskBody
         )
         return res.status(200).json(task)

@@ -392,5 +392,9 @@
   "Invalid area ID": "Invalid area ID",
   "A valid ID's area is required to save the Opentask": "A valid ID's area is required to save the Opentask",
   "Open Tasks": "Open Tasks",
-  "No open tasks available for this area": "No open tasks available for this area"
+  "No open tasks available for this area": "No open tasks available for this area",
+  "Open Task Details": "Open Task Details",
+  "Edit Open Task": "Edit Open Task",
+  "Edit Open Task in Area": "Edit Open Task in Area",
+  "Area / Open Task / Edit": "Area / Open Task / Edit"
 }

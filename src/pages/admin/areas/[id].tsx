@@ -4,11 +4,12 @@ import axios from "axios"
 import DefaultLayout from "@/components/AdminLayout"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
 import dynamic from "next/dynamic"
+import "leaflet/dist/leaflet.css"
 import { useTranslation } from "@/hooks/useTranslation"
 import GoBack from "@/components/Admin/GoBack"
 import { getApiBaseUrl } from "@/config/api"
 
-// Dynamically import Leaflet components
+
 const MapContainer = dynamic(
   () => import("react-leaflet").then(mod => mod.MapContainer),
   { ssr: false }
@@ -56,20 +57,32 @@ interface Area {
   updatedAt: string
 }
 
-const poiIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  shadowSize: [41, 41]
-})
-
 export default function AreaDetails() {
   const { t } = useTranslation()
   const router = useRouter()
   const { id } = router.query
   const [area, setArea] = useState<Area | null>(null)
+  const [L, setL] = useState<any>(null)
+  const [icon, setIcon] = useState<any>(null)
+
+  useEffect(() => {
+    import("leaflet").then(Library => {
+      const leaflet = Library.default || Library
+      setL(leaflet)
+
+      const defaultIcon = new leaflet.Icon({
+        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowUrl:
+          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        shadowSize: [41, 41]
+      })
+
+      setIcon(defaultIcon)
+    })
+  }, [])
 
   useEffect(() => {
     if (id) {
@@ -100,6 +113,7 @@ export default function AreaDetails() {
 
   const polygonCoordinates = area?.polygon || []
   const bounds = polygonCoordinates?.length > 0 ? polygonCoordinates : [[0, 0]]
+
   return (
     <DefaultLayout>
       <Breadcrumb pageName={t("Area Details")} breadcrumbPath={t("Areas")} />
@@ -203,7 +217,7 @@ export default function AreaDetails() {
                 <Marker
                   key={poi.id}
                   position={[poi.latitude, poi.longitude]}
-                  icon={poiIcon}
+                  icon={icon}
                 >
                   <Popup>
                     <strong>{poi.name}</strong>
@@ -278,7 +292,7 @@ export default function AreaDetails() {
                       <button
                         onClick={() =>
                           router.push(
-                            `/admin/${area.id}/opentasks/${openTask.id}`
+                            `/admin/areas/${area.id}/opentasks/${openTask.id}`
                           )
                         }
                         className='px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600'
