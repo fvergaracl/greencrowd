@@ -36,11 +36,10 @@ interface InitialData {
   availableTo?: string
 }
 
-interface TaskFormProps {
+interface OpenTaskFormProps {
   mode: "create" | "edit"
-  poiId?: string
-  areaId?: string
-  taskId?: string
+  openTaskId?: string
+  areaId: string
   initialData?: InitialData
 }
 
@@ -49,12 +48,13 @@ const creatorOptions = {
   showLogicTab: false
 }
 
-export default function TaskForm({
+export default function OpenTaskForm({
   mode,
-  poiId,
-  taskId = undefined,
+  openTaskId = undefined,
+  areaId = undefined,
   initialData
-}: TaskFormProps) {
+}: OpenTaskFormProps) {
+  console.log({ mode })
   const router = useRouter()
   const { t } = useTranslation()
   const [title, setTitle] = useState(initialData?.title || "")
@@ -97,19 +97,19 @@ export default function TaskForm({
       return
     }
 
-    if (!poiId && mode === "create") {
+    if (!areaId && mode === "create") {
       Swal.fire({
         icon: "error",
-        title: t("Invalid POI"),
-        text: t("A valid Point of Interest is required to save the task")
+        title: t("Invalid area ID"),
+        text: t("A valid ID's area is required to save the Opentask")
       })
       return
     }
-    if (!taskId && mode === "edit") {
+    if (!openTaskId && mode === "edit") {
       Swal.fire({
         icon: "error",
-        title: t("Invalid Task"),
-        text: t("A valid task is required to save the task")
+        title: t("Invalid OpenTask id"),
+        text: t("A valid OpenTask is required to save the task")
       })
       return
     }
@@ -176,35 +176,40 @@ export default function TaskForm({
         availableFrom,
         availableTo,
         taskData: creator.JSON,
-        poiId
       }
       const response =
         mode === "create"
-          ? await axios.post(`${getApiBaseUrl()}/admin/tasks`, payload)
-          : await axios.put(`${getApiBaseUrl()}/admin/tasks/${taskId}`, payload)
+          ? await axios.post(
+              `${getApiBaseUrl()}/admin/areas/${areaId}/opentasks`,
+              payload
+            )
+          : await axios.put(
+              `${getApiBaseUrl()}/admin/areas/${areaId}/opentasks/${openTaskId}`,
+              payload
+            )
 
       if (response.status === 201 || response.status === 200) {
         Swal.fire({
           icon: "success",
-          title: mode === "create" ? t("Task Created") : t("Task Updated"),
-          text: `${t("The task was successfully")} ${
+          title:
+            mode === "create" ? t("OpenTask Created") : t("OpenTask Updated"),
+          text: `${t("The OpenTask was successfully")} ${
             mode === "create" ? t("created") : t("updated")
           }.`
         })
-        router.push(`/admin/pois/${poiId}`)
+        router.push(`/admin/areas/${areaId}`)
       }
     } catch (err) {
       console.error("Error saving task:", err)
       Swal.fire({
         icon: "error",
         title: t("Error"),
-        text: t("Failed to save the task. Please try again")
+        text: t("Failed to save the Opentask. Please try again")
       })
     } finally {
       setSaving(false)
     }
   }, [
-    poiId,
     mode,
     title,
     description,
@@ -215,7 +220,8 @@ export default function TaskForm({
     availableTo,
     creator,
     router,
-    taskId,
+    areaId,
+    openTaskId,
     t
   ])
 

@@ -382,5 +382,13 @@
   "Area / Open Task / Create": "Area / Open Task / Create",
   "Saving Open task...": "Saving Open task...",
   "Create Open Task": "Create Open Task",
-  "Update Open Task": "Update Open Task"
+  "Update Open Task": "Update Open Task",
+  "Invalid OpenTask id": "Invalid OpenTask id",
+  "A valid OpenTask is required to save the task": "A valid OpenTask is required to save the task",
+  "OpenTask Created": "OpenTask Created",
+  "OpenTask Updated": "OpenTask Updated",
+  "The OpenTask was successfully": "The OpenTask was successfully",
+  "Failed to save the Opentask. Please try again": "Failed to save the Opentask. Please try again",
+  "Invalid area ID": "Invalid area ID",
+  "A valid ID's area is required to save the Opentask": "A valid ID's area is required to save the Opentask"
 }

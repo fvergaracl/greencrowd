@@ -13,7 +13,9 @@ const AreaOpenTaskForm = dynamic(
 export default function CreateAreaPage() {
   const { t } = useTranslation()
   const router = useRouter()
-  const { id } = router.query
+  const { id } = router.query as {
+    id: string
+  }
 
   return (
     <DefaultLayout>
@@ -21,7 +23,7 @@ export default function CreateAreaPage() {
         pageName={t("Create an Open Task")}
         breadcrumbPath={t("Area / Open Task / Create")}
       />
-      <AreaOpenTaskForm areaId={id} />
+      <AreaOpenTaskForm areaId={id} mode='create' />
     </DefaultLayout>
   )
 }

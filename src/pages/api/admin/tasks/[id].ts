@@ -35,7 +35,7 @@ export default async function handler(
           availableFrom: req?.body?.availableFrom,
           availableTo: req?.body?.availableTo
         }
-       
+
         if (
           updatedTaskBody?.responseLimit &&
           isNaN(updatedTaskBody?.responseLimit)
@@ -49,11 +49,9 @@ export default async function handler(
           updatedTaskBody?.responseLimitInterval &&
           isNaN(updatedTaskBody?.responseLimitInterval)
         ) {
-          return res
-            .status(400)
-            .json({
-              error: "Response limit (minutes) interval should be a number"
-            })
+          return res.status(400).json({
+            error: "Response limit (minutes) interval should be a number"
+          })
         }
 
         if (
@@ -79,11 +77,9 @@ export default async function handler(
           updatedTaskBody?.availableTo &&
           updatedTaskBody?.availableFrom > updatedTaskBody?.availableTo
         ) {
-          return res
-            .status(400)
-            .json({
-              error: "Available from date should be before available to date"
-            })
+          return res.status(400).json({
+            error: "Available from date should be before available to date"
+          })
         }
 
         const task = await TasksController.updateTask(
