@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import React, { useEffect, useMemo, useState, useRef } from "react"
+import React, { useEffect, useMemo, useState, useRef, useCallback } from "react"
 import ReactDOMServer from "react-dom/server"
 import {
   MapContainer as LeafletMapContainer,
@@ -535,6 +535,15 @@ export default function Map({
     setSelectedPoi(poi)
   }
 
+  const handleIndexCalculated = useCallback((id: string, index: number) => {
+    setExplorationIndices(prev => {
+      if (prev[id] === index) return prev
+      return {
+        ...prev,
+        [id]: index
+      }
+    })
+  }, [])
   useEffect(() => {
     const fetchCampaignData = async () => {
       if (!selectedCampaign) return
@@ -887,6 +896,8 @@ export default function Map({
                 toggleRoute={selectedPoi && toggleRoute}
                 campaignData={campaignData}
                 areaOpenTask={areaOpenTask}
+                explorationIndices={explorationIndices}
+
               />
             )}
             {isTracking &&
@@ -984,12 +995,7 @@ export default function Map({
                         area={area}
                         position={position}
                         totalResponses={area?.responses?.length || 0}
-                        onIndexCalculated={(id, index) => {
-                          setExplorationIndices(prev => ({
-                            ...prev,
-                            [id]: index
-                          }))
-                        }}
+                        onIndexCalculated={handleIndexCalculated}
                       />
                     )}
                   </>

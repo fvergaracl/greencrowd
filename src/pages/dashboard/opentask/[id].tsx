@@ -1,7 +1,4 @@
-// PENDING
-
 import React, { useState, useEffect, useRef } from "react"
-import DistanceIndicator from "@/components/Common/Map/DistanceIndicator"
 import DashboardLayout from "@/components/DashboardLayout"
 import GoBack from "@/components/Admin/GoBack"
 import { useTranslation } from "@/hooks/useTranslation"
@@ -24,6 +21,7 @@ import loading_6 from "@/lotties/loading_6.json"
 import sent_without_gamification from "@/lotties/sent_without_gamification.json"
 import downloading_task from "@/lotties/downloading_task.json"
 import points_reward from "@/lotties/points_reward.json"
+import "./styles.css"
 
 const decodeToken = (token: string): { roles?: string[] } | null => {
   try {
@@ -157,7 +155,10 @@ const TaskWrapper = React.memo(
 export default function Task() {
   const { t } = useTranslation()
   const router = useRouter()
-  const { id } = router.query
+  const { id, gameId, points } = router.query
+  const openTask =
+    router?.query?.openTask && JSON.parse(router.query.openTask as string)
+  console.log({ id, openTask, gameId, points })
   const { position, selectedCampaign } = useDashboard()
   const [task, setTask] = useState<any>(null)
   const [isInside, setIsInside] = useState(false)
@@ -263,75 +264,6 @@ export default function Task() {
   }, [responseSent])
 
   useEffect(() => {
-    if (!accessToken) return
-    const fetchGamificationData = async () => {
-      const gameId = task?.pointOfInterest?.area?.campaign?.gameId
-      const decodedToken = decodeToken(accessToken)
-      const res = await fetch(
-        `${getApiGameBaseUrl()}/games/${gameId}/users/${decodedToken?.sub}/points/simulated`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
-      )
-      const resJson = await res.json()
-      setGamificationData(resJson)
-      logEvent(
-        "USER_FETCHED_GAMIFICATION_DATA_FROM_OPEN_TASK",
-        `User fetched gamification data for campaign (OpenTaskid): ${id}`,
-        {
-          gamificationData: resJson,
-          gameId,
-          userId: decodedToken?.sub,
-          accessToken
-        }
-      )
-      if (resJson?.detail) {
-        logEvent(
-          "USER_FETCHED_GAMIFICATION_DATA_FROM_OPEN_TASK_ERROR",
-          `User fetched gamification data for opentask: ${id} with error`,
-          {
-            gamificationData: resJson,
-            gameId,
-            userId: decodedToken?.sub,
-            accessToken
-          }
-        )
-        console.error("Error fetching gamification data", resJson.detail)
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        fetchGamificationData()
-        return
-      }
-      localStorage.setItem(
-        `gamificationData_${selectedCampaign?.id}`,
-        JSON.stringify(resJson)
-      )
-      localStorage.setItem(
-        `lastFetchGamificationData_${selectedCampaign?.id}`,
-        new Date().toString()
-      )
-      setLastFetchGamificationData(new Date())
-    }
-    const fetchGamificationDataInterval = 5 * 60 * 1000
-
-    if (
-      (!lastFetchGamificationData ||
-        new Date().getTime() - lastFetchGamificationData.getTime() >
-          fetchGamificationDataInterval) &&
-      task
-    ) {
-      fetchGamificationData()
-    }
-
-    const interval = setInterval(() => {
-      fetchGamificationData()
-    }, fetchGamificationDataInterval)
-
-    return () => clearInterval(interval)
-  }, [accessToken])
-
-  useEffect(() => {
     let templastFetchGamificationData = localStorage.getItem(
       `lastFetchGamificationData_${selectedCampaign?.id}`
     )
@@ -384,26 +316,25 @@ export default function Task() {
     await axios
       .post(`${getApiBaseUrl()}/opentask/${id}/response`, {
         taskResponse: survey.data,
-        openTaskId: id,
+        openTaskId: openTask?.id,
         position,
         userDeclareInside
       })
       .then(async () => {
         logEvent("OPENTASK_COMPLETED_SUCCESS", "Task completed", {
           taskResponse: survey.data,
-          openTaskId: id,
+          openTaskId: openTask?.id,
           position
         })
         const decodedToken = decodeToken(accessToken)
         const externalOpenTaskId = `OpenTask_${id}`
-        if (task?.pointOfInterest?.area?.campaign?.gameId) {
+        if (gameId) {
           await axios
             .post(
-              `${getApiGameBaseUrl()}/games/${task.pointOfInterest.area.campaign.gameId}/tasks/${externalOpenTaskId}/points`,
+              `${getApiGameBaseUrl()}/games/${gameId}/tasks/${externalOpenTaskId}/points`,
               {
                 externalUserId: decodedToken?.sub,
-                data: gamificationData,
-                isSimulated: true
+                points
               },
               {
                 headers: {
@@ -580,14 +511,18 @@ export default function Task() {
   return (
     <DashboardLayout>
       <div className='pt-4'>
-        {task?.pointOfInterest && position ? (
-          <DistanceIndicator
-            poi={task.pointOfInterest}
-            onRadiusChange={isInsidePOI => {
-              setIsInside(!!isInsidePOI)
-            }}
-          />
-        ) : null}
+        {gameId && points && (
+          <div className='fixed top-0 left-0 right-0 z-50 bg-green-600 text-white py-4 shadow-md flex items-center justify-center text-center animate-fade-in-down'>
+            <div className='max-w-md mx-auto flex items-center gap-3'>
+              <span className='text-lg font-semibold'>
+                🎯 {t("Complete this task to earn")}
+              </span>
+              <span className='text-2xl font-bold text-yellow-300 animate-pulse-slow'>
+                {Number(points).toFixed(2)} 🪙
+              </span>
+            </div>
+          </div>
+        )}
         <div className='bg-white shadow-md rounded-lg'>
           <GoBack
             data-cy='go-back-task'

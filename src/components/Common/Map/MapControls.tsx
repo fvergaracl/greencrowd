@@ -1,3 +1,4 @@
+import { useRouter } from "next/router"
 import { FiMapPin } from "react-icons/fi"
 import { LuRouteOff, LuRoute } from "react-icons/lu"
 import { TbLassoPolygon } from "react-icons/tb"
@@ -18,6 +19,7 @@ interface MapControlsProps {
   toggleRoute: () => void | null
   campaignData: CampaignData | null
   areaOpenTask: any | null
+  explorationIndices?: any
 }
 
 const MapControls: React.FC<MapControlsProps> = ({
@@ -27,8 +29,26 @@ const MapControls: React.FC<MapControlsProps> = ({
   setSelectedCampaign,
   toggleRoute = null,
   campaignData,
-  areaOpenTask = null
+  areaOpenTask = null,
+  explorationIndices
 }) => {
+  console.log("---------------- explorationIndices")
+  console.log(explorationIndices)
+  console.log(areaOpenTask)
+  const gameId = campaignData?.gameId
+  console.log({ gameId })
+  //---------------- explorationIndices
+  // It's made only for 1 openTask
+  const router = useRouter()
+  const openTask = areaOpenTask?.openTasks?.[0]
+  console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+  console.log(openTask)
+  const rawIndex = explorationIndices?.[areaOpenTask?.id]
+  const indexExploration =
+    typeof rawIndex === "number" ? rawIndex.toFixed(2) : 0
+
+  const points = Math.round(100 - indexExploration)
+
   const { t } = useTranslation()
   const map = useMap()
 
@@ -75,6 +95,24 @@ const MapControls: React.FC<MapControlsProps> = ({
     }
   }
 
+  const openAOpentask = () => {
+    if (points && points >= 0 && gameId) {
+      logEvent(
+        "BUTTON_CLICKED_OPEN_THE_OPENTASK",
+        "User clicked on open task details button",
+        { openTask, gameId, points, from: "map" }
+      )
+      router.push({
+        pathname: `/dashboard/opentask/${openTask?.id}`,
+        query: {
+          openTask: JSON.stringify(openTask),
+          gameId,
+          points
+        }
+      })
+    }
+  }
+
   return (
     <div className='absolute bottom-4 right-4 z-99999 flex flex-col gap-2'>
       {isSelectedPoi && (
@@ -82,7 +120,7 @@ const MapControls: React.FC<MapControlsProps> = ({
           {showRoute ? (
             <button
               onClick={toggleRoute}
-              className='p-3 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md focus:outline-none'
+              className='w-12 aspect-square bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md flex items-center justify-center'
               title={t("Remove route")}
             >
               <LuRouteOff size={24} />
@@ -90,7 +128,7 @@ const MapControls: React.FC<MapControlsProps> = ({
           ) : (
             <button
               onClick={toggleRoute}
-              className='p-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-md focus:outline-none'
+              className='w-12 aspect-square bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-md flex items-center justify-center'
               title={t("Show route")}
             >
               <LuRoute size={24} />
@@ -98,27 +136,23 @@ const MapControls: React.FC<MapControlsProps> = ({
           )}
         </>
       )}
-      {areaOpenTask && areaOpenTask?.openTasks?.length > 0 && (
+      {areaOpenTask && areaOpenTask?.openTasks?.length > 0 && points >= 0 && (
         <button
           onClick={() => {
-            setSelectedCampaign(areaOpenTask)
-            map.setView(
-              [areaOpenTask?.polygon[0][0], areaOpenTask?.polygon[0][1]],
-              16
-            )
+            openAOpentask()
           }}
-          className='p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-md focus:outline-none'
+          className='w-12 aspect-square bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-md flex items-center justify-center text-sm font-bold'
           title={t("Focus on area with open tasks")}
           data-cy='focus-on-area-with-open-tasks'
         >
-          <TbLassoPolygon size={24} />
+          {points}🪙
         </button>
       )}
       <button
         onClick={focusOnCampaign}
-        className={`p-3 ${
+        className={`w-12 aspect-square ${
           campaignData?.areas ? "bg-teal-500 hover:bg-teal-600" : "bg-gray-300"
-        } text-white rounded-full shadow-md focus:outline-none`}
+        } text-white rounded-full shadow-md flex items-center justify-center`}
         title={t("Focus on campaign area")}
         data-cy='focus-on-campaign'
         disabled={!campaignData?.areas}
@@ -127,9 +161,9 @@ const MapControls: React.FC<MapControlsProps> = ({
       </button>
       <button
         onClick={focusOnCurrentLocation}
-        className={`p-3 ${
+        className={`w-12 aspect-square ${
           position ? "bg-indigo-500 hover:bg-indigo-600" : "bg-gray-300"
-        } text-white rounded-full shadow-md focus:outline-none`}
+        } text-white rounded-full shadow-md flex items-center justify-center`}
         title={
           position
             ? `${t("Focus on current location")}: ${position.lat}, ${position.lng}`

@@ -29,12 +29,15 @@ export const HeatLayerForArea = ({
 }: HeatLayerForAreaProps) => {
   const map = useMap()
   const heatLayerRef = useRef<L.Layer | null>(null)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  const positionRef = useRef(position)
 
-  useEffect(() => {
-    positionRef.current = position
-  }, [position])
+  const turfPolygon = useMemo(() => {
+    return polygon([
+      [
+        ...area.polygon.map(([lat, lng]) => [lng, lat]),
+        [area.polygon[0][1], area.polygon[0][0]] // cerrar el polígono
+      ]
+    ])
+  }, [area.polygon])
 
   const responsePoints = useMemo(() => {
     const result: [number, number, number][] = []
@@ -46,71 +49,51 @@ export const HeatLayerForArea = ({
       })
     })
     return result
-  }, [area])
+  }, [area.openTasks])
 
+  // 🔄 Index calculation (only on position change or responsePoints change)
   useEffect(() => {
-    if (!onIndexCalculated) return
-    if (!responsePoints.length) {
-      onIndexCalculated(area.id, 10, false)
-      return
-    }
+    if (!onIndexCalculated || !position || !responsePoints.length) return
 
-    const turfPolygon = polygon([
-      [
-        ...area.polygon.map(([lat, lng]) => [lng, lat]),
-        [area.polygon[0][1], area.polygon[0][0]]
-      ]
-    ])
+    const turfPoint = point([position.lng, position.lat])
+    const isInside = booleanPointInPolygon(turfPoint, turfPolygon)
 
-    const runCalculation = () => {
-      const currentPos = positionRef.current
-      const turfPoint = point([currentPos.lng, currentPos.lat])
-      const isInside = booleanPointInPolygon(turfPoint, turfPolygon)
-
-      const minDist = Math.min(
-        ...responsePoints.map(([lat, lng]) =>
-          distance(turfPoint, point([lng, lat]), { units: "meters" })
-        )
+    const minDist = Math.min(
+      ...responsePoints.map(([lat, lng]) =>
+        distance(turfPoint, point([lng, lat]), { units: "meters" })
       )
+    )
 
-      const cappedDistance = Math.min(minDist, 100)
-      const normalized = 1 - cappedDistance / 100
-      const index = Math.round(10 * normalized ** 2)
+    const cappedDistance = Math.min(minDist, 100)
+    const normalized = 1 - cappedDistance / 100
+    const index = (100 * normalized ** 2)
 
-      console.log("Exploration Index:", index)
+    onIndexCalculated(area.id, index, isInside)
+  }, [position, responsePoints, onIndexCalculated, turfPolygon, area.id])
 
-      onIndexCalculated(area.id, index, isInside)
-    }
-
-    runCalculation()
-    intervalRef.current = setInterval(runCalculation, 1000)
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
-  }, [responsePoints, area.polygon, area.id, onIndexCalculated])
-
+  // 🔥 Heat Layer rendering
   useEffect(() => {
     if (!responsePoints.length) return
 
     const zoom = map.getZoom()
     const radius = getRadiusForZoom(zoom)
 
-    heatLayerRef.current = (L as any)
-      .heatLayer(responsePoints, {
-        radius,
-        blur: 15,
-        maxZoom: 17,
-        max: 2,
-        gradient: {
-          0.2: "blue",
-          0.4: "lime",
-          0.6: "yellow",
-          0.8: "orange",
-          1.0: "red"
-        }
-      })
-      .addTo(map)
+    const newHeatLayer = (L as any).heatLayer(responsePoints, {
+      radius,
+      blur: 15,
+      maxZoom: 17,
+      max: 2,
+      gradient: {
+        0.2: "blue",
+        0.4: "lime",
+        0.6: "yellow",
+        0.8: "orange",
+        1.0: "red"
+      }
+    })
+
+    newHeatLayer.addTo(map)
+    heatLayerRef.current = newHeatLayer
 
     const handleZoom = () => {
       const newZoom = map.getZoom()
@@ -137,9 +120,13 @@ export const HeatLayerForArea = ({
     }
 
     map.on("zoomend", handleZoom)
+
     return () => {
       map.off("zoomend", handleZoom)
-      if (heatLayerRef.current) map.removeLayer(heatLayerRef.current)
+      if (heatLayerRef.current) {
+        map.removeLayer(heatLayerRef.current)
+        heatLayerRef.current = null
+      }
     }
   }, [responsePoints, map])
 
