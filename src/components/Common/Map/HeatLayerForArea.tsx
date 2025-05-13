@@ -3,6 +3,7 @@ import L from "leaflet"
 import { useMap } from "react-leaflet"
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon"
 import { point, polygon } from "@turf/helpers"
+import distance from "@turf/distance"
 
 interface LatLng {
   lat: number
@@ -17,23 +18,25 @@ interface HeatLayerForAreaProps {
       responses?: { latitude: number; longitude: number }[]
     }[]
   }
-  totalResponses: number
   position: LatLng
   onIndexCalculated?: (areaId: string, index: number, isInside: boolean) => void
 }
 
 export const HeatLayerForArea = ({
   area,
-  totalResponses,
   position,
   onIndexCalculated
 }: HeatLayerForAreaProps) => {
-  console.log("0000000000000000000")
-  console.log(totalResponses)
   const map = useMap()
   const heatLayerRef = useRef<L.Layer | null>(null)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const positionRef = useRef(position)
 
-  const points = useMemo(() => {
+  useEffect(() => {
+    positionRef.current = position
+  }, [position])
+
+  const responsePoints = useMemo(() => {
     const result: [number, number, number][] = []
     area.openTasks?.forEach(task => {
       task.responses?.forEach(response => {
@@ -45,45 +48,56 @@ export const HeatLayerForArea = ({
     return result
   }, [area])
 
-  const isInside = useMemo(() => {
-    try {
-      const turfPoint = point([position.lng, position.lat])
-      const turfPolygon = polygon([
-        [
-          ...area.polygon.map(([lat, lng]) => [lng, lat]),
-          [area.polygon[0][1], area.polygon[0][0]]
-        ]
-      ]) // cierre
-      return booleanPointInPolygon(turfPoint, turfPolygon)
-    } catch {
-      return false
+  useEffect(() => {
+    if (!onIndexCalculated) return
+    if (!responsePoints.length) {
+      onIndexCalculated(area.id, 10, false)
+      return
     }
-  }, [area.polygon, position])
 
-  const explorationIndex = useMemo(() => {
-    const localResponses = points.length
-    if (totalResponses === 0) return 10
+    const turfPolygon = polygon([
+      [
+        ...area.polygon.map(([lat, lng]) => [lng, lat]),
+        [area.polygon[0][1], area.polygon[0][0]]
+      ]
+    ])
 
-    let index = Math.round((1 - localResponses / totalResponses) * 10)
+    const runCalculation = () => {
+      const currentPos = positionRef.current
+      const turfPoint = point([currentPos.lng, currentPos.lat])
+      const isInside = booleanPointInPolygon(turfPoint, turfPolygon)
 
-    // Bonus si estás dentro del área
-    if (isInside) index = Math.max(0, index - 2)
+      const minDist = Math.min(
+        ...responsePoints.map(([lat, lng]) =>
+          distance(turfPoint, point([lng, lat]), { units: "meters" })
+        )
+      )
 
-    if (onIndexCalculated) {
+      const cappedDistance = Math.min(minDist, 100)
+      const normalized = 1 - cappedDistance / 100
+      const index = Math.round(10 * normalized ** 2)
+
+      console.log("Exploration Index:", index)
+
       onIndexCalculated(area.id, index, isInside)
     }
 
-    return index
-  }, [points, totalResponses, area.id, isInside, onIndexCalculated])
+    runCalculation()
+    intervalRef.current = setInterval(runCalculation, 1000)
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [responsePoints, area.polygon, area.id, onIndexCalculated])
 
   useEffect(() => {
-    if (points.length === 0) return
+    if (!responsePoints.length) return
 
     const zoom = map.getZoom()
     const radius = getRadiusForZoom(zoom)
 
     heatLayerRef.current = (L as any)
-      .heatLayer(points, {
+      .heatLayer(responsePoints, {
         radius,
         blur: 15,
         maxZoom: 17,
@@ -105,7 +119,7 @@ export const HeatLayerForArea = ({
       if (heatLayerRef.current) {
         map.removeLayer(heatLayerRef.current)
         heatLayerRef.current = (L as any)
-          .heatLayer(points, {
+          .heatLayer(responsePoints, {
             radius: newRadius,
             blur: 15,
             maxZoom: 17,
@@ -127,19 +141,7 @@ export const HeatLayerForArea = ({
       map.off("zoomend", handleZoom)
       if (heatLayerRef.current) map.removeLayer(heatLayerRef.current)
     }
-  }, [points, map])
-
-  useEffect(() => {
-    const localResponses = points.length
-    if (totalResponses === 0) return
-
-    let index = Math.round((1 - localResponses / totalResponses) * 10)
-    if (isInside) index = Math.max(0, index - 2)
-
-    if (onIndexCalculated) {
-      onIndexCalculated(area.id, index, isInside)
-    }
-  }, [points, totalResponses, area.id, isInside, onIndexCalculated])
+  }, [responsePoints, map])
 
   return null
 }

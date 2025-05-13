@@ -242,8 +242,7 @@ export default function Map({
   const cookies = document.cookie.split("; ")
   const tokenCookie = cookies.find(cookie => cookie.startsWith("access_token="))
   tokenCookie ? tokenCookie.split("=")[1] : null
-  console.log(">>>>>>>>>>>>>><< explorationIndices")
-  console.log(explorationIndices)
+
   const fetchGamificationData = async () => {
     try {
       const decodedToken = decodeToken(accessToken)
