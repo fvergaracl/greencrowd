@@ -329,14 +329,24 @@ export default function Task() {
         const decodedToken = decodeToken(accessToken)
         const externalOpenTaskId = `OpenTask_${id}`
         if (gameId) {
+
+
           await axios
             .post(
-              `${getApiGameBaseUrl()}/games/${gameId}/tasks/${externalOpenTaskId}/points`,
+              `${getApiGameBaseUrl()}/user/external/${decodedToken?.sub}/points`,
               {
-                externalUserId: decodedToken?.sub,
+                taskId: externalOpenTaskId,
+                caseName: "OpenTask",
+                points: gamificationData?.points,
+                description: gamificationData?.description,
                 data: {
-                  points
+                  ...gamificationData,
+                  taskResponse: survey.data,
+                  openTaskId: openTask?.id,
+                  position,
+                  userDeclareInside
                 }
+
               },
               {
                 headers: {

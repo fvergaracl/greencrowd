@@ -16,9 +16,7 @@ export async function validateKeycloakToken(req: any, res?: any) {
     const userInfo_decoded = JSON.parse(
       Buffer.from(base64, "base64").toString("binary")
     )
-    console.time("TokenValidation")
     const userInfo = await getCachedUserInfo(token, getUserInfo)
-    console.timeEnd("TokenValidation")
     const userId = userInfo.sub
     const userRoles = userInfo_decoded?.roles
     if (!userId) {

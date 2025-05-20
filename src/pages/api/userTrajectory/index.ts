@@ -41,7 +41,6 @@ export default async function handler(
         }
         const createdCampaign =
           await UserTrajectoryController.createNewTrajectory(trajectory)
-        console.timeEnd("DBInsert")
         return res.status(201).json(createdCampaign)
       }
 
