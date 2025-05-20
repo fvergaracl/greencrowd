@@ -401,7 +401,7 @@ export default function Map({
       if (shouldFetch()) {
         fetchGamificationData()
       }
-    }, 60 * 1000) // check cada 1 min
+    }, 60 * 1000) // check every minutes
 
     return () => {
       if (fetchTimerRef.current) {
@@ -897,7 +897,6 @@ export default function Map({
                 campaignData={campaignData}
                 areaOpenTask={areaOpenTask}
                 explorationIndices={explorationIndices}
-
               />
             )}
             {isTracking &&

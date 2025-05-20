@@ -108,7 +108,8 @@ export default class CampaignControllerCommon {
                 responses: {
                   select: {
                     latitude: true,
-                    longitude: true
+                    longitude: true,
+                    createdAt: true
                   }
                 }
               }

@@ -151,10 +151,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
             }
             if (conditionToSendPositon) {
               try {
-                await axios.post(
-                  `${getApiBaseUrl()}/userTrajectory`,
-                  newPosition
-                )
+                axios.post(`${getApiBaseUrl()}/userTrajectory`, newPosition)
               } catch (error) {
                 console.error("Error sending user trajectory:", error)
               }

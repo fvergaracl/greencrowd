@@ -334,7 +334,9 @@ export default function Task() {
               `${getApiGameBaseUrl()}/games/${gameId}/tasks/${externalOpenTaskId}/points`,
               {
                 externalUserId: decodedToken?.sub,
-                points
+                data: {
+                  points
+                }
               },
               {
                 headers: {

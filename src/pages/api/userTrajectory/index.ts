@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import UserTrajectoryController from "@/controllers/UserTrajectoryController"
 import { validateKeycloakToken } from "@/utils/validateToken" // Token validator
-import UserController from "@/controllers/UserController"
+import { getCookies } from "@/utils/cookies"
 
 export default async function handler(
   req: NextApiRequest,
@@ -23,9 +23,14 @@ export default async function handler(
         if (!userId) {
           return res.status(401).json({ error: "Unauthorized" })
         }
-        const user = await UserController.getUserBySub(userId)
+        const cookies = getCookies(req)
+        const token = cookies.access_token
+        const payload = JSON.parse(
+          Buffer.from(token.split(".")[1], "base64").toString("utf-8")
+        )
+        const userSub = payload.sub
         const trajectory = {
-          userId: user.id,
+          userSub,
           latitude: lat,
           longitude: lng,
           accuracy,
@@ -36,6 +41,7 @@ export default async function handler(
         }
         const createdCampaign =
           await UserTrajectoryController.createNewTrajectory(trajectory)
+        console.timeEnd("DBInsert")
         return res.status(201).json(createdCampaign)
       }
 

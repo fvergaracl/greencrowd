@@ -41,37 +41,47 @@ export const HeatLayerForArea = ({
 
   const responsePoints = useMemo(() => {
     const result: [number, number, number][] = []
+    const now = new Date()
+
     area.openTasks?.forEach(task => {
       task.responses?.forEach(response => {
-        if (response.latitude && response.longitude) {
-          result.push([response.latitude, response.longitude, 0.8])
+        if (response.latitude && response.longitude && response.createdAt) {
+          const createdAt = new Date(response.createdAt)
+          const minutesAgo = (now.getTime() - createdAt.getTime()) / 60000 // ms to minutes
+
+          const cappedMinutes = Math.min(minutesAgo, 60)
+          const weight = 1 - cappedMinutes / 60 // GAMIFICATION weight in 1 hour
+
+          result.push([response.latitude, response.longitude, weight])
         }
       })
     })
     return result
   }, [area.openTasks])
 
-  // 🔄 Index calculation (only on position change or responsePoints change)
   useEffect(() => {
     if (!onIndexCalculated || !position || !responsePoints.length) return
 
     const turfPoint = point([position.lng, position.lat])
     const isInside = booleanPointInPolygon(turfPoint, turfPolygon)
 
-    const minDist = Math.min(
-      ...responsePoints.map(([lat, lng]) =>
-        distance(turfPoint, point([lng, lat]), { units: "meters" })
-      )
-    )
+    let closestWeightedScore = 0
 
-    const cappedDistance = Math.min(minDist, 100)
-    const normalized = 1 - cappedDistance / 100
-    const index = (100 * normalized ** 2)
+    responsePoints.forEach(([lat, lng, weight]) => {
+      const dist = distance(turfPoint, point([lng, lat]), { units: "meters" })
+      const cappedDist = Math.min(dist, 100)
+      const proximity = 1 - cappedDist / 100
+      const score = proximity ** 2 * weight 
 
+      if (score > closestWeightedScore) {
+        closestWeightedScore = score
+      }
+    })
+
+    const index = 100 * closestWeightedScore
     onIndexCalculated(area.id, index, isInside)
   }, [position, responsePoints, onIndexCalculated, turfPolygon, area.id])
 
-  // 🔥 Heat Layer rendering
   useEffect(() => {
     if (!responsePoints.length) return
 
