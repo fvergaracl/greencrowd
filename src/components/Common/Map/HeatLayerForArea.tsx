@@ -71,7 +71,7 @@ export const HeatLayerForArea = ({
       const dist = distance(turfPoint, point([lng, lat]), { units: "meters" })
       const cappedDist = Math.min(dist, 100)
       const proximity = 1 - cappedDist / 100
-      const score = proximity ** 2 * weight 
+      const score = proximity ** 2 * weight
 
       if (score > closestWeightedScore) {
         closestWeightedScore = score
@@ -90,15 +90,16 @@ export const HeatLayerForArea = ({
 
     const newHeatLayer = (L as any).heatLayer(responsePoints, {
       radius,
-      blur: 15,
-      maxZoom: 17,
-      max: 2,
+      blur: 10,
+      maxZoom: 18,
+      max: 5,
       gradient: {
-        0.2: "blue",
-        0.4: "lime",
-        0.6: "yellow",
-        0.8: "orange",
-        1.0: "red"
+        0.0: "#000000",
+        0.2: "#0000ff",
+        0.4: "#00ffff",
+        0.6: "#ffff00",
+        0.8: "#ff8000",
+        1.0: "#ff0000"
       }
     })
 
@@ -114,15 +115,16 @@ export const HeatLayerForArea = ({
         heatLayerRef.current = (L as any)
           .heatLayer(responsePoints, {
             radius: newRadius,
-            blur: 15,
+            blur: 10,
             maxZoom: 17,
-            max: 2,
+            max: 5,
             gradient: {
-              0.2: "blue",
-              0.4: "lime",
-              0.6: "yellow",
-              0.8: "orange",
-              1.0: "red"
+              0.0: "#000000",
+              0.2: "#0000ff",
+              0.4: "#00ffff",
+              0.6: "#ffff00",
+              0.8: "#ff8000",
+              1.0: "#ff0000"
             }
           })
           .addTo(map)
@@ -145,6 +147,6 @@ export const HeatLayerForArea = ({
 
 const getRadiusForZoom = (zoom: number): number => {
   const base = 25
-  const scaleFactor = 1.5 ** (13 - zoom)
-  return Math.max(15, base * scaleFactor)
+  const scaleFactor = 2 ** (13 - zoom)
+  return Math.max(30, base * scaleFactor)
 }

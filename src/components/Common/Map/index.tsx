@@ -307,10 +307,7 @@ export default function Map({
 
     if (containingArea) {
       setAreaOpenTask(containingArea)
-      console.log("Está dentro del área:", containingArea.name)
-      console.log({ containingArea, position })
     } else {
-      console.log("No está dentro de ninguna área.")
     }
   }, [campaignData, position])
 

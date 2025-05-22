@@ -138,7 +138,6 @@ const SettingsScreen = ({ DashboardContext }) => {
     }
   };
 
-  console.log({ user });
 
   const handleLogout = () => {
     Swal.fire({

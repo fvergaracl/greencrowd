@@ -10,6 +10,7 @@ import { logEvent } from "@/utils/logger"
 import { useEffect, useState } from "react"
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon"
 import { point, polygon } from "@turf/helpers"
+import { useOpenTaskStore } from "@/state/opentaskStore"
 
 interface MapControlsProps {
   position: Position | null
@@ -32,17 +33,11 @@ const MapControls: React.FC<MapControlsProps> = ({
   areaOpenTask = null,
   explorationIndices
 }) => {
-  console.log("---------------- explorationIndices")
-  console.log(explorationIndices)
-  console.log(areaOpenTask)
   const gameId = campaignData?.gameId
-  console.log({ gameId })
-  //---------------- explorationIndices
-  // It's made only for 1 openTask
+
   const router = useRouter()
   const openTask = areaOpenTask?.openTasks?.[0]
-  console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-  console.log(openTask)
+
   const rawIndex = explorationIndices?.[areaOpenTask?.id]
   const indexExploration =
     typeof rawIndex === "number" ? rawIndex.toFixed(2) : 0
@@ -102,13 +97,9 @@ const MapControls: React.FC<MapControlsProps> = ({
         "User clicked on open task details button",
         { openTask, gameId, points, from: "map" }
       )
+      useOpenTaskStore.getState().setData({ openTask, gameId, points })
       router.push({
-        pathname: `/dashboard/opentask/${openTask?.id}`,
-        query: {
-          openTask: JSON.stringify(openTask),
-          gameId,
-          points
-        }
+        pathname: `/dashboard/opentask/${openTask?.id}`
       })
     }
   }

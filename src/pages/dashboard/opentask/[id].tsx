@@ -21,6 +21,7 @@ import loading_6 from "@/lotties/loading_6.json"
 import sent_without_gamification from "@/lotties/sent_without_gamification.json"
 import downloading_task from "@/lotties/downloading_task.json"
 import points_reward from "@/lotties/points_reward.json"
+import { useOpenTaskStore } from "@/state/opentaskStore"
 import "./styles.css"
 
 const decodeToken = (token: string): { roles?: string[] } | null => {
@@ -155,10 +156,9 @@ const TaskWrapper = React.memo(
 export default function Task() {
   const { t } = useTranslation()
   const router = useRouter()
-  const { id, gameId, points } = router.query
-  const openTask =
-    router?.query?.openTask && JSON.parse(router.query.openTask as string)
-  console.log({ id, openTask, gameId, points })
+  const { id } = router.query
+  const { openTask, gameId, points } = useOpenTaskStore()
+
   const { position, selectedCampaign } = useDashboard()
   const [task, setTask] = useState<any>(null)
   const [isInside, setIsInside] = useState(false)
@@ -201,8 +201,6 @@ export default function Task() {
   const randomLoadingUploading = useRef(
     Math.floor(Math.random() * loadingArray.length)
   )
-
-  // useEffect src/pages/api/task/myActivityCounts.ts
   useEffect(() => {
     const fetchMyActivityInTask = async () => {
       try {
@@ -302,6 +300,17 @@ export default function Task() {
     }
   }, [id])
 
+  useEffect(() => {
+    if (!openTask || !gameId || points === null) {
+      Swal.fire(
+        t("Error"),
+        t("Missing task data. Please go back and try again."),
+        "error"
+      )
+      router.replace("/dashboard")
+    }
+  }, [openTask, gameId, points])
+
   const handleSurveyCompletion = async (
     survey: SurveyModel,
     setIsSubmitted: (value: boolean) => void
@@ -329,24 +338,21 @@ export default function Task() {
         const decodedToken = decodeToken(accessToken)
         const externalOpenTaskId = `OpenTask_${id}`
         if (gameId) {
-
-
           await axios
             .post(
-              `${getApiGameBaseUrl()}/user/external/${decodedToken?.sub}/points`,
+              `${getApiGameBaseUrl()}/users/external/${decodedToken?.sub}/points`,
               {
                 taskId: externalOpenTaskId,
                 caseName: "OpenTask",
-                points: gamificationData?.points,
-                description: gamificationData?.description,
+                points,
+                description: t("Task completed successfully"),
                 data: {
-                  ...gamificationData,
                   taskResponse: survey.data,
                   openTaskId: openTask?.id,
                   position,
-                  userDeclareInside
+                  userDeclareInside,
+                  points
                 }
-
               },
               {
                 headers: {
