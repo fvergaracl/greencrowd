@@ -307,7 +307,6 @@ export default function Map({
 
     if (containingArea) {
       setAreaOpenTask(containingArea)
-    } else {
     }
   }, [campaignData, position])
 
