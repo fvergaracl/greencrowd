@@ -435,5 +435,9 @@
   "A campaign ID is required": "A campaign ID is required",
   "Empty Questionnaire": "Empty Questionnaire",
   "Please design a questionnaire before saving": "Please design a questionnaire before saving",
-  "Failed to load questionnaire": "Failed to load questionnaire"
+  "Failed to load questionnaire": "Failed to load questionnaire",
+  "Create questionnaire": "Create questionnaire",
+  "Questionnaire / Create": "Questionnaire / Create",
+  "Edit Questionnaire": "Edit Questionnaire",
+  "Questionnaire / Edit": "Questionnaire / Edit"
 }

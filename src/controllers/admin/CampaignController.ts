@@ -90,6 +90,7 @@ export default class CampaignController {
             }
           }
         },
+        Questionnaire: true,
         allowedUsers: true
       }
     })

@@ -70,7 +70,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({
     }
 
     fetchData()
-  }, [questionnaireId, creator, t])
+  }, [questionnaireId])
 
   useEffect(() => {
     if (initialData?.questionnaireData) {
@@ -214,7 +214,9 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({
       <div className='flex justify-end'>
         <button
           type='button'
-          onClick={handleSave}
+          onClick={() => {
+            handleSave()
+          }}
           disabled={saving}
           className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50'
         >

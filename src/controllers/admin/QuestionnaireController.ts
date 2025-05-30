@@ -64,6 +64,10 @@ export default class QuestionnaireController {
 
   @withPrismaDisconnect
   static async updateQuestionnaire(id: string, data: any): Promise<any | null> {
+    console.log("--------------- updateQuestionnaire")
+    console.log("--------------- updateQuestionnaire")
+    console.log("--------------- updateQuestionnaire")
+    console.log("--------------- updateQuestionnaire")
     if (!id) {
       return null
     }
