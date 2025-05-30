@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client"
 export default class CampaignController {
   @withPrismaDisconnect
   static async getAllCampaigns() {
-    return await prisma.campaign.findMany({
+    const campaigns = await prisma.campaign.findMany({
       where: { isDisabled: false },
       include: {
         areas: {
@@ -12,12 +12,15 @@ export default class CampaignController {
             pointOfInterests: {
               include: {
                 tasks: {
-                  select: {
-                    id: true
-                  }
+                  select: { id: true }
                 }
               }
             }
+          }
+        },
+        _count: {
+          select: {
+            Questionnaire: true
           }
         },
         allowedUsers: {
@@ -32,8 +35,13 @@ export default class CampaignController {
         createdAt: "desc"
       }
     })
-  }
 
+    return campaigns.map(c => ({
+      ...c,
+      questionnaires: c._count.Questionnaire,
+      _count: undefined
+    }))
+  }
   @withPrismaDisconnect
   static async getCampaignNames() {
     return await prisma.campaign.findMany({

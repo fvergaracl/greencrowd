@@ -45,7 +45,6 @@ export default class CampaignControllerCommon {
         }
       })
 
-      // Agregar lógica para calcular si puede responder
       return campaigns.map(campaign => ({
         ...campaign,
         areas: campaign.areas.map(area => ({
