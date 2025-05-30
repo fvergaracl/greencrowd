@@ -12,7 +12,7 @@ export default async function handler(
   }
 
   try {
-    const { userId } = await validateKeycloakToken(req)
+    const { userId } = await validateKeycloakToken(req, res)
     const taskId = req.query.taskId as string
     const user = await prisma.user.findUnique({
       where: {

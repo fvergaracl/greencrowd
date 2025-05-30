@@ -1,14 +1,51 @@
 import getUserInfo from "./getUserInfo"
 import { getCachedUserInfo } from "./userInfoCache"
-import { getCookies } from "@/utils/cookies"
+import { tryRefreshToken } from "@/utils/tryRefreshToken"
+import { getCookies, setCookies } from "@/utils/cookies"
 
 export async function validateKeycloakToken(req: any, res?: any) {
   try {
     const cookies = getCookies(req)
-    const token = cookies.access_token
+    let token = cookies.access_token
+    console.log(
+      {
+        cookies,
+        token
+
+      }
+    )
+    if (!cookies.refresh_token) {
+      console.log("Refresh token is missing in cookies ..... ")
+      throw new Error("Refresh token is missing in cookies")
+    }
+
+    // Si no hay token, intenta refrescar
+    if (!token && cookies.refresh_token && res) {
+      console.log("Access token ausente, intentando refrescar...")
+
+      const newTokenData = await tryRefreshToken(cookies.refresh_token)
+
+      if (newTokenData) {
+        // Guarda los nuevos tokens en cookies
+        setCookies(
+          req,
+          res,
+          {
+            access_token: newTokenData.access_token,
+            refresh_token: newTokenData.refresh_token,
+            id_token: newTokenData.id_token
+          },
+          newTokenData.expires_in
+        )
+
+        token = newTokenData.access_token
+      } else {
+        throw new Error("Refresh token inválido o expirado")
+      }
+    }
 
     if (!token) {
-      throw new Error("No access token provided")
+      return null
     }
 
     const decoded_token = token.split(".")[1]
@@ -16,9 +53,11 @@ export async function validateKeycloakToken(req: any, res?: any) {
     const userInfo_decoded = JSON.parse(
       Buffer.from(base64, "base64").toString("binary")
     )
+
     const userInfo = await getCachedUserInfo(token, getUserInfo)
     const userId = userInfo.sub
     const userRoles = userInfo_decoded?.roles
+
     if (!userId) {
       throw new Error("User ID not found in token")
     }

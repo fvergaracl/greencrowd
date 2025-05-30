@@ -1,6 +1,6 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import TaskController from "@/controllers/TaskController";
-import { validateKeycloakToken } from "@/utils/validateToken";
+import { NextApiRequest, NextApiResponse } from "next"
+import TaskController from "@/controllers/TaskController"
+import { validateKeycloakToken } from "@/utils/validateToken"
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,15 +9,15 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       try {
-        const { userId } = await validateKeycloakToken(req);
+        const { userId } = await validateKeycloakToken(req, res)
 
-        const data = await TaskController.getAllMyActivity(userId);
-        return res.status(200).json(data);
+        const data = await TaskController.getAllMyActivity(userId)
+        return res.status(200).json(data)
       } catch (err: any) {
-        return res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: err.message })
       }
     default:
-      res.setHeader("Allow", ["GET", "POST"]);
-      return res.status(405).end(`Method ${req.method} Not Allowed`);
+      res.setHeader("Allow", ["GET", "POST"])
+      return res.status(405).end(`Method ${req.method} Not Allowed`)
   }
 }

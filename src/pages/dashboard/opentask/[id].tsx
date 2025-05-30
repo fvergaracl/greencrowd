@@ -201,7 +201,10 @@ export default function Task() {
     const fetchMyActivityInTask = async () => {
       try {
         const response = await axios.get(
-          `${getApiBaseUrl()}/opentask/myActivityCounts?opentaskId=${id}`
+          `${getApiBaseUrl()}/opentask/myActivityCounts?opentaskId=${id}`,
+          {
+            withCredentials: true
+          }
         )
         setMyActivityInTask(response.data)
       } catch (error) {

@@ -23,10 +23,14 @@ export default async function handler(req, res) {
   }
 
   try {
+    if (!refreshToken) {
+      console.warn("No refresh token provided")
+      return res.status(401).json({ error: "No refresh token provided" })
+    }
     const tokenData = await refreshAccessToken(refreshToken)
 
     if (!tokenData) {
-      return res.status(401).json({ error: "Failed to refresh token" })
+      return res.status(401).json({ error: "We could not refresh your token" })
     }
 
     const newTokenData = {

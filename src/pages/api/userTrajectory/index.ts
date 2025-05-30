@@ -19,7 +19,7 @@ export default async function handler(
           heading,
           speed
         } = req.body
-        const { userId } = await validateKeycloakToken(req)
+        const { userId } = await validateKeycloakToken(req, res)
         if (!userId) {
           return res.status(401).json({ error: "Unauthorized" })
         }
