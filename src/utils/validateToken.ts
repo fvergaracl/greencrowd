@@ -7,26 +7,17 @@ export async function validateKeycloakToken(req: any, res?: any) {
   try {
     const cookies = getCookies(req)
     let token = cookies.access_token
-    console.log(
-      {
-        cookies,
-        token
-
-      }
-    )
     if (!cookies.refresh_token) {
       console.log("Refresh token is missing in cookies ..... ")
       throw new Error("Refresh token is missing in cookies")
     }
 
-    // Si no hay token, intenta refrescar
     if (!token && cookies.refresh_token && res) {
       console.log("Access token ausente, intentando refrescar...")
 
       const newTokenData = await tryRefreshToken(cookies.refresh_token)
 
       if (newTokenData) {
-        // Guarda los nuevos tokens en cookies
         setCookies(
           req,
           res,
