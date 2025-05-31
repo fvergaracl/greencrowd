@@ -282,9 +282,22 @@ export default function Map({
             accessToken
           }
         )
-        console.error(">>>> Error fetching gamification data", resJson.detail)
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        fetchGamificationData()
+
+        if (res.status === 404) {
+          console.warn("Game not found (404). Retrying in 5 minutes.")
+          setTimeout(
+            () => {
+              fetchGamificationData()
+            },
+            5 * 60 * 1000
+          )
+          return
+        } else {
+          console.error(">>>> Error fetching gamification data", resJson.detail)
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          fetchGamificationData()
+        }
+
         return
       }
       localStorage.setItem(
