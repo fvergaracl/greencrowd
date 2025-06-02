@@ -39,6 +39,105 @@ export default function Admin() {
                 data-cy='system-overview-graph'
               >
                 <svg viewBox='0 0 900 700' className='w-full h-[40rem]'>
+                  {/* Connections: Campaign */}
+                  <line
+                    x1='450'
+                    y1='90'
+                    x2='250'
+                    y2='160'
+                    className='stroke-blue-300 stroke-2'
+                  />
+                  <line
+                    x1='450'
+                    y1='90'
+                    x2='450'
+                    y2='160'
+                    className='stroke-blue-300 stroke-2'
+                  />
+                  <line
+                    x1='450'
+                    y1='90'
+                    x2='650'
+                    y2='160'
+                    className='stroke-blue-300 stroke-2'
+                  />
+
+                  {/* Connections: Areas to POIs */}
+                  <line
+                    x1='250'
+                    y1='240'
+                    x2='200'
+                    y2='310'
+                    className='stroke-green-300 stroke-2'
+                  />
+                  <line
+                    x1='250'
+                    y1='240'
+                    x2='300'
+                    y2='310'
+                    className='stroke-green-300 stroke-2'
+                  />
+                  <line
+                    x1='650'
+                    y1='240'
+                    x2='600'
+                    y2='310'
+                    className='stroke-green-300 stroke-2'
+                  />
+                  <line
+                    x1='650'
+                    y1='240'
+                    x2='700'
+                    y2='310'
+                    className='stroke-green-300 stroke-2'
+                  />
+
+                  {/* Connections: Areas to OpenTasks */}
+                  <line
+                    x1='250'
+                    y1='200'
+                    x2='170'
+                    y2='200'
+                    className='stroke-indigo-300 stroke-2'
+                  />
+                  <line
+                    x1='650'
+                    y1='200'
+                    x2='730'
+                    y2='200'
+                    className='stroke-indigo-300 stroke-2'
+                  />
+
+                  {/* Connections: POIs to Tasks */}
+                  <line
+                    x1='200'
+                    y1='390'
+                    x2='200'
+                    y2='460'
+                    className='stroke-yellow-300 stroke-2'
+                  />
+                  <line
+                    x1='300'
+                    y1='390'
+                    x2='300'
+                    y2='460'
+                    className='stroke-yellow-300 stroke-2'
+                  />
+                  <line
+                    x1='600'
+                    y1='390'
+                    x2='600'
+                    y2='460'
+                    className='stroke-yellow-300 stroke-2'
+                  />
+                  <line
+                    x1='700'
+                    y1='390'
+                    x2='700'
+                    y2='460'
+                    className='stroke-yellow-300 stroke-2'
+                  />
+
                   {/* Campaign */}
                   <circle cx='450' cy='50' r='40' className='fill-blue-500' />
                   <text
@@ -228,105 +327,6 @@ export default function Admin() {
                   >
                     {t("Task")} P
                   </text>
-
-                  {/* Connections: Campaign */}
-                  <line
-                    x1='450'
-                    y1='90'
-                    x2='250'
-                    y2='160'
-                    className='stroke-blue-300 stroke-2'
-                  />
-                  <line
-                    x1='450'
-                    y1='90'
-                    x2='450'
-                    y2='160'
-                    className='stroke-blue-300 stroke-2'
-                  />
-                  <line
-                    x1='450'
-                    y1='90'
-                    x2='650'
-                    y2='160'
-                    className='stroke-blue-300 stroke-2'
-                  />
-
-                  {/* Connections: Areas to POIs */}
-                  <line
-                    x1='250'
-                    y1='240'
-                    x2='200'
-                    y2='310'
-                    className='stroke-green-300 stroke-2'
-                  />
-                  <line
-                    x1='250'
-                    y1='240'
-                    x2='300'
-                    y2='310'
-                    className='stroke-green-300 stroke-2'
-                  />
-                  <line
-                    x1='650'
-                    y1='240'
-                    x2='600'
-                    y2='310'
-                    className='stroke-green-300 stroke-2'
-                  />
-                  <line
-                    x1='650'
-                    y1='240'
-                    x2='700'
-                    y2='310'
-                    className='stroke-green-300 stroke-2'
-                  />
-
-                  {/* Connections: Areas to OpenTasks */}
-                  <line
-                    x1='250'
-                    y1='200'
-                    x2='170'
-                    y2='200'
-                    className='stroke-indigo-300 stroke-2'
-                  />
-                  <line
-                    x1='650'
-                    y1='200'
-                    x2='730'
-                    y2='200'
-                    className='stroke-indigo-300 stroke-2'
-                  />
-
-                  {/* Connections: POIs to Tasks */}
-                  <line
-                    x1='200'
-                    y1='390'
-                    x2='200'
-                    y2='460'
-                    className='stroke-yellow-300 stroke-2'
-                  />
-                  <line
-                    x1='300'
-                    y1='390'
-                    x2='300'
-                    y2='460'
-                    className='stroke-yellow-300 stroke-2'
-                  />
-                  <line
-                    x1='600'
-                    y1='390'
-                    x2='600'
-                    y2='460'
-                    className='stroke-yellow-300 stroke-2'
-                  />
-                  <line
-                    x1='700'
-                    y1='390'
-                    x2='700'
-                    y2='460'
-                    className='stroke-yellow-300 stroke-2'
-                  />
                 </svg>
               </div>
             </div>
