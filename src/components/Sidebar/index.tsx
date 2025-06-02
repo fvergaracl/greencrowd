@@ -10,6 +10,7 @@ import {
 } from "react-icons/md"
 import { RxActivityLog } from "react-icons/rx"
 import {
+  FaFileImport,
   FaPlus,
   FaListAlt,
   FaUser,
@@ -34,8 +35,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
   )
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    window.scrollTo(0, 0)
+  }, [])
   const [openMenu, setOpenMenu] = useState<string | null>(null)
 
   const toggleMenu = (menu: string) => {
@@ -116,6 +117,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           route: "/admin/areas/create",
           icon: <FaPlus size={16} />,
           dataCy: "sidebar-areas-create"
+        },
+        {
+          title: t("Import from KML"),
+          route: "/admin/areas/import-kml",
+          icon: <FaFileImport size={16} />,
+          dataCy: "sidebar-areas-import-kml"
         }
       ],
       dataCy: "sidebar-areas"
@@ -170,8 +177,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+      className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
       data-cy='sidebar'
     >
       <div className='flex items-center justify-between px-6 py-5.5'>

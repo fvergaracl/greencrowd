@@ -441,5 +441,21 @@
   "Edit Questionnaire": "Edit Questionnaire",
   "Questionnaire / Edit": "Questionnaire / Edit",
   "Questionnaires are structured sets of questions associated directly with a campaign. They can be displayed conditionally - before, after, daily, or every X days - and are used to collect repeated or contextual user responses throughout the campaign lifecycle": "Questionnaires are structured sets of questions associated directly with a campaign. They can be displayed conditionally - before, after, daily, or every X days - and are used to collect repeated or contextual user responses throughout the campaign lifecycle",
-  "Open Tasks are flexible tasks assigned directly to areas, independent of specific points of interest. They are ideal for general actions like submitting observations or answering surveys within a defined geographic radius and time window": "Open Tasks are flexible tasks assigned directly to areas, independent of specific points of interest. They are ideal for general actions like submitting observations or answering surveys within a defined geographic radius and time window"
+  "Open Tasks are flexible tasks assigned directly to areas, independent of specific points of interest. They are ideal for general actions like submitting observations or answering surveys within a defined geographic radius and time window": "Open Tasks are flexible tasks assigned directly to areas, independent of specific points of interest. They are ideal for general actions like submitting observations or answering surveys within a defined geographic radius and time window",
+  "Import from KML": "Import from KML",
+  "Valid Area": "Valid Area",
+  "Incomplete Area": "Incomplete Area",
+  "Delete Area": "Delete Area",
+  "Step 1: Select Default Campaign": "Step 1: Select Default Campaign",
+  "Step 2: Upload KML File": "Step 2: Upload KML File",
+  "No Valid Areas": "No Valid Areas",
+  "Please ensure each area has at least 3 points": "Please ensure each area has at least 3 points",
+  "Each area must have a name, campaign and valid polygon": "Each area must have a name, campaign and valid polygon",
+  "All areas were imported successfully": "All areas were imported successfully",
+  "Failed to import areas": "Failed to import areas",
+  "Import Areas from KML": "Import Areas from KML",
+  "Areas / Import from KML": "Areas / Import from KML",
+  "Editing Area": "Editing Area",
+  "Importing...": "Importing...",
+  "Import Selected Areas": "Import Selected Areas"
 }
