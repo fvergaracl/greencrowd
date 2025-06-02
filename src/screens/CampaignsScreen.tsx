@@ -44,8 +44,9 @@ export default function CampaignsScreen() {
 
       setCampaigns(filteredCampaigns)
     } catch (error) {
+      localStorage.clear()
+      router.push("/")
       console.error("Error fetching campaigns:", error)
-      Swal.fire(t("Error"), t("Failed to load campaigns"), "error")
     }
   }
 

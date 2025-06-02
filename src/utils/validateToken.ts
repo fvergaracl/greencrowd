@@ -56,6 +56,17 @@ export async function validateKeycloakToken(req: any, res?: any) {
     return { userId, userInfo, userRoles }
   } catch (error: any) {
     console.error("Token validation failed:", error.message)
-    throw new Error("Unauthorized: Invalid or expired token")
+
+    if (res) {
+      res.setHeader("Set-Cookie", [
+        `access_token=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict`,
+        `refresh_token=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict`,
+        `id_token=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict`
+      ])
+    }
+    if (error.message.includes("Refresh token inválido o expirado")) {
+      throw new Error("Unauthorized: Invalid or expired refresh token")
+    }
+    throw new Error("Unauthorized: Invalid or expired access token.")
   }
 }

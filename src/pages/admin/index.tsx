@@ -4,6 +4,7 @@ import { useTranslation } from "@/hooks/useTranslation"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
 import DefaultLayout from "@/components/AdminLayout"
 import {
+  faClipboardList,
   faCircle,
   faUser,
   faMapMarkerAlt,
@@ -37,11 +38,11 @@ export default function Admin() {
                 className='flex justify-center'
                 data-cy='system-overview-graph'
               >
-                <svg viewBox='0 0 800 600' className='w-full h-96'>
-                  {/* Campaign Node */}
-                  <circle cx='400' cy='50' r='40' className='fill-blue-500' />
+                <svg viewBox='0 0 900 700' className='w-full h-[40rem]'>
+                  {/* Campaign */}
+                  <circle cx='450' cy='50' r='40' className='fill-blue-500' />
                   <text
-                    x='400'
+                    x='450'
                     y='55'
                     textAnchor='middle'
                     fill='white'
@@ -50,10 +51,10 @@ export default function Admin() {
                     {t("Campaign")}
                   </text>
 
-                  {/* Area Nodes */}
-                  <circle cx='200' cy='200' r='40' className='fill-green-500' />
+                  {/* Areas */}
+                  <circle cx='250' cy='200' r='40' className='fill-green-500' />
                   <text
-                    x='200'
+                    x='250'
                     y='205'
                     textAnchor='middle'
                     fill='white'
@@ -62,9 +63,9 @@ export default function Admin() {
                     {t("Area")} 1
                   </text>
 
-                  <circle cx='600' cy='200' r='40' className='fill-green-500' />
+                  <circle cx='650' cy='200' r='40' className='fill-green-500' />
                   <text
-                    x='600'
+                    x='650'
                     y='205'
                     textAnchor='middle'
                     fill='white'
@@ -73,201 +74,256 @@ export default function Admin() {
                     {t("Area")} N
                   </text>
 
-                  {/* POI Nodes */}
+                  {/* Questionnaire */}
+                  <circle cx='450' cy='200' r='40' className='fill-cyan-500' />
+                  <text
+                    x='450'
+                    y='205'
+                    textAnchor='middle'
+                    fill='white'
+                    fontSize='14'
+                  >
+                    {t("Questionnaire")}
+                  </text>
+
+                  {/* OpenTasks (moved laterally) */}
                   <circle
-                    cx='150'
+                    cx='130'
+                    cy='200'
+                    r='40'
+                    className='fill-indigo-500'
+                  />
+                  <text
+                    x='130'
+                    y='205'
+                    textAnchor='middle'
+                    fill='white'
+                    fontSize='13'
+                  >
+                    {t("OpenTask")}
+                  </text>
+
+                  <circle
+                    cx='770'
+                    cy='200'
+                    r='40'
+                    className='fill-indigo-500'
+                  />
+                  <text
+                    x='770'
+                    y='205'
+                    textAnchor='middle'
+                    fill='white'
+                    fontSize='13'
+                  >
+                    {t("OpenTask")}
+                  </text>
+
+                  {/* POIs */}
+                  <circle
+                    cx='200'
                     cy='350'
                     r='40'
                     className='fill-yellow-500'
                   />
                   <text
-                    x='150'
+                    x='200'
                     y='355'
                     textAnchor='middle'
                     fill='white'
-                    fontSize='16'
+                    fontSize='14'
                   >
                     POI 1
                   </text>
 
                   <circle
-                    cx='250'
+                    cx='300'
                     cy='350'
                     r='40'
                     className='fill-yellow-500'
                   />
                   <text
-                    x='250'
+                    x='300'
                     y='355'
                     textAnchor='middle'
                     fill='white'
-                    fontSize='16'
+                    fontSize='14'
                   >
                     POI M
                   </text>
 
                   <circle
-                    cx='550'
+                    cx='600'
                     cy='350'
                     r='40'
                     className='fill-yellow-500'
                   />
                   <text
-                    x='550'
+                    x='600'
                     y='355'
                     textAnchor='middle'
                     fill='white'
-                    fontSize='16'
+                    fontSize='14'
                   >
                     POI 1
                   </text>
 
                   <circle
-                    cx='650'
+                    cx='700'
                     cy='350'
                     r='40'
                     className='fill-yellow-500'
                   />
                   <text
-                    x='650'
+                    x='700'
                     y='355'
                     textAnchor='middle'
                     fill='white'
-                    fontSize='16'
+                    fontSize='14'
                   >
                     POI L
                   </text>
 
-                  {/* Task Nodes */}
-                  <circle cx='150' cy='500' r='40' className='fill-red-500' />
+                  {/* Tasks */}
+                  <circle cx='200' cy='500' r='40' className='fill-red-500' />
                   <text
-                    x='150'
+                    x='200'
                     y='505'
                     textAnchor='middle'
                     fill='white'
-                    fontSize='16'
+                    fontSize='14'
                   >
                     {t("Task")} 1
                   </text>
 
-                  <circle cx='250' cy='500' r='40' className='fill-red-500' />
+                  <circle cx='300' cy='500' r='40' className='fill-red-500' />
                   <text
-                    x='250'
+                    x='300'
                     y='505'
                     textAnchor='middle'
                     fill='white'
-                    fontSize='16'
+                    fontSize='14'
                   >
                     {t("Task")} 2
                   </text>
 
-                  <circle cx='350' cy='500' r='40' className='fill-red-500' />
+                  <circle cx='600' cy='500' r='40' className='fill-red-500' />
                   <text
-                    x='350'
+                    x='600'
                     y='505'
                     textAnchor='middle'
                     fill='white'
-                    fontSize='16'
-                  >
-                    {t("Task")} O
-                  </text>
-
-                  <circle cx='550' cy='500' r='40' className='fill-red-500' />
-                  <text
-                    x='550'
-                    y='505'
-                    textAnchor='middle'
-                    fill='white'
-                    fontSize='16'
+                    fontSize='14'
                   >
                     {t("Task")} 1
                   </text>
 
-                  <circle cx='650' cy='500' r='40' className='fill-red-500' />
+                  <circle cx='700' cy='500' r='40' className='fill-red-500' />
                   <text
-                    x='650'
+                    x='700'
                     y='505'
                     textAnchor='middle'
                     fill='white'
-                    fontSize='16'
+                    fontSize='14'
                   >
                     {t("Task")} P
                   </text>
 
+                  {/* Connections: Campaign */}
                   <line
-                    x1='400'
+                    x1='450'
                     y1='90'
-                    x2='200'
-                    y2='160'
-                    className='stroke-blue-300 stroke-2'
-                  />
-                  <line
-                    x1='400'
-                    y1='90'
-                    x2='600'
-                    y2='160'
-                    className='stroke-blue-300 stroke-2'
-                  />
-                  <line
-                    x1='200'
-                    y1='240'
-                    x2='150'
-                    y2='310'
-                    className='stroke-green-300 stroke-2'
-                  />
-                  <line
-                    x1='200'
-                    y1='240'
                     x2='250'
-                    y2='310'
-                    className='stroke-green-300 stroke-2'
+                    y2='160'
+                    className='stroke-blue-300 stroke-2'
                   />
                   <line
-                    x1='600'
-                    y1='240'
-                    x2='550'
-                    y2='310'
-                    className='stroke-green-300 stroke-2'
+                    x1='450'
+                    y1='90'
+                    x2='450'
+                    y2='160'
+                    className='stroke-blue-300 stroke-2'
                   />
                   <line
-                    x1='600'
-                    y1='240'
+                    x1='450'
+                    y1='90'
                     x2='650'
+                    y2='160'
+                    className='stroke-blue-300 stroke-2'
+                  />
+
+                  {/* Connections: Areas to POIs */}
+                  <line
+                    x1='250'
+                    y1='240'
+                    x2='200'
                     y2='310'
                     className='stroke-green-300 stroke-2'
-                  />
-                  <line
-                    x1='150'
-                    y1='390'
-                    x2='150'
-                    y2='460'
-                    className='stroke-yellow-300 stroke-2'
-                  />
-                  <line
-                    x1='150'
-                    y1='390'
-                    x2='250'
-                    y2='460'
-                    className='stroke-yellow-300 stroke-2'
                   />
                   <line
                     x1='250'
-                    y1='390'
-                    x2='350'
-                    y2='460'
-                    className='stroke-yellow-300 stroke-2'
-                  />
-                  <line
-                    x1='550'
-                    y1='390'
-                    x2='550'
-                    y2='460'
-                    className='stroke-yellow-300 stroke-2'
+                    y1='240'
+                    x2='300'
+                    y2='310'
+                    className='stroke-green-300 stroke-2'
                   />
                   <line
                     x1='650'
+                    y1='240'
+                    x2='600'
+                    y2='310'
+                    className='stroke-green-300 stroke-2'
+                  />
+                  <line
+                    x1='650'
+                    y1='240'
+                    x2='700'
+                    y2='310'
+                    className='stroke-green-300 stroke-2'
+                  />
+
+                  {/* Connections: Areas to OpenTasks */}
+                  <line
+                    x1='250'
+                    y1='200'
+                    x2='170'
+                    y2='200'
+                    className='stroke-indigo-300 stroke-2'
+                  />
+                  <line
+                    x1='650'
+                    y1='200'
+                    x2='730'
+                    y2='200'
+                    className='stroke-indigo-300 stroke-2'
+                  />
+
+                  {/* Connections: POIs to Tasks */}
+                  <line
+                    x1='200'
                     y1='390'
-                    x2='650'
+                    x2='200'
+                    y2='460'
+                    className='stroke-yellow-300 stroke-2'
+                  />
+                  <line
+                    x1='300'
+                    y1='390'
+                    x2='300'
+                    y2='460'
+                    className='stroke-yellow-300 stroke-2'
+                  />
+                  <line
+                    x1='600'
+                    y1='390'
+                    x2='600'
+                    y2='460'
+                    className='stroke-yellow-300 stroke-2'
+                  />
+                  <line
+                    x1='700'
+                    y1='390'
+                    x2='700'
                     y2='460'
                     className='stroke-yellow-300 stroke-2'
                   />
@@ -287,6 +343,42 @@ export default function Admin() {
                 <p>
                   {t(
                     "Campaigns represent overarching projects. Each campaign can contain one or many areas to organize tasks geographically"
+                  )}
+                  .
+                </p>
+              </div>
+            </div>
+
+            {/* Questionnaires */}
+            <div className='flex items-center gap-6'>
+              <FontAwesomeIcon
+                icon={faClipboardList}
+                className='text-cyan-500 text-3xl'
+              />
+              <div>
+                <h3 className='text-2xl font-semibold'>
+                  {t("Questionnaires")}
+                </h3>
+                <p>
+                  {t(
+                    "Questionnaires are structured sets of questions associated directly with a campaign. They can be displayed conditionally - before, after, daily, or every X days - and are used to collect repeated or contextual user responses throughout the campaign lifecycle"
+                  )}
+                  .
+                </p>
+              </div>
+            </div>
+
+            {/* Open Tasks */}
+            <div className='flex items-center gap-6'>
+              <FontAwesomeIcon
+                icon={faTasks}
+                className='text-indigo-500 text-3xl'
+              />
+              <div>
+                <h3 className='text-2xl font-semibold'>{t("Open Tasks")}</h3>
+                <p>
+                  {t(
+                    "Open Tasks are flexible tasks assigned directly to areas, independent of specific points of interest. They are ideal for general actions like submitting observations or answering surveys within a defined geographic radius and time window"
                   )}
                   .
                 </p>

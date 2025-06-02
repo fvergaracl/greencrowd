@@ -439,5 +439,7 @@
   "Create questionnaire": "Create questionnaire",
   "Questionnaire / Create": "Questionnaire / Create",
   "Edit Questionnaire": "Edit Questionnaire",
-  "Questionnaire / Edit": "Questionnaire / Edit"
+  "Questionnaire / Edit": "Questionnaire / Edit",
+  "Questionnaires are structured sets of questions associated directly with a campaign. They can be displayed conditionally - before, after, daily, or every X days - and are used to collect repeated or contextual user responses throughout the campaign lifecycle": "Questionnaires are structured sets of questions associated directly with a campaign. They can be displayed conditionally - before, after, daily, or every X days - and are used to collect repeated or contextual user responses throughout the campaign lifecycle",
+  "Open Tasks are flexible tasks assigned directly to areas, independent of specific points of interest. They are ideal for general actions like submitting observations or answering surveys within a defined geographic radius and time window": "Open Tasks are flexible tasks assigned directly to areas, independent of specific points of interest. They are ideal for general actions like submitting observations or answering surveys within a defined geographic radius and time window"
 }
