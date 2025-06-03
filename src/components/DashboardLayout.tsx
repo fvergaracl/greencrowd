@@ -38,7 +38,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const checkPendingQuestionnaires = async () => {
       if (!selectedCampaign?.id || hasRedirected) return
 
-      if (router.pathname.startsWith("/dashboard/questionnaires")) return
+      const allowedPaths = ["/dashboard/campaigns", "/dashboard/settings"]
+
+      const isAllowed =
+        router.pathname.startsWith("/dashboard/questionnaires") ||
+        allowedPaths.includes(router.pathname) ||
+        router.pathname.startsWith("/admin")
+
+      if (isAllowed) return
 
       try {
         const res = await fetch(
