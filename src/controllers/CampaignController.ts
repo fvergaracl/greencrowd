@@ -260,6 +260,8 @@ export default class CampaignControllerCommon {
           gameId: true,
           startDatetime: true,
           endDatetime: true,
+          groupName: true,
+          createdAt: true,
           areas: {
             where: { isDisabled: false },
             select: {

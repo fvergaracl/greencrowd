@@ -153,3 +153,5 @@ if need https run the following command:
 ```bash
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout certs/nginx.key -out certs/nginx.crt
 ```
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/fvergaracl/greencrowd)
