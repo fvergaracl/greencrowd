@@ -49,6 +49,7 @@ model Campaign {
   endDatetime   DateTime?
   category      String
   gameId        String?
+  groupName     String?
   isDisabled    Boolean?             @default(false)
   areas         Area[]
   allowedUsers  UserCampaignAccess[] @relation("UserCampaignAccess")
