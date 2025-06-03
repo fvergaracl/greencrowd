@@ -244,6 +244,7 @@ export default function Map({
   tokenCookie ? tokenCookie.split("=")[1] : null
 
   const fetchGamificationData = async () => {
+    const now = new Date().getTime()
     try {
       const decodedToken = decodeToken(accessToken)
       const res = await fetch(
@@ -269,7 +270,6 @@ export default function Map({
         }
       )
 
-      const now = new Date().getTime()
       if (resJson?.detail) {
         logEvent(
           "USER_FETCHED_GAMIFICATION_DATA_ERROR",
@@ -282,9 +282,22 @@ export default function Map({
             accessToken
           }
         )
-        console.error("Error fetching gamification data", resJson.detail)
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        fetchGamificationData()
+
+        if (res.status === 404) {
+          console.warn("Game not found (404). Retrying in 5 minutes.")
+          setTimeout(
+            () => {
+              fetchGamificationData()
+            },
+            5 * 60 * 1000
+          )
+          return
+        } else {
+          console.error(">>>> Error fetching gamification data", resJson.detail)
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          fetchGamificationData()
+        }
+
         return
       }
       localStorage.setItem(
@@ -297,6 +310,16 @@ export default function Map({
       )
       setLastFetchGamificationData(now)
     } catch (err) {
+      localStorage.setItem(
+        `gamificationData_${selectedCampaign?.id}`,
+        JSON.stringify([])
+      )
+      localStorage.setItem(
+        `lastFetchGamificationData_${selectedCampaign?.id}`,
+        new Date().toString()
+      )
+      setGamificationData([])
+      setLastFetchGamificationData(now)
       console.error("Failed to fetch gamification data", err)
     }
   }
@@ -307,7 +330,6 @@ export default function Map({
 
     if (containingArea) {
       setAreaOpenTask(containingArea)
-    } else {
     }
   }, [campaignData, position])
 
@@ -315,7 +337,11 @@ export default function Map({
     const fetchMyActivity = async () => {
       if (!selectedCampaign) return
       const res = await fetch(
-        `${getApiBaseUrl()}/campaigns/myActivityCount?campaignId=${selectedCampaign?.id}`
+        `${getApiBaseUrl()}/campaigns/myActivityCount?campaignId=${selectedCampaign?.id}`,
+        {
+          method: "GET",
+          credentials: "include"
+        }
       )
       const resJson = await res.json()
 
@@ -767,14 +793,47 @@ export default function Map({
             item => item.poiId === poiId
           )
 
-          if (!normalizedData) return null
-          const { averagePoints, normalizedScore } = normalizedData
+          if (!normalizedData)
+            return (
+              <React.Fragment key={`poi-${poi.id}`}>
+                <Circle
+                  key={`${poi.id}-circle`}
+                  center={[poi.latitude, poi.longitude]}
+                  radius={poi.radius}
+                  pathOptions={{ color: "green", fillOpacity: 0.2 }}
+                  eventHandlers={{
+                    click: () => {
+                      if (selectedPoi?.id === poi?.id) {
+                        handleSelectPoi(null)
+                      } else {
+                        handleSelectPoi(poi)
+                      }
+                    }
+                  }}
+                />
+                <Marker
+                  key={poi.id}
+                  position={[poi.latitude, poi.longitude]}
+                  icon={createCustomIcon("green", 36)}
+                  eventHandlers={{
+                    click: () => {
+                      if (selectedPoi) {
+                        logEvent(
+                          "USER_SELECTED_POI_IN_MAP_BY_MARKER",
+                          `User selected a point of interest in the map with id: ${selectedPoi.id}`,
+                          { poi: selectedPoi }
+                        )
 
-          const getColorByScore = (score: number) => {
-            if (score >= 8) return "green"
-            if (score >= 5) return "orange"
-            return "red"
-          }
+                        setSelectedPoi(null)
+                        return
+                      }
+                      handleSelectPoi(poi)
+                    }
+                  }}
+                />
+              </React.Fragment>
+            )
+          const { averagePoints, normalizedScore } = normalizedData
 
           const iconSize = 8 + normalizedScore * 2
           return (

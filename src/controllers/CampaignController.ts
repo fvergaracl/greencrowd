@@ -45,7 +45,6 @@ export default class CampaignControllerCommon {
         }
       })
 
-      // Agregar lógica para calcular si puede responder
       return campaigns.map(campaign => ({
         ...campaign,
         areas: campaign.areas.map(area => ({
@@ -261,6 +260,8 @@ export default class CampaignControllerCommon {
           gameId: true,
           startDatetime: true,
           endDatetime: true,
+          groupName: true,
+          createdAt: true,
           areas: {
             where: { isDisabled: false },
             select: {

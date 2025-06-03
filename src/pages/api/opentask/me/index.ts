@@ -10,7 +10,7 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       try {
-        const { userId } = await validateKeycloakToken(req)
+        const { userId } = await validateKeycloakToken(req,res)
 
         const data = await OpenTaskController.getAllMyOpenTaskActivity(userId)
         return res.status(200).json(data)

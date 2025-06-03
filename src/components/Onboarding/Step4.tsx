@@ -6,8 +6,6 @@ import onboardingLocation from "@/lotties/onboarding_location.json"
 import Swal from "sweetalert2"
 import { useState } from "react"
 
-// Step4: Enable location
-
 interface Step4Props {
   setStepNumber: (step: number) => void
 }
@@ -66,7 +64,7 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
   return (
     <div
       key={key}
-      className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'
+      className='min-h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4 flex flex-col items-center'
     >
       <HeaderOnboarding
         stepNumber={4}
@@ -75,8 +73,9 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
         eventNameLanguage='ONBOARDING_LANGUAGE_CHANGED_ON_STEP4'
         onLanguageChange={() => setKey(prev => prev + 1)}
       />
-      <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>
-        <div className='flex justify-center mt-2'>
+
+      <div className='w-full max-w-2xl bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 flex flex-col flex-grow overflow-auto mt-4'>
+        <div className='flex justify-center max-h-60 overflow-hidden mb-4'>
           <Lottie animationData={onboardingLocation} loop className='w-2/3' />
         </div>
 
@@ -95,17 +94,14 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.5, ease: "easeOut", delay: 1 }}
-          className='mb-6 flex flex-col gap-4 w-full'
+          className='mt-6 flex flex-col gap-4 w-full'
         >
-          {/* Botón para Activar Ubicación */}
           <button
             className='w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-md'
             onClick={requestLocation}
           >
             {t("Enable Location")}
           </button>
-
-          {/* Botón para Continuar sin Activar Ubicación */}
           <button
             className='w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-full shadow-md'
             onClick={() => setStepNumber(5)}

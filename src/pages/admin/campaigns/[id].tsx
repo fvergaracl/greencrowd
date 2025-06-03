@@ -1,86 +1,142 @@
-import { useRouter } from "next/router";
-import { useEffect, useState, useMemo } from "react";
-import { MdEdit, MdCampaign } from "react-icons/md";
-import dynamic from "next/dynamic";
-import axios from "axios";
-import DefaultLayout from "@/components/AdminLayout";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { useTranslation } from "@/hooks/useTranslation";
-import GoBack from "@/components/Admin/GoBack";
-import { TbLassoPolygon } from "react-icons/tb";
-import { FaCloudDownloadAlt } from "react-icons/fa";
-import accessTypeColors from "@/utils/accessTypeColors";
-import { getApiBaseUrl } from "@/config/api";
+import { useRouter } from "next/router"
+import { useEffect, useState, useMemo } from "react"
+import { MdEdit, MdCampaign } from "react-icons/md"
+import dynamic from "next/dynamic"
+import axios from "axios"
+import DefaultLayout from "@/components/AdminLayout"
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb"
+import { useTranslation } from "@/hooks/useTranslation"
+import GoBack from "@/components/Admin/GoBack"
+import { TbLassoPolygon } from "react-icons/tb"
+import { FcSurvey } from "react-icons/fc"
+import { FaCloudDownloadAlt } from "react-icons/fa"
+import accessTypeColors from "@/utils/accessTypeColors"
+import { getApiBaseUrl } from "@/config/api"
 interface Campaign {
-  id: string;
-  name: string;
-  description: string;
-  isOpen: boolean;
-  startDatetime?: string;
-  endDatetime?: string;
-  location?: string;
-  category: string;
-  gameId: string | null;
+  id: string
+  name: string
+  description: string
+  isOpen: boolean
+  startDatetime?: string
+  endDatetime?: string
+  location?: string
+  category: string
+  gameId: string | null
   areas: {
-    id: string;
-    name: string;
-    description: string;
-    polygon: [number, number][] | null;
+    id: string
+    name: string
+    description: string
+    polygon: [number, number][] | null
     pointOfInterests: {
-      id: string;
-      name: string;
-      latitude: number;
-      longitude: number;
-      disabled: boolean;
+      id: string
+      name: string
+      latitude: number
+      longitude: number
+      disabled: boolean
       tasks: {
-        id: string;
-      }[];
-    }[];
-  }[];
+        id: string
+      }[]
+    }[]
+  }[]
   allowedUsers: {
-    accessType: string;
-    userId: string;
-  }[];
+    accessType: string
+    userId: string
+  }[]
 }
 
 export default function CampaignDetails() {
-  const { t } = useTranslation();
-  const router = useRouter();
-  const { id } = router.query;
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
+  const { t } = useTranslation()
+  const router = useRouter()
+  const { id } = router.query
+  const [campaign, setCampaign] = useState<Campaign | null>(null)
   const Map = useMemo(
     () =>
       dynamic(() => import("../../../components/Common/Map"), {
         loading: () => <p>{t("A map is loading")}</p>,
-        ssr: false,
+        ssr: false
       }),
     []
-  );
+  )
   useEffect(() => {
     if (id) {
       const fetchCampaignDetails = async () => {
         try {
           const response = await axios.get(
             `${getApiBaseUrl()}/admin/campaigns/${id}`
-          );
-          setCampaign(response.data);
+          )
+          setCampaign(response.data)
         } catch (error) {
-          console.error("Error fetching campaign details:", error);
+          console.error("Error fetching campaign details:", error)
         }
-      };
+      }
 
-      fetchCampaignDetails();
+      fetchCampaignDetails()
     }
-  }, [id]);
+  }, [id])
 
   if (!campaign) {
     return (
       <DefaultLayout>
-        <div className="flex items-center justify-center h-screen">
-          <p className="text-gray-500 text-lg">{t("Loading...")}</p>
+        <div className='flex items-center justify-center h-screen'>
+          <p className='text-gray-500 text-lg'>{t("Loading...")}</p>
         </div>
       </DefaultLayout>
-    );
+    )
+  }
+
+  const AdminActionBar = ({ campaign, router, t }) => {
+    return (
+      <div className='flex flex-wrap justify-between items-center gap-4 py-4 border-b border-gray-200 dark:border-gray-700'>
+        <div className='flex flex-wrap gap-4 items-center'>
+          <button
+            onClick={() => router.push(`/admin/campaigns/${campaign.id}/edit`)}
+            data-cy='edit-campaign-button'
+            title={t("Edit Campaign")}
+            className='flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg shadow transition focus:outline-none focus:ring-2 focus:ring-green-400'
+          >
+            <MdEdit className='text-lg' />
+            <span>{t("Edit Campaign")}</span>
+          </button>
+
+          <button
+            onClick={() => router.push(`/admin/areas/create`)}
+            data-cy='create-area-button'
+            title={t("Create area")}
+            className='flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow transition focus:outline-none focus:ring-2 focus:ring-indigo-400'
+          >
+            <TbLassoPolygon className='text-lg' />
+            <span>{t("Create area")}</span>
+          </button>
+
+          <button
+            onClick={() =>
+              router.push(
+                `/admin/campaigns/${campaign.id}/questionnaires/create`
+              )
+            }
+            data-cy='create-questionnaire-button'
+            title={t("Create questionnaire")}
+            className='flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow transition focus:outline-none focus:ring-2 focus:ring-blue-400'
+          >
+            <FcSurvey className='text-lg' />
+            <span>{t("Create questionnaire")}</span>
+          </button>
+        </div>
+
+        <div>
+          <button
+            onClick={() => console.log("WIP")}
+            data-cy='download-data-button'
+            title={t("Download data")}
+            disabled
+            className='flex items-center gap-2 px-4 py-2 bg-yellow-500 text-white text-sm font-medium rounded-lg shadow transition disabled:opacity-50 disabled:cursor-not-allowed'
+          >
+            <FaCloudDownloadAlt className='text-lg' />
+            <span>{t("Download data")}</span>
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -90,56 +146,29 @@ export default function CampaignDetails() {
         pageName={t("Campaign Details")}
         breadcrumbPath={t("Campaigns")}
       />
-      <GoBack data-cy="go-back-campaign-details" />
-      <div className="mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800 max-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <GoBack data-cy='go-back-campaign-details' />
+      <div className='mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800 max-full'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
           <div>
-            <div className="mb-4 flex justify-between">
-              <button
-                onClick={() =>
-                  router.push(`/admin/campaigns/${campaign.id}/edit`)
-                }
-                data-cy="edit-campaign-button"
-                className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 flex items-center space-x-2"
-              >
-                <MdEdit />
-                <span>{t("Edit Campaign")}</span>
-              </button>
-              <button
-                onClick={() => router.push(`/admin/areas/create`)}
-                data-cy="create-area-button"
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 flex items-center space-x-2"
-              >
-                <TbLassoPolygon />
-                <span>{t("Create area")}</span>
-              </button>
-
-              <button
-                onClick={() => console.log("WIP")}
-                data-cy="download-data-button"
-                className="px-4 py-2 text-sm font-medium text-white bg-yellow-600 rounded-lg hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-600 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled
-              >
-                <FaCloudDownloadAlt />
-                <span>{t("Download data")}</span>
-              </button>
+            <div className='mb-6 flex flex-wrap gap-3 justify-start'>
+              <AdminActionBar campaign={campaign} router={router} t={t} />
             </div>
             <h1
-              className="text-3xl font-bold text-gray-800 dark:text-white mb-4"
-              data-cy="campaign-name"
+              className='text-3xl font-bold text-gray-800 dark:text-white mb-4'
+              data-cy='campaign-name'
             >
               {campaign.name}
             </h1>
             <p
-              className="text-gray-600 dark:text-gray-300 mb-6"
-              data-cy="campaign-description"
+              className='text-gray-600 dark:text-gray-300 mb-6'
+              data-cy='campaign-description'
             >
               {campaign.description || t("No description available")}
             </p>
-            <div className="mb-6">
+            <div className='mb-6'>
               <h2
-                className="text-xl font-semibold text-gray-800 dark:text-white mb-2"
-                data-cy="campaign-details-title"
+                className='text-xl font-semibold text-gray-800 dark:text-white mb-2'
+                data-cy='campaign-details-title'
               >
                 {t("Details")}
               </h2>
@@ -151,7 +180,7 @@ export default function CampaignDetails() {
                       ? "bg-green-100 text-green-700 dark:bg-green-700 dark:text-white"
                       : "bg-red-100 text-red-700 dark:bg-red-700 dark:text-white"
                   }`}
-                  data-cy="campaign-invitiation-status"
+                  data-cy='campaign-invitiation-status'
                 >
                   {campaign.isOpen
                     ? t("Open (Anyone can join)")
@@ -159,21 +188,21 @@ export default function CampaignDetails() {
                 </span>
               </p>
 
-              <p data-cy="campaign-location">
+              <p data-cy='campaign-location'>
                 <strong>{t("Location")}:</strong>{" "}
                 {campaign.location || t("No Location")}
               </p>
-              <p data-cy="campaign-category">
+              <p data-cy='campaign-category'>
                 <strong>{t("Category")}:</strong> {campaign.category}
               </p>
-              <p data-cy="campaign-game-enabled">
+              <p data-cy='campaign-game-enabled'>
                 <strong>{t("Is Game Enabled")}:</strong>{" "}
                 {campaign?.gameId ? <span>✅</span> : <span>❌</span>}
               </p>
               <br />
               <p>
                 <strong>{t("Start Date")}:</strong>{" "}
-                <span data-cy="campaign-start-date">
+                <span data-cy='campaign-start-date'>
                   {campaign.startDatetime
                     ? new Date(campaign.startDatetime).toLocaleDateString()
                     : t("No Start Date")}
@@ -181,23 +210,23 @@ export default function CampaignDetails() {
               </p>
               <p>
                 <strong>{t("Deadline")}:</strong>{" "}
-                <span data-cy="campaign-deadline">
+                <span data-cy='campaign-deadline'>
                   {campaign.endDatetime
                     ? new Date(campaign.endDatetime).toLocaleDateString()
                     : t("No Deadline")}
                 </span>
               </p>
             </div>
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+            <div className='mb-6'>
+              <h2 className='text-xl font-semibold text-gray-800 dark:text-white mb-2'>
                 {t("Users")}
               </h2>
-              <ul data-cy="campaign-users">
-                {campaign.allowedUsers.map((user) => (
+              <ul data-cy='campaign-users'>
+                {campaign.allowedUsers.map(user => (
                   <li
                     key={user.userId}
                     data-cy={`campaign-user-${user.userId}`}
-                    className="text-gray-600 dark:text-gray-300 flex justify-between items-center"
+                    className='text-gray-600 dark:text-gray-300 flex justify-between items-center'
                   >
                     <span>{user.userId}</span>
                     <span
@@ -215,66 +244,66 @@ export default function CampaignDetails() {
             </div>
           </div>
 
-          <div className="h-full">
-            <h2 className="text-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
+          <div className='h-full'>
+            <h2 className='text-center text-xl font-semibold text-gray-800 dark:text-white mb-4'>
               {t("Areas")}
             </h2>
-            <div className="h-96 rounded-lg overflow-hidden shadow-lg">
+            <div className='h-96 rounded-lg overflow-hidden shadow-lg'>
               <Map
                 polygons={campaign?.areas}
                 polygonsMultiColors={true}
                 polygonsFitBounds={true}
-                modeView="admin-view"
+                modeView='admin-view'
               />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mx-auto p-6 mt-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <div className="mt-8">
+      <div className='mx-auto p-6 mt-4 bg-white rounded-lg shadow-md dark:bg-gray-800'>
+        <div className='mt-8'>
           <h2
-            className="text-xl font-semibold text-gray-800 dark:text-white mb-4"
-            data-cy="areas-title"
+            className='text-xl font-semibold text-gray-800 dark:text-white mb-4'
+            data-cy='areas-title'
           >
             {t("Areas")}
           </h2>
-          <ul className="space-y-4">
-            {campaign?.areas?.map((sub) => (
+          <ul className='space-y-4'>
+            {campaign?.areas?.map(sub => (
               <li
                 key={sub.id}
-                className="flex justify-between items-center p-4 bg-gray-100 rounded-lg shadow-md dark:bg-gray-700"
+                className='flex justify-between items-center p-4 bg-gray-100 rounded-lg shadow-md dark:bg-gray-700'
                 data-cy={`area-${sub.id}`}
               >
                 <div>
                   <h3
                     data-cy={`area-${sub.id}-name`}
-                    className="text-lg font-semibold text-gray-800 dark:text-white"
+                    className='text-lg font-semibold text-gray-800 dark:text-white'
                   >
                     {sub.name}
                   </h3>
                   <p
                     data-cy={`area-${sub.id}-description`}
-                    className="text-sm text-gray-600 dark:text-gray-300"
+                    className='text-sm text-gray-600 dark:text-gray-300'
                   >
                     {sub.description || "No description available."}
                   </p>
                   <p
                     data-cy={`area-${sub.id}-polygon`}
-                    className="text-sm text-gray-600 dark:text-gray-300"
+                    className='text-sm text-gray-600 dark:text-gray-300'
                   >
                     {sub.polygon ? "Polygon" : "No Polygon"}
                   </p>
                   <p
                     data-cy={`area-${sub.id}-poi-count`}
-                    className="text-sm text-gray-600 dark:text-gray-300"
+                    className='text-sm text-gray-600 dark:text-gray-300'
                   >
                     {sub.pointOfInterests.length} Points of Interest
                   </p>
 
                   <p
                     data-cy={`area-${sub.id}-tasks-count`}
-                    className="text-sm text-gray-600 dark:text-gray-300"
+                    className='text-sm text-gray-600 dark:text-gray-300'
                   >
                     {sub.pointOfInterests.reduce(
                       (acc, poi) => acc + poi.tasks.length,
@@ -286,7 +315,7 @@ export default function CampaignDetails() {
                 <button
                   onClick={() => router.push(`/admin/areas/${sub.id}`)}
                   data-cy={`view-area-${sub.id}`}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
+                  className='px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600'
                 >
                   {t("View Area")}
                 </button>
@@ -295,6 +324,85 @@ export default function CampaignDetails() {
           </ul>
         </div>
       </div>
+      <div className='mx-auto p-6 mt-4 bg-white rounded-lg shadow-md dark:bg-gray-800'>
+        <div className='mt-8'>
+          <h2
+            className='text-xl font-semibold text-gray-800 dark:text-white mb-4'
+            data-cy='questionnaire-title'
+          >
+            {t("Questionnaires")}
+          </h2>
+        </div>
+        <ul className='space-y-4'>
+          {campaign?.Questionnaire?.length === 0 && (
+            <p className='text-gray-500 dark:text-gray-400 text-sm italic'>
+              {t("No questionnaires available")}
+            </p>
+          )}
+
+          {campaign?.Questionnaire?.map(questionnaire => (
+            <li
+              key={questionnaire.id}
+              className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm'
+              data-cy={`questionnaire-${questionnaire.id}`}
+            >
+              {/* Info */}
+              <div className='flex-1 space-y-1'>
+                <h3
+                  className='text-base font-semibold text-gray-800 dark:text-white'
+                  data-cy={`questionnaire-${questionnaire.id}-title`}
+                >
+                  📝 {questionnaire.title}
+                </h3>
+
+                <p
+                  className='text-sm text-gray-600 dark:text-gray-300'
+                  data-cy={`questionnaire-${questionnaire.id}-condition`}
+                >
+                  {t("Condition")}:{" "}
+                  <span className='font-medium'>
+                    {t(questionnaire.condition)}
+                  </span>
+                </p>
+
+                <p
+                  className='text-sm text-gray-600 dark:text-gray-300'
+                  data-cy={`questionnaire-${questionnaire.id}-frequency`}
+                >
+                  {t("Frequency")}:{" "}
+                  {questionnaire.frequencyInDays !== null
+                    ? `${questionnaire.frequencyInDays} ${t("days")}`
+                    : t("No frequency")}
+                </p>
+
+                <p
+                  className='text-xs text-gray-400 dark:text-gray-500'
+                  data-cy={`questionnaire-${questionnaire.id}-updated`}
+                >
+                  {t("Last updated")}:{" "}
+                  {new Date(questionnaire.updatedAt).toLocaleString()}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className='flex gap-2 shrink-0'>
+                <button
+                  onClick={() =>
+                    router.push(
+                      `/admin/campaigns/${campaign.id}/questionnaires/${questionnaire.id}/edit`
+                    )
+                  }
+                  data-cy={`edit-questionnaire-${questionnaire.id}`}
+                  title={t("Edit Questionnaire")}
+                  className='inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 rounded-lg transition'
+                >
+                  ✏️ {t("Edit")}
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </DefaultLayout>
-  );
+  )
 }

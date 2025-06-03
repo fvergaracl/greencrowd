@@ -26,7 +26,7 @@
     "related_applications": [
         {
             "platform": "webapp",
-            "url": "https://auth1.demo.greengage-project.eu/manifest.json"
+            "url": "https://greencrowd.app/manifest.json"
         }
     ],
     "host_permissions": [

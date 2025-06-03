@@ -4,6 +4,7 @@ import prisma from "@/prismaClient"
 import { validateKeycloakToken } from "@/utils/validateToken"
 
 const EVENTS_WITHOUT_AUTH = new Set([
+  "ONBOARDING_RENDERED",
   "ONBOARDING_STEP_CHANGED",
   "ONBOARDING_USER_LOGGED_IN",
   "ONBOARDING_SKIP_ON_STEP1",
@@ -54,7 +55,6 @@ export default async function handler(
         }
 
         let userId: string | null = null
-
         if (!EVENTS_WITHOUT_AUTH.has(eventType)) {
           const auth = await validateKeycloakToken(req, res)
           if (!auth?.userId) {

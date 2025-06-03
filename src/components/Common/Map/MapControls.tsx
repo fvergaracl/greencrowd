@@ -33,17 +33,14 @@ const MapControls: React.FC<MapControlsProps> = ({
   areaOpenTask = null,
   explorationIndices
 }) => {
-  const gameId = campaignData?.gameId
-
   const router = useRouter()
+  const gameId = campaignData?.gameId
+  const [isInsideArea, setIsInsideArea] = useState(false)
   const openTask = areaOpenTask?.openTasks?.[0]
-
   const rawIndex = explorationIndices?.[areaOpenTask?.id]
   const indexExploration =
     typeof rawIndex === "number" ? rawIndex.toFixed(2) : 0
-
   const points = Math.round(100 - indexExploration)
-
   const { t } = useTranslation()
   const map = useMap()
 
@@ -104,6 +101,29 @@ const MapControls: React.FC<MapControlsProps> = ({
     }
   }
 
+  useEffect(() => {
+    if (!position || !areaOpenTask?.polygon) {
+      setIsInsideArea(false)
+      return
+    }
+
+    const userPoint = point([position.lng, position.lat])
+    const coords = areaOpenTask.polygon.map(([lat, lng]: [number, number]) => [
+      lng,
+      lat
+    ])
+    const first = coords[0]
+    const last = coords[coords.length - 1]
+
+    if (first[0] !== last[0] || first[1] !== last[1]) {
+      coords.push([...first])
+    }
+
+    const taskPolygon = polygon([coords])
+
+    setIsInsideArea(booleanPointInPolygon(userPoint, taskPolygon))
+  }, [position, areaOpenTask])
+
   return (
     <div className='absolute bottom-4 right-4 z-99999 flex flex-col gap-2'>
       {isSelectedPoi && (
@@ -127,18 +147,21 @@ const MapControls: React.FC<MapControlsProps> = ({
           )}
         </>
       )}
-      {areaOpenTask && areaOpenTask?.openTasks?.length > 0 && points >= 0 && (
-        <button
-          onClick={() => {
-            openAOpentask()
-          }}
-          className='w-12 aspect-square bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-md flex items-center justify-center text-sm font-bold'
-          title={t("Focus on area with open tasks")}
-          data-cy='focus-on-area-with-open-tasks'
-        >
-          {points}🪙
-        </button>
-      )}
+      {areaOpenTask &&
+        areaOpenTask?.openTasks?.length > 0 &&
+        points >= 0 &&
+        isInsideArea && (
+          <button
+            onClick={() => {
+              openAOpentask()
+            }}
+            className='w-12 aspect-square bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-md flex items-center justify-center text-sm font-bold'
+            title={t("Focus on area with open tasks")}
+            data-cy='focus-on-area-with-open-tasks'
+          >
+            {points}🪙
+          </button>
+        )}
       <button
         onClick={focusOnCampaign}
         className={`w-12 aspect-square ${

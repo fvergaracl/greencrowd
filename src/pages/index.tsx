@@ -52,11 +52,13 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    if (!router.isReady) return
-
     logEvent("ONBOARDING_RENDERED", "Onboarding screen rendered", {
       step: stepNumber
     })
+  }, [])
+
+  useEffect(() => {
+    if (!router.isReady) return
 
     const fetchToken = async () => {
       try {

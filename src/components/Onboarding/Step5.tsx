@@ -5,8 +5,6 @@ import { HeaderOnboarding } from "@/components/Onboarding/HeaderOnboarding"
 import onboardingRoute from "@/lotties/onboarding_route.json"
 import { useState } from "react"
 
-// Step5: Route to complete the task
-
 interface Step5Props {
   setStepNumber: (step: number) => void
 }
@@ -18,7 +16,7 @@ export const Step5 = ({ setStepNumber }: Step5Props) => {
   return (
     <div
       key={key}
-      className='flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4'
+      className='min-h-screen bg-gradient-to-r from-blue-400 to-green-400 p-4 flex flex-col items-center'
     >
       <HeaderOnboarding
         stepNumber={5}
@@ -28,9 +26,13 @@ export const Step5 = ({ setStepNumber }: Step5Props) => {
         onLanguageChange={() => setKey(prev => prev + 1)}
       />
 
-      <div className='w-full bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 relative flex flex-col h-[90vh]'>
-        <div className='flex justify-center mt-2'>
-          <Lottie animationData={onboardingRoute} loop className='w-2/3' />
+      <div className='w-full max-w-2xl bg-white bg-opacity-30 rounded-2xl shadow-lg text-center p-6 flex flex-col flex-grow overflow-auto mt-4'>
+        <div className='flex justify-center items-center flex-grow max-h-80 mb-4'>
+          <Lottie
+            animationData={onboardingRoute}
+            loop
+            className='w-full max-w-md'
+          />
         </div>
 
         <div className='flex-1 flex flex-col justify-center'>
@@ -42,7 +44,7 @@ export const Step5 = ({ setStepNumber }: Step5Props) => {
               "A route has been generated to guide you to the point of interest. Follow the directions and reach the location to complete your task."
             )}
           </p>
-          <p className='text-gray-800 mt-2 text-sm italic text-center text-weight-light'>
+          <p className='text-gray-800 mt-2 text-sm italic'>
             {t(
               "Ensure your GPS is active for real-time updates and the best navigation experience."
             )}
@@ -53,7 +55,7 @@ export const Step5 = ({ setStepNumber }: Step5Props) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.5, ease: "easeOut", delay: 1 }}
-          className='mb-6 flex flex-col gap-4 w-full'
+          className='mt-6 flex flex-col gap-4 w-full'
         >
           <button
             className='w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-md'

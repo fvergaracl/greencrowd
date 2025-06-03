@@ -40,6 +40,7 @@ const TaskWrapperComponent = ({
   taskData,
   t,
   isInside,
+  setIsInside,
   onComplete,
   setUserDeclareInside
 }: {
@@ -80,6 +81,7 @@ const TaskWrapperComponent = ({
         })
 
         if (result.isConfirmed) {
+          setIsInside(true)
           setUserDeclareInside(true)
           forceCompleteRef.current = true
           form.doComplete()
@@ -172,9 +174,7 @@ export default function Task() {
   const localStorageGamificationData = localStorage.getItem(
     `gamificationData_${selectedCampaign?.id}`
   )
-  const localStorageLastFetchGamificationData = localStorage.getItem(
-    `lastFetchGamificationData_${selectedCampaign?.id}`
-  )
+
   const [accessToken, setAccessToken] = useState<string | null>(
     localStorageAccesstoken
   )
@@ -185,11 +185,7 @@ export default function Task() {
       : null
   )
   const [pointsEarned, setPointsEarned] = useState<number | null>(null)
-  const [lastFetchGamificationData, setLastFetchGamificationData] = useState(
-    localStorageLastFetchGamificationData
-      ? new Date(localStorageLastFetchGamificationData)
-      : null
-  )
+
   const loadingArray = [
     loading_1,
     loading_2,
@@ -205,7 +201,10 @@ export default function Task() {
     const fetchMyActivityInTask = async () => {
       try {
         const response = await axios.get(
-          `${getApiBaseUrl()}/opentask/myActivityCounts?opentaskId=${id}`
+          `${getApiBaseUrl()}/opentask/myActivityCounts?opentaskId=${id}`,
+          {
+            withCredentials: true
+          }
         )
         setMyActivityInTask(response.data)
       } catch (error) {
@@ -265,11 +264,7 @@ export default function Task() {
     let templastFetchGamificationData = localStorage.getItem(
       `lastFetchGamificationData_${selectedCampaign?.id}`
     )
-    setLastFetchGamificationData(
-      templastFetchGamificationData
-        ? new Date(templastFetchGamificationData)
-        : null
-    )
+
     const fetchTask = async () => {
       try {
         const { data } = await axios.get(`${getApiBaseUrl()}/opentask/${id}`)
@@ -560,6 +555,7 @@ export default function Task() {
                     taskData={task.taskData}
                     t={t}
                     isInside={isInside}
+                    setIsInside={setIsInside}
                     onComplete={handleSurveyCompletion}
                     setUserDeclareInside={setUserDeclareInside}
                   />

@@ -10,7 +10,6 @@ import Swal from "sweetalert2"
 import { FaDrawPolygon, FaTasks, FaUsers } from "react-icons/fa"
 import { MdOutlinePinDrop } from "react-icons/md"
 import { useTranslation } from "@/hooks/useTranslation"
-import { MdOutlineCreateNewFolder } from "react-icons/md"
 
 import { getApiBaseUrl } from "@/config/api"
 interface Area {

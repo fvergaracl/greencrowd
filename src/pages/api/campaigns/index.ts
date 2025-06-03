@@ -9,8 +9,7 @@ export default async function handler(
   try {
     switch (req.method) {
       case "GET": {
-
-        const { userId } = await validateKeycloakToken(req)
+        const { userId } = await validateKeycloakToken(req, res)
 
         const userCampaigns =
           await CampaignController.getAllCampaignsAllowedByUserId(userId)

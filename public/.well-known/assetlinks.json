@@ -17,7 +17,7 @@
         ],
         "target": {
             "namespace": "web",
-            "site": "https://auth1.demo.greengage-project.eu"
+            "site": "https://auth.greencrowd.app"
         }
     }
 ]

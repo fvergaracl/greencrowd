@@ -9,19 +9,20 @@ datasource db {
 }
 
 model User {
-  id                  String               @id @default(uuid())
-  sub                 String               @unique
-  alias               String?
-  UserTaskResponses   UserTaskResponse[]
-  logs                Log[]
-  trajectories        UserTrajectory[]
-  accessibleCampaigns UserCampaignAccess[] @relation("UserCampaignAccess")
-  settings            UserSetting?
-  isDisabled          Boolean?             @default(false)
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  PushSubscription    PushSubscription[]
-  OpenTaskResponse    OpenTaskResponse[]
+  id                    String                  @id @default(uuid())
+  sub                   String                  @unique
+  alias                 String?
+  UserTaskResponses     UserTaskResponse[]
+  logs                  Log[]
+  trajectories          UserTrajectory[]
+  accessibleCampaigns   UserCampaignAccess[]    @relation("UserCampaignAccess")
+  settings              UserSetting?
+  isDisabled            Boolean?                @default(false)
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  PushSubscription      PushSubscription[]
+  OpenTaskResponse      OpenTaskResponse[]
+  QuestionnaireResponse QuestionnaireResponse[]
 }
 
 model UserSetting {
@@ -48,11 +49,51 @@ model Campaign {
   endDatetime   DateTime?
   category      String
   gameId        String?
+  groupName     String?
   isDisabled    Boolean?             @default(false)
   areas         Area[]
   allowedUsers  UserCampaignAccess[] @relation("UserCampaignAccess")
   createdAt     DateTime             @default(now())
   updatedAt     DateTime             @updatedAt
+  Questionnaire Questionnaire[]
+}
+
+model Questionnaire {
+  id                String                  @id @default(uuid())
+  campaignId        String
+  campaign          Campaign                @relation(fields: [campaignId], references: [id])
+  title             String
+  condition         QuestionnaireCondition
+  frequencyInDays   Int? // it apply only if condition == EVERY_X_DAYS
+  questionnaireData Json
+  responses         QuestionnaireResponse[]
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+
+  @@index([campaignId])
+}
+
+model QuestionnaireResponse {
+  id                    String                 @id @default(uuid())
+  userId                String
+  questionnaireId       String
+  condition             QuestionnaireCondition
+  questionnaireData     Json
+  questionnaireResponse Json
+  user                  User                   @relation(fields: [userId], references: [id])
+  questionnaire         Questionnaire          @relation(fields: [questionnaireId], references: [id])
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+
+  @@index([userId])
+  @@index([questionnaireId])
+}
+
+enum QuestionnaireCondition {
+  BEFORE
+  AFTER
+  DAILY
+  EVERY_X_DAYS // each X days
 }
 
 model OpenTask {

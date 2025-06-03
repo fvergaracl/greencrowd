@@ -14,7 +14,6 @@ interface TaskWrapperProps {
 function TaskWrapper({ taskData, t, isInside, onComplete }: TaskWrapperProps) {
   const surveyModelRef = useRef<SurveyModel | null>(null);
 
-  // Crear el SurveyModel solo una vez
   if (!surveyModelRef.current) {
     surveyModelRef.current = new SurveyModel({
       ...taskData,
@@ -24,7 +23,6 @@ function TaskWrapper({ taskData, t, isInside, onComplete }: TaskWrapperProps) {
 
   const surveyModel = surveyModelRef.current;
 
-  // Solo actualiza las clases CSS cuando cambia `isInside`
   useEffect(() => {
     surveyModel.onUpdateQuestionCssClasses = (_, options) => {
       if (options.cssClasses.navigation) {

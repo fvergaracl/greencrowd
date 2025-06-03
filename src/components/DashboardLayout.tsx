@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import { ReactNode } from "react"
+import { ReactNode, useState, useEffect } from "react"
 import {
   MdHome,
   MdSettings,
@@ -31,7 +31,38 @@ interface NavItem {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { t } = useTranslation()
   const router = useRouter()
+  const [hasRedirected, setHasRedirected] = useState(false)
   const { isTracking, toggleTracking, selectedCampaign } = useDashboard()
+
+  useEffect(() => {
+    const checkPendingQuestionnaires = async () => {
+      if (!selectedCampaign?.id || hasRedirected) return
+
+      const allowedPaths = ["/dashboard/campaigns", "/dashboard/settings"]
+
+      const isAllowed =
+        router.pathname.startsWith("/dashboard/questionnaires") ||
+        allowedPaths.includes(router.pathname) ||
+        router.pathname.startsWith("/admin")
+
+      if (isAllowed) return
+
+      try {
+        const res = await fetch(
+          `/api/questionnaires/pending?campaignId=${selectedCampaign.id}`
+        )
+        const data = await res.json()
+        if (res.ok && data.count > 0) {
+          setHasRedirected(true)
+          await router.push("/dashboard/questionnaires")
+        }
+      } catch (error) {
+        console.error("Error checking pending questionnaires", error)
+      }
+    }
+
+    checkPendingQuestionnaires()
+  }, [selectedCampaign?.id, hasRedirected, router.pathname])
 
   const handleNavigation = (path: string, eventName: string) => {
     logEvent(eventName, `User clicked on ${path} button in navigation`, {

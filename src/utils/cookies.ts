@@ -37,11 +37,12 @@ export const setCookies = (
 
   const validCookies = Object.entries(cookies)
     .filter(([_, value]) => typeof value === "string" && value.trim() !== "") // Ensure value is valid
-    .map(([key, value]) =>
-      cookie.serialize(key, value as string, {
+    .map(([key, value]) => {
+    return  cookie.serialize(key, value as string, {
         ...getCookieOptions(req),
         maxAge: value ? maxAge : 0
       })
+  }
     )
 
   if (validCookies.length > 0) {
