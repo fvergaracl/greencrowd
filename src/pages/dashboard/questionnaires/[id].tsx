@@ -1,11 +1,10 @@
 // pages/dashboard/questionnaires/[id].tsx
 import { useRouter } from "next/router"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { SurveyModel } from "survey-core"
 import { Survey } from "survey-react-ui"
 import DashboardLayout from "@/components/DashboardLayout"
 import { useTranslation } from "@/hooks/useTranslation"
-import { useDashboard } from "@/context/DashboardContext"
 import GoBack from "@/components/Admin/GoBack"
 import Swal from "sweetalert2"
 import Lottie from "lottie-react"
@@ -18,13 +17,11 @@ export default function QuestionnairePage() {
   const { t } = useTranslation()
   const router = useRouter()
   const { id } = router.query
-  const { selectedCampaign } = useDashboard()
   const [questionnaire, setQuestionnaire] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [responseSent, setResponseSent] = useState(false)
   const [pointsEarned, setPointsEarned] = useState<number | null>(null)
-
-  const formRef = useRef<SurveyModel | null>(null)
+  const [surveyModel, setSurveyModel] = useState<SurveyModel | null>(null)
 
   useEffect(() => {
     const fetchQuestionnaire = async () => {
@@ -51,20 +48,24 @@ export default function QuestionnairePage() {
   }, [id])
 
   useEffect(() => {
-    if (questionnaire?.questionnaireData && !formRef.current) {
-      const model = new SurveyModel({
-        ...questionnaire.questionnaireData,
-        completeText: t("Submit"),
-        showCompletedPage: false
-      })
+    if (questionnaire?.questionnaireData && !surveyModel) {
+      try {
+        const model = new SurveyModel({
+          ...questionnaire.questionnaireData,
+          completeText: t("Submit"),
+          showCompletedPage: false
+        })
 
-      model.onComplete.add(async sender => {
-        await handleComplete(sender)
-      })
+        model.onComplete.add(async sender => {
+          await handleComplete(sender)
+        })
 
-      formRef.current = model
+        setSurveyModel(model)
+      } catch (err) {
+        console.error("Error creating SurveyModel:", err)
+      }
     }
-  }, [questionnaire, t])
+  }, [questionnaire, t, surveyModel])
 
   const handleComplete = async (survey: SurveyModel) => {
     const { id } = router.query
@@ -162,8 +163,8 @@ export default function QuestionnairePage() {
           {questionnaire.title}
         </h1>
 
-        {formRef.current ? (
-          <Survey model={formRef.current} />
+        {surveyModel ? (
+          <Survey model={surveyModel} />
         ) : (
           <p className='text-gray-500'>{t("Invalid questionnaire data.")}</p>
         )}

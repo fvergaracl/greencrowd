@@ -172,6 +172,130 @@ export default function CampaignsScreen() {
     }
   }
 
+  const RenderCampaignButton = ({ campaign }) => {
+    const isExpired = campaign.deadline
+      ? new Date(campaign.deadline) < new Date()
+      : false
+
+    const isSelected = selectedCampaign && selectedCampaign.id === campaign.id
+    return (
+      <div
+        key={campaign.id}
+        className={`flex items-center justify-between p-4 border rounded-lg shadow-md ${
+          isExpired
+            ? "bg-gray-200 opacity-70"
+            : isSelected
+              ? "bg-blue-100 border-blue-500"
+              : "bg-white"
+        }`}
+        onClick={() => {
+          if (!(isExpired || loadingCampaignId === campaign?.id)) {
+            goToCampaign(isSelected, isExpired, campaign)
+          }
+        }}
+      >
+        <div className='flex items-center'>
+          {campaign.gameId && (
+            <FaGamepad className='text-green-500 mr-2 text-xl' />
+          )}
+          <div>
+            <h2
+              className='text-lg font-semibold text-white-500 flex items-center'
+              data-cy='campaign-name'
+            >
+              {!campaign?.isOpen && (
+                <span
+                  className='relative group text-xs text-red-500'
+                  data-cy='campaign-status'
+                >
+                  <SlEnvolopeLetter className='text-red-500 mr-1' />
+                  <div className='absolute hidden group-hover:flex flex-col items-center left-1/2 transform -translate-x-1 bottom-full mb-2 bg-gray-700 text-white text-xs rounded-md py-1 px-2 shadow-lg w-max'>
+                    <span data-cy='campaign-status-message'>
+                      {t("Access by invitation only")}.
+                    </span>
+                    <span
+                      className='text-gray-300'
+                      data-cy='campaign-status-message'
+                    >
+                      {t("You can see this because you were invited")}.
+                    </span>
+                  </div>
+                </span>
+              )}
+
+              <span>{campaign.name}</span>
+            </h2>
+            <p className='text-gray-600 text-sm' data-cy='campaign-description'>
+              {campaign.description}
+            </p>
+
+            {campaign.deadline && (
+              <span
+                className='text-xs text-red-500'
+                data-cy='campaign-deadline'
+              >
+                {t("Open until")}:{" "}
+                {new Date(campaign.deadline).toLocaleDateString()}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            goToCampaign(isSelected, isExpired, campaign)
+          }}
+          disabled={isExpired || loadingCampaignId === campaign.id}
+          className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
+            isExpired
+              ? "bg-gray-300 text-gray-400 cursor-not-allowed"
+              : campaign.isJoined
+                ? "bg-green-500 text-white hover:bg-green-600"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+          } ${isSelected ? "ring-2 ring-blue-500" : ""}`}
+          data-cy='join-campaign-button'
+        >
+          {loadingCampaignId === campaign.id
+            ? t("Joining...")
+            : isExpired
+              ? t("Expired")
+              : campaign.isJoined
+                ? isSelected
+                  ? t("Go to Campaign")
+                  : t("Joined")
+                : t("Join")}
+        </button>
+      </div>
+    )
+  }
+
+  const groupedCampaignsMap = campaigns.reduce(
+    (acc, campaign) => {
+      if (campaign.groupName) {
+        if (!acc[campaign.groupName]) {
+          acc[campaign.groupName] = []
+        }
+        acc[campaign.groupName].push(campaign)
+      }
+      return acc
+    },
+    {} as Record<string, any[]>
+  )
+
+  for (const groupName in groupedCampaignsMap) {
+    groupedCampaignsMap[groupName].sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    )
+  }
+
+  const otherCampaigns = campaigns
+    .filter(c => !c.groupName)
+    .sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    )
+
   return (
     <div className=' flex flex-col items-center bg-gray-50 p-4'>
       <h1
@@ -182,106 +306,25 @@ export default function CampaignsScreen() {
       </h1>
 
       <div className='w-full max-w-xxl space-y-4'>
-        {campaigns.map(campaign => {
-          const isExpired = campaign.deadline
-            ? new Date(campaign.deadline) < new Date()
-            : false
+        {otherCampaigns.map(campaign => (
+          <RenderCampaignButton key={campaign.id} campaign={campaign} />
+        ))}
 
-          const isSelected =
-            selectedCampaign && selectedCampaign.id === campaign.id
-          return (
-            <div
-              key={campaign.id}
-              className={`flex items-center justify-between p-4 border rounded-lg shadow-md ${
-                isExpired
-                  ? "bg-gray-200 opacity-70"
-                  : isSelected
-                    ? "bg-blue-100 border-blue-500"
-                    : "bg-white"
-              }`}
-              onClick={() => {
-                if (!(isExpired || loadingCampaignId === campaign?.id)) {
-                  goToCampaign(isSelected, isExpired, campaign)
-                }
-              }}
-            >
-              <div className='flex items-center'>
-                {campaign.gameId && (
-                  <FaGamepad className='text-green-500 mr-2 text-xl' />
-                )}
-                <div>
-                  <h2
-                    className='text-lg font-semibold text-white-500 flex items-center'
-                    data-cy='campaign-name'
-                  >
-                    {!campaign?.isOpen && (
-                      <span
-                        className='relative group text-xs text-red-500'
-                        data-cy='campaign-status'
-                      >
-                        <SlEnvolopeLetter className='text-red-500 mr-1' />
-                        <div className='absolute hidden group-hover:flex flex-col items-center left-1/2 transform -translate-x-1 bottom-full mb-2 bg-gray-700 text-white text-xs rounded-md py-1 px-2 shadow-lg w-max'>
-                          <span data-cy='campaign-status-message'>
-                            {t("Access by invitation only")}.
-                          </span>
-                          <span
-                            className='text-gray-300'
-                            data-cy='campaign-status-message'
-                          >
-                            {t("You can see this because you were invited")}.
-                          </span>
-                        </div>
-                      </span>
-                    )}
-
-                    <span>{campaign.name}</span>
-                  </h2>
-                  <p
-                    className='text-gray-600 text-sm'
-                    data-cy='campaign-description'
-                  >
-                    {campaign.description}
-                  </p>
-
-                  {campaign.deadline && (
-                    <span
-                      className='text-xs text-red-500'
-                      data-cy='campaign-deadline'
-                    >
-                      {t("Open until")}:{" "}
-                      {new Date(campaign.deadline).toLocaleDateString()}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <button
-                onClick={() => {
-                  goToCampaign(isSelected, isExpired, campaign)
-                }}
-                disabled={isExpired || loadingCampaignId === campaign.id}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
-                  isExpired
-                    ? "bg-gray-300 text-gray-400 cursor-not-allowed"
-                    : campaign.isJoined
-                      ? "bg-green-500 text-white hover:bg-green-600"
-                      : "bg-blue-500 text-white hover:bg-blue-600"
-                } ${isSelected ? "ring-2 ring-blue-500" : ""}`}
-                data-cy='join-campaign-button'
-              >
-                {loadingCampaignId === campaign.id
-                  ? t("Joining...")
-                  : isExpired
-                    ? t("Expired")
-                    : campaign.isJoined
-                      ? isSelected
-                        ? t("Go to Campaign")
-                        : t("Joined")
-                      : t("Join")}
-              </button>
+        {Object.entries(groupedCampaignsMap).map(([groupName, campaigns]) => (
+          <details
+            key={groupName}
+            className='bg-white border rounded-lg shadow-md'
+          >
+            <summary className='cursor-pointer px-4 py-2 font-semibold bg-blue-100 hover:bg-blue-200 transition'>
+              {groupName}
+            </summary>
+            <div className='space-y-2 p-2'>
+              {campaigns.map(c => (
+                <RenderCampaignButton key={c.id} campaign={c} />
+              ))}
             </div>
-          )
-        })}
+          </details>
+        ))}
       </div>
 
       {isModalOpen && selectedCampaign && (
