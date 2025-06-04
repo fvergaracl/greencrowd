@@ -149,4 +149,23 @@ export default class CampaignController {
 
     return { campaign, areas, pois, tasks }
   }
+
+  @withPrismaDisconnect
+static async getAllGroupNames() {
+  const groups = await prisma.campaign.findMany({
+    where: {
+      isDisabled: false,
+      groupName: { not: null }
+    },
+    distinct: ["groupName"],
+    select: {
+      groupName: true
+    }
+  })
+
+  return groups
+    .map(g => g.groupName)
+    .filter((name): name is string => !!name)
+}
+
 }

@@ -18,6 +18,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
   const [formValues, setFormValues] = useState({
     name: "",
     description: "",
+    groupName: "",
     isOpen: true,
     startDatetime: null as string | null,
     endDatetime: null as string | null,
@@ -29,7 +30,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
   const [hasStartDatetime, setHasStartDatetime] = useState(false)
   const [hasEndDatetime, setHasEndDatetime] = useState(false)
   const [hasGamification, setHasGamification] = useState(false)
-  // const [hasDeadline, setHasDeadline] = useState(false)
+  const [groupSuggestions, setGroupSuggestions] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -65,6 +66,19 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
       fetchCampaign()
     }
   }, [campaignId])
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const res = await axios.get(`${getApiBaseUrl()}/admin/campaigns/groups`)
+        setGroupSuggestions(res.data)
+      } catch (err) {
+        console.error("Failed to load groups", err)
+      }
+    }
+
+    fetchGroups()
+  }, [])
 
   const validateForm = () => {
     const missingFields: string[] = []
@@ -241,6 +255,28 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
           onChange={handleChange}
           className='mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white'
         />
+      </div>
+      <div className='mb-4'>
+        <label
+          htmlFor='groupName'
+          className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+        >
+          Group
+        </label>
+        <input
+          list='groupName-options'
+          type='text'
+          id='groupName'
+          name='groupName'
+          value={formValues.groupName || ""}
+          onChange={handleChange}
+          className='mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white'
+        />
+        <datalist id='groupName-options'>
+          {groupSuggestions.map((g, i) => (
+            <option key={i} value={g} />
+          ))}
+        </datalist>
       </div>
       <div className='mb-4'>
         <label
