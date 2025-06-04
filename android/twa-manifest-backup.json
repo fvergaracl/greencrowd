@@ -1,6 +1,6 @@
 {
   "packageId": "io.fvergaracl.greencrowd",
-  "host": "greencrowd.16.171.94.204.nip.io",
+  "host": "greencrowd.app",
   "name": "GreenCrowd",
   "launcherName": "GreenCrowd",
   "display": "standalone",
@@ -13,7 +13,7 @@
   "backgroundColor": "#FFFFFF",
   "enableNotifications": true,
   "startUrl": "/",
-  "iconUrl": "https://greencrowd.16.171.94.204.nip.io/icons/icon-512x512.png",
+  "iconUrl": "https://greencrowd.app/icons/icon-512x512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "/home/fvergara/greencrowd/android/android.keystore",
@@ -23,7 +23,7 @@
   "appVersionCode": 10,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "https://greencrowd.16.171.94.204.nip.io/manifest.json",
+  "webManifestUrl": "https://greencrowd.app/manifest.json",
   "fallbackType": "customtabs",
   "features": {
     "locationDelegation": {
@@ -36,7 +36,7 @@
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
-  "fullScopeUrl": "https://greencrowd.16.171.94.204.nip.io/",
+  "fullScopeUrl": "https://greencrowd.app/",
   "minSdkVersion": 21,
   "orientation": "default",
   "fingerprints": [],

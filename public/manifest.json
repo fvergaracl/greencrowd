@@ -31,7 +31,7 @@
     ],
     "host_permissions": [
         {
-            "host": "greencrowd.16.171.94.204.nip.io",
+            "host": "greencrowd.app",
             "permissions": [
                 "geolocation",
                 "gyroscope",
