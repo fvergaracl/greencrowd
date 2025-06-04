@@ -28,6 +28,9 @@ export default async function handler(
     return res.status(500).json({ error: "Failed to generate code verifier" })
   }
 
+
+  setCookies(req, res, { code_verifier: codeVerifier })
+
   const logoutUrl = `${KEYCLOAK_BASE_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/logout?redirect_uri=${encodeURIComponent(
     `${NEXTAUTH_URL}/api/auth/login`
   )}`
@@ -43,7 +46,10 @@ export default async function handler(
       redirect_uri: `${NEXTAUTH_URL}/api/auth/callback`,
       response_type: "code",
       scope: "openid profile email offline_access greenCrowdScope",
+      code_challenge: codeChallenge,
+      code_challenge_method: "S256",
       prompt: "login"
     })
+
   res.redirect(authUrl)
 }

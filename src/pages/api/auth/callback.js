@@ -25,6 +25,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Authorization code missing" })
   }
 
+  const codeVerifier = cookies.code_verifier
+
   try {
     const tokenResponse = await axios.post(
       `${KEYCLOAK_BASE_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`,
@@ -33,7 +35,8 @@ export default async function handler(req, res) {
         client_secret: KEYCLOAK_CLIENT_SECRET,
         redirect_uri: `${NEXTAUTH_URL}/api/auth/callback`,
         grant_type: "authorization_code",
-        code
+        code,
+        code_verifier: codeVerifier
       }),
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     )
