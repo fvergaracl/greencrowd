@@ -14,8 +14,8 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
   const { t } = useTranslation()
   const [key, setKey] = useState(0)
 
-  const requestLocation = async () => {
-    if (!navigator.permissions || !navigator.geolocation) {
+  const requestLocation = () => {
+    if (!navigator.geolocation) {
       Swal.fire({
         title: "Geolocation Not Supported",
         text: "Your browser does not support geolocation.",
@@ -25,19 +25,9 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
       return
     }
 
-    const permission = await navigator.permissions.query({
-      name: "geolocation"
-    })
-
-    if (permission.state === "denied") {
-      console.error({
-        permission
-      })
-    }
-
     navigator.geolocation.getCurrentPosition(
       position => {
-        console.log("Location enabled:", position)
+        console.log("✅ Location:", position)
         Swal.fire({
           title: "Location Enabled!",
           text: "Thank you! Now you can access location-based campaigns.",
@@ -46,13 +36,30 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
         }).then(() => setStepNumber(5))
       },
       error => {
-        console.error("Location access denied:", error)
+        console.error("🚫 Location error:", error)
+        let message =
+          "Please enable location access in your device or browser settings."
+
+        if (error.code === 1) {
+          message =
+            "Permission denied. Please enable location access in system settings."
+        } else if (error.code === 2) {
+          message = "Location unavailable. Please try again later."
+        } else if (error.code === 3) {
+          message = "Request timed out. Try again in an open area."
+        }
+
         Swal.fire({
-          title: "Location Access Denied",
-          text: "Please enable location access in your settings.",
+          title: "Location Access Failed",
+          text: message,
           icon: "error",
           confirmButtonText: "OK"
         })
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
       }
     )
   }
