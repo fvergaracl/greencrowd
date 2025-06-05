@@ -1,7 +1,7 @@
 {
   "packageId": "io.fvergaracl.greencrowd",
   "host": "greencrowd.app",
-  "name": "GreenCrowd",
+  "name": "GREENCROWD",
   "launcherName": "GreenCrowd",
   "display": "standalone",
   "themeColor": "#FFFFFF",
@@ -19,8 +19,8 @@
     "path": "/home/fvergara/greencrowd/android/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "13",
-  "appVersionCode": 13,
+  "appVersionName": "1",
+  "appVersionCode": 1,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://greencrowd.app/manifest.json",
@@ -42,5 +42,8 @@
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "13"
+  "protocolHandlers": [],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "appVersion": "1"
 }
