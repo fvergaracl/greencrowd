@@ -1,1 +1,53 @@
-<button onclick="navigator.geolocation.getCurrentPosition(console.log, console.error)">Ubicación</button>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test de Ubicación</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2em;
+      text-align: center;
+    }
+
+    #output {
+      margin-top: 1em;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Test de Ubicación</h1>
+  <button onclick="getLocation()">Solicitar ubicación</button>
+  <div id="output"></div>
+
+  <script>
+    function getLocation() {
+      if (!navigator.geolocation) {
+        document.getElementById("output").innerText = "❌ Geolocalización no soportada.";
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          document.getElementById("output").innerText = `✅ Lat: ${latitude}, Lon: ${longitude}`;
+        },
+        (error) => {
+          console.error("🚫 Error de ubicación:", error);
+          document.getElementById("output").innerText = `🚫 Código: ${error.code} - ${error.message}`;
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    }
+  </script>
+</body>
+
+</html>

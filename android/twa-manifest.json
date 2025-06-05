@@ -19,12 +19,12 @@
     "path": "/home/fvergara/greencrowd/android/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "12",
-  "appVersionCode": 12,
+  "appVersionName": "13",
+  "appVersionCode": 13,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://greencrowd.app/manifest.json",
-  "fallbackType": "webview",
+  "fallbackType": "customtabs",
   "features": {
     "locationDelegation": {
       "enabled": true
@@ -42,5 +42,5 @@
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "12"
+  "appVersion": "13"
 }
