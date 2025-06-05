@@ -60,7 +60,6 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
         }).then(result => {
           if (showSettingsOption && result.isConfirmed) {
             if (/Android/i.test(navigator.userAgent)) {
-              // Esto puede abrir los ajustes de la app en Android
               window.open(
                 "intent://settings#Intent;action=android.settings.APPLICATION_DETAILS_SETTINGS;end;",
                 "_blank"
