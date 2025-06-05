@@ -39,10 +39,12 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
         console.error("🚫 Location error:", error)
         let message =
           "Please enable location access in your device or browser settings."
+        let showSettingsOption = false
 
         if (error.code === 1) {
           message =
             "Permission denied. Please enable location access in system settings."
+          showSettingsOption = true
         } else if (error.code === 2) {
           message = "Location unavailable. Please try again later."
         } else if (error.code === 3) {
@@ -53,7 +55,25 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
           title: "Location Access Failed",
           text: message,
           icon: "error",
-          confirmButtonText: "OK"
+          confirmButtonText: showSettingsOption ? "Open Settings" : "OK",
+          showCancelButton: showSettingsOption
+        }).then(result => {
+          if (showSettingsOption && result.isConfirmed) {
+            if (/Android/i.test(navigator.userAgent)) {
+              // Esto puede abrir los ajustes de la app en Android
+              window.open(
+                "intent://settings#Intent;action=android.settings.APPLICATION_DETAILS_SETTINGS;end;",
+                "_blank"
+              )
+            } else {
+              Swal.fire({
+                title: "Manual Action Required",
+                text: "Please go to your browser or system settings and enable location access manually.",
+                icon: "info",
+                confirmButtonText: "OK"
+              })
+            }
+          }
         })
       },
       {
