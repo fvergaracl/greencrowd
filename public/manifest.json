@@ -21,7 +21,7 @@
         "fullscreen",
         "minimal-ui"
     ],
-    "start_url": "/public/location-test.html",
+    "start_url": "/",
     "scope": "/",
     "related_applications": [
         {
