@@ -174,7 +174,9 @@ const config: Config = {
         "screen-dvh": "100dvh"
       },
       padding: {
-        "safe-top": "env(safe-area-inset-top)",
+        "safe-bottom": "env(safe-area-inset-bottom)"
+      },
+      margin: {
         "safe-bottom": "env(safe-area-inset-bottom)"
       }
     }

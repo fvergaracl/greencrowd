@@ -30,13 +30,9 @@ export const Step4 = ({ setStepNumber }: Step4Props) => {
     })
 
     if (permission.state === "denied") {
-      Swal.fire({
-        title: "Location Access Denied",
-        text: "You have denied location access. Please enable it in your settings.",
-        icon: "error",
-        confirmButtonText: "OK"
+      console.error({
+        permission
       })
-      return
     }
 
     navigator.geolocation.getCurrentPosition(

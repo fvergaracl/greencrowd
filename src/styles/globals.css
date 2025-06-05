@@ -5,6 +5,13 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@layer base {
+  body {
+    @apply font-sans text-body dark:text-bodydark bg-body dark:bg-bodydark pb-safe-bottom;
+  }
+}
+
 html, body {
   margin: 0;
   padding: 0;
