@@ -4,7 +4,7 @@ import axios from "axios"
 import Swal from "sweetalert2"
 import GoBack from "@/components/Admin/GoBack"
 import { isUUID } from "@/utils/isUUID"
-import { getApiBaseUrl } from "@/config/api"
+import { getApiBaseUrl, getApiGameBaseUrl } from "@/config/api"
 
 interface CampaignFormProps {
   campaignId?: string
@@ -23,6 +23,8 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
     startDatetime: null as string | null,
     endDatetime: null as string | null,
     gameId: null as string | null,
+    selectedStrategyId: "",
+    createWithGamification: false,
     location: "",
     category: ""
   })
@@ -33,6 +35,102 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
   const [groupSuggestions, setGroupSuggestions] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [accessToken, setAccessToken] = useState(null)
+  const [gamificationStrategies, setGamificationStrategies] = useState<any[]>(
+    []
+  )
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const response = await fetch("/api/auth/token", {
+          method: "GET",
+          credentials: "include"
+        })
+        if (!response.ok) throw new Error("Failed to fetch token")
+        const { access_token } = await response.json()
+        setAccessToken(access_token)
+      } catch (error) {
+        console.error("Error fetching token:", error)
+      }
+    }
+
+    fetchToken()
+  }, [])
+
+  useEffect(() => {
+    const fetchGamificationStrategies = async () => {
+      const strategies = await getAllGamificationStrategies()
+      setGamificationStrategies(strategies)
+    }
+
+    if (accessToken) {
+      fetchGamificationStrategies()
+    }
+  }, [accessToken])
+
+  const createGame = async () => {
+    {
+      try {
+        const strategyId = (formValues as any).selectedStrategyId
+        const response = await fetch(
+          `${getApiBaseUrl()}/admin/gamification/campaign/${campaignId}`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              strategyId
+            })
+          }
+        )
+        if (!response.ok) throw new Error("Failed to create game")
+        const data = await response.json()
+        setFormValues(prev => ({
+          ...prev,
+          gameId: data.gameId
+        }))
+        Swal.fire({
+          title: "Gamification Created",
+          text: `Game ID: ${data.gameId}`,
+          icon: "success",
+          timer: 4000
+        })
+      } catch (err) {
+        console.error(err)
+        Swal.fire({
+          title: "Error",
+          text: "Failed to create gamification.",
+          icon: "error"
+        })
+      }
+    }
+  }
+
+  const removeGame = async () => {
+    if (!formValues.gameId) return
+    try {
+      await axios.delete(
+        `${getApiBaseUrl()}/admin/gamification/campaign/${campaignId}`
+      )
+      setFormValues(prev => ({ ...prev, gameId: null }))
+      Swal.fire({
+        title: "Gamification Removed",
+        text: "Gamification has been removed successfully.",
+        icon: "success",
+        timer: 4000
+      })
+    } catch (err) {
+      console.error(err)
+      Swal.fire({
+        title: "Error",
+        text: "Failed to remove gamification.",
+        icon: "error"
+      })
+    }
+  }
 
   useEffect(() => {
     if (campaignId) {
@@ -99,6 +197,29 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
       return false
     }
     return true
+  }
+
+  const getAllGamificationStrategies = async () => {
+    if (!accessToken) {
+      console.error("Access token is not available")
+      return []
+    }
+    try {
+      const response = await fetch(`${getApiGameBaseUrl()}/strategies`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        }
+      })
+      if (!response.ok) {
+        throw new Error("Failed to fetch gamification strategies")
+      }
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error("Error fetching gamification strategies:", error)
+      return []
+    }
   }
 
   const handleChange = (
@@ -171,10 +292,23 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
           formValuesCleaned
         )
       } else {
-        await axios.post(
-          `${getApiBaseUrl()}/admin/campaigns`,
-          formValuesCleaned
-        )
+        if (
+          formValues.createWithGamification &&
+          formValues.selectedStrategyId
+        ) {
+          await axios.post(
+            `${getApiBaseUrl()}/admin/campaigns/createGameWithStrategy`,
+            {
+              ...formValuesCleaned,
+              strategyId: formValues.selectedStrategyId
+            }
+          )
+        } else {
+          await axios.post(
+            `${getApiBaseUrl()}/admin/campaigns`,
+            formValuesCleaned
+          )
+        }
       }
 
       setLoading(false)
@@ -311,37 +445,132 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
           className='mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white'
         />
       </div>{" "}
-      <div className='mb-4'>
-        <input
-          type='checkbox'
-          id='hasGamification'
-          checked={hasGamification}
-          onChange={e => setHasGamification(e.target.checked)}
-        />
-        <label
-          htmlFor='hasGamification'
-          className='ml-2 text-sm font-medium text-gray-700 dark:text-gray-300'
-        >
-          Set Gamification
-        </label>
-      </div>
-      {hasGamification && (
-        <div className='mb-4'>
-          <label
-            htmlFor='gameId'
-            className='block text-sm font-medium text-gray-700 dark:text-gray-300'
-          >
-            Game ID
-          </label>
-          <input
-            type='text'
-            id='gameId'
-            name='gameId'
-            value={formValues.gameId}
-            onChange={handleChange}
-            className='mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white'
-          />
-        </div>
+      {!campaignId && (
+        <>
+          <div className='mb-4'>
+            <input
+              type='checkbox'
+              id='createWithGamification'
+              checked={formValues.createWithGamification}
+              onChange={e =>
+                setFormValues(prev => ({
+                  ...prev,
+                  createWithGamification: e.target.checked
+                }))
+              }
+            />
+            <label
+              htmlFor='createWithGamification'
+              className='ml-2 text-sm font-medium text-gray-700 dark:text-gray-300'
+            >
+              Create campaign with gamification
+            </label>
+          </div>
+
+          {formValues.createWithGamification && (
+            <div className='mb-4'>
+              <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>
+                Gamification Strategy
+              </label>
+              <select
+                id='strategy'
+                name='strategy'
+                className='mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                onChange={e =>
+                  setFormValues(prev => ({
+                    ...prev,
+                    selectedStrategyId: e.target.value
+                  }))
+                }
+                value={formValues.selectedStrategyId}
+              >
+                <option value=''>Select strategy</option>
+                {gamificationStrategies.map(strategy => (
+                  <option key={strategy.id} value={strategy.id}>
+                    {strategy.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </>
+      )}
+      {campaignId && (
+        <>
+          <div className='mb-4'>
+            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>
+              Gamification Strategy
+            </label>
+            <select
+              id='strategy'
+              name='strategy'
+              className='mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+              onChange={e =>
+                setFormValues(prev => ({
+                  ...prev,
+                  gameId: "", // Reset al cambiar estrategia
+                  selectedStrategyId: e.target.value
+                }))
+              }
+              value={(formValues as any).selectedStrategyId || ""}
+            >
+              <option value=''>Select strategy</option>
+              {gamificationStrategies.map(strategy => (
+                <option key={strategy.id} value={strategy.id}>
+                  {strategy.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {formValues.gameId ? (
+            <div className='mb-4'>
+              <p className='text-green-600 dark:text-green-400'>
+                Gamification set with Game ID:{" "}
+                <strong>{formValues.gameId}</strong>
+              </p>
+              <button
+                type='button'
+                onClick={() => {
+                  removeGame()
+                  setFormValues(prev => ({
+                    ...prev,
+                    gameId: null,
+                    selectedStrategyId: ""
+                  }))
+                }}
+                className='mt-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700'
+              >
+                Remove Gamification
+              </button>
+            </div>
+          ) : (
+            <div className='mb-4'>
+              <button
+                type='button'
+                disabled={
+                  !(formValues as any).selectedStrategyId || !accessToken
+                }
+                onClick={async () => {
+                  if (!(formValues as any).selectedStrategyId) {
+                    Swal.fire({
+                      title: "Select Strategy",
+                      text: "Please select a gamification strategy first.",
+                      icon: "warning",
+                      timer: 3000,
+                      timerProgressBar: true
+                    })
+                    return
+                  }
+                  await createGame()
+                }}
+                className='mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700'
+              >
+                Create Gamification
+              </button>
+            </div>
+          )}
+        </>
       )}
       <div className='mb-4'>
         <input

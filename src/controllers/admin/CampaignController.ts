@@ -151,21 +151,28 @@ export default class CampaignController {
   }
 
   @withPrismaDisconnect
-static async getAllGroupNames() {
-  const groups = await prisma.campaign.findMany({
-    where: {
-      isDisabled: false,
-      groupName: { not: null }
-    },
-    distinct: ["groupName"],
-    select: {
-      groupName: true
-    }
-  })
+  static async getAllGroupNames() {
+    const groups = await prisma.campaign.findMany({
+      where: {
+        isDisabled: false,
+        groupName: { not: null }
+      },
+      distinct: ["groupName"],
+      select: {
+        groupName: true
+      }
+    })
 
-  return groups
-    .map(g => g.groupName)
-    .filter((name): name is string => !!name)
-}
+    return groups.map(g => g.groupName).filter((name): name is string => !!name)
+  }
 
+  @withPrismaDisconnect
+  static async updateGameId(campaignId: string, gameId: string) {
+    const campaign = await prisma.campaign.update({
+      where: { id: campaignId },
+      data: { gameId }
+    })
+
+    return campaign
+  }
 }
