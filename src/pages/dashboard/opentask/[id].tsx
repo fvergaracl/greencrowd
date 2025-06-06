@@ -331,7 +331,7 @@ export default function Task() {
           position
         })
         const decodedToken = decodeToken(accessToken)
-        const externalOpenTaskId = `OpenTask_${id}`
+        const externalOpenTaskId = `GREENCROWD_CAMPAIGNID_${selectedCampaign?.id}_OPENTASK_${id}`
         if (gameId) {
           await axios
             .post(

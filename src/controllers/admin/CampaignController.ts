@@ -175,4 +175,71 @@ export default class CampaignController {
 
     return campaign
   }
+
+  @withPrismaDisconnect
+  static async getAllTasksByCampaignId(campaignId: string) {
+    const tasks = await prisma.task.findMany({
+      where: {
+        isDisabled: false,
+        pointOfInterest: {
+          isDisabled: false,
+          area: {
+            isDisabled: false,
+            campaignId
+          }
+        }
+      },
+      include: {
+        pointOfInterest: {
+          select: {
+            id: true,
+            name: true,
+            area: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
+      },
+      orderBy: {
+        createdAt: "desc"
+      }
+    })
+
+    return tasks
+  }
+
+  @withPrismaDisconnect
+  static async getAllOpenTasksByCampaignId(campaignId: string) {
+    const openTasks = await prisma.openTask.findMany({
+      where: {
+        isDisabled: false,
+        area: {
+          isDisabled: false,
+          campaignId
+        }
+      },
+      include: {
+        area: {
+          select: {
+            id: true,
+            name: true,
+            campaign: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
+      },
+      orderBy: {
+        createdAt: "desc"
+      }
+    })
+
+    return openTasks
+  }
 }

@@ -98,6 +98,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
           icon: "success",
           timer: 4000
         })
+        setHasGamification(true)
       } catch (err) {
         console.error(err)
         Swal.fire({
@@ -130,6 +131,16 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
         icon: "error"
       })
     }
+
+    // DELETE ALL ATTRIBUTES TO DON'T POST IN FORM
+    setFormValues(prev => {
+      const { selectedStrategyId, createWithGamification, gameId, ...rest } =
+        prev
+      return {
+        ...rest
+      }
+    })
+    hasGamification && setHasGamification(false)
   }
 
   useEffect(() => {
@@ -287,6 +298,9 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
         gameId: hasGamification ? formValues?.gameId : null
       }
       if (campaignId) {
+        // delete selectedStrategyId
+        delete formValuesCleaned.selectedStrategyId
+        delete formValuesCleaned.createWithGamification
         await axios.put(
           `${getApiBaseUrl()}/admin/campaigns/${campaignId}`,
           formValuesCleaned
